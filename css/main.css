@@ -1,0 +1,58 @@
+
+.chat-row {
+	margin-top: 15px;
+	margin-bottom: 15px;
+	font-size: 15px;
+}
+
+.avatar {
+	width: 10%;
+	display: inline-block;
+}
+
+.bubble-container {
+	width: 70%;
+	display: inline-block;
+}
+
+.bubble {
+	position: relative;
+	width: 100%;
+	min-height: 70px;
+	padding: 10px;
+	margin-left: 20px; /*width of pointer*/
+	background: #BBFFFF;
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+	border-radius: 10px;
+
+	-webkit-box-shadow: -10px 10px 10px -5px rgba(0,0,0,0.75);
+	-moz-box-shadow: -10px 10px 10px -5px rgba(0,0,0,0.75);
+	box-shadow: -10px 10px 10px -5px rgba(0,0,0,0.75);
+}
+
+.bubble:after {
+	content: '';
+	position: absolute;
+	border-style: solid;
+	border-width: 10px 20px 10px 0;
+	border-color: transparent #BBFFFF;
+	display: block;
+	width: 0;
+	z-index: 1;
+	left: -20px;
+	top: 20px;
+}
+
+/* For screens at least 768px wide (large screens/desltops) */
+@media screen and (min-width: 768px){
+
+}
+
+/* For screens at most 767px wide (small screens/phones) */
+@media screen and (max-width: 767px){
+
+}
+
+
+
