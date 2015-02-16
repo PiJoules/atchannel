@@ -1,0 +1,58 @@
+<head>
+  <title>Chat app</title>
+</head>
+
+<body>
+    <div class="container" style="height: 5%; text-align: center;">
+        <h1>@channel</h1>
+    </div>
+    <div class="container chat">
+        {{> chatrow}}
+        <div class="row chat-row" style="visibility: hidden;">
+            <div class="avatar">
+                <img src="/smile.jpg" class="img-rounded">
+            </div>
+            <div class="bubble-container">
+                <div class="bubble">
+                    <p>
+                    <strong>Dummy</strong>
+                    <strong style="text-align: right;">time o'clock</strong>
+                    </p>
+                    <p>sample text</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container" style="height: 10%;">
+        {{> input}}
+    </div>
+</body>
+
+<template name="input">
+    <div class="input-group">
+        <span class="input-group-addon" id="basic-addon2">Message</span>
+        <input type="text" id="message" class="form-control" placeholder="Message" aria-describedby="basic-addon2">
+        <span class="input-group-btn">
+            <button id="post" class="btn btn-default" type="button">Post</button>
+        </span>
+    </div>
+</template>
+
+<template name="chatrow">
+    {{#each messages}}
+    <div class="row chat-row">
+        <div class="avatar">
+            <img src="/smile.jpg" class="img-rounded">
+        </div>
+        <div class="bubble-container">
+            <div class="bubble">
+                <p>
+                    <strong>{{name}}</strong>
+                    <strong style="float: right;">{{prettifyTime time}}</strong>
+                </p>
+                <p>{{message}}</p>
+            </div>
+        </div>
+    </div>
+    {{/each}}
+</template>
