@@ -1,12 +1,9 @@
 <head>
-  <title>Chat app</title>
+  <title>@channel</title>
 </head>
 
 <body>
-    <div class="container" style="height: 5%; text-align: center;">
-        <h1>@channel</h1>
-    </div>
-    <div class="container chat">
+    <div class="chat">
         {{> chatrow}}
         <div class="row chat-row" style="visibility: hidden;">
             <div class="avatar">
@@ -23,7 +20,7 @@
             </div>
         </div>
     </div>
-    <div class="container" style="height: 10%;">
+    <div class="chat-input">
         {{> input}}
     </div>
 </body>

@@ -5,7 +5,7 @@ html, body {
 
 .chat {
 	padding-top: 100px; /* this must always equal limit */
-	height: 85%;
+	height: calc(100% - 50px);
 	overflow-y: scroll;
 	overflow-x: hidden;
 	position: relative;
@@ -15,6 +15,13 @@ html, body {
 	padding-top: 15px;
 	padding-bottom: 15px;
 	font-size: 15px;
+}
+
+.chat-input, .chat-input .input-group {
+	width: 100%;
+}
+.chat-input, .chat-input * {
+	height: 50px;
 }
 
 .avatar {
