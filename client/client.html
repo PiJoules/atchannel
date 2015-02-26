@@ -4,30 +4,44 @@
 
 <body>
     <div class="chat">
-        {{> chatrow}}
-        <div class="row chat-row" style="visibility: hidden;">
-            <div class="avatar">
-                <img src="/smile.jpg" class="img-rounded">
-            </div>
-            <div class="bubble-container">
-                <div class="bubble">
-                    <p>
-                    <strong>Dummy</strong>
-                    <strong style="text-align: right;">time o'clock</strong>
-                    </p>
-                    <p>sample text</p>
-                </div>
-            </div>
+        <div class="row chat-row" style="height: 270px; text-align: center; padding-top: 80px;">
+            <h1>Welcome to</h1>
+            <h1 style="font-size: 90px;">@channel</h1>
         </div>
+        {{> chatrow}}
+        <div class="row filler-row" style="visibility: hidden; height: 280px;"></div>
     </div>
     <div class="chat-input">
         {{> input}}
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title" id="exampleModalLabel">Choose a username</h4>
+            </div>
+            <div class="modal-body">
+                <p><small>'Anonymous' will be your username if you don't enter one</small></p>
+                <div class="form-group">
+                  <label for="recipient-name" class="control-label">Username:</label>
+                  <input type="text" class="form-control" id="selected-user-name" />
+                </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              <button id="submit-username" type="button" class="btn btn-primary">Submit</button>
+            </div>
+          </div>
+        </div>
     </div>
 </body>
 
 <template name="input">
     <div class="input-group">
-        <span class="input-group-addon" id="basic-addon2">Message</span>
+        <span class="input-group-addon username" id="basic-addon2">Anonymous</span>
         <input type="text" id="message" class="form-control" placeholder="Message" aria-describedby="basic-addon2">
         <span class="input-group-btn">
             <button id="post" class="btn btn-default" type="button">Post</button>
