@@ -108,7 +108,11 @@ Template.chatrow.rendered = function () {
 
             $(".chat").animate({
                 scrollTop: $(".chat")[0].scrollHeight
-            }, "slow");
+            }, "slow", function(){
+                $(".postNumber").each(function(index){
+                    $(this).text((index+1));
+                });
+            });
         }
     };
 
@@ -129,6 +133,10 @@ Template.chatrow.rendered = function () {
         }
     });
     $('#myModal').modal();
+
+    $("#about-modal-revealer").click(function(){
+        $("#aboutModal").modal();
+    });
 
 
     //console.log("rendered", messagesArray);

@@ -4,6 +4,12 @@ html, body {
 	background-image: url("/blu_stripes.png");
 }
 
+#about-modal-revealer {
+	position: absolute;
+	top: 20px;
+	left: 20px;
+}
+
 .chat {
 	height: calc(100% - 50px);
 	overflow-y: scroll;
@@ -127,6 +133,13 @@ html, body {
 	display: inline-block;
 	float: left;
 }
+
+.sample-photo {
+	width: 100%;
+	margin: auto;
+	display: block;
+}
+
 
 /* For screens at least 768px wide (large screens/desltops) */
 @media screen and (min-width: 768px){
