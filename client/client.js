@@ -172,11 +172,12 @@ function tryToSetupHideAndSeek(){
             hideAndSeek();
             $(".chat").animate({
                 scrollTop: $(".chat")[0].scrollHeight
-            }, "slow");
-            $(".postNumber").each(function(index){
-                $(this).text((index+1));
+            }, "slow", function(){
+                $(".postNumber").each(function(index){
+                    $(this).text((index+1));
+                });
+                chatrowsAreSetup = true;
             });
-            chatrowsAreSetup = true;
         }
     }
 }
