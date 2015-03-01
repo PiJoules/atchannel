@@ -1,7 +1,5 @@
 <h1>@channel</h1>
 
-<h2>The Goal</h2>
-
 <p>The goal of this website is to replicate the @channel as seen in the anime Steins;Gate as much as possible.</p>
 
 <p>I've been trying to create it based around how it appeared in this picture (which I think might be episode 11):</p>
