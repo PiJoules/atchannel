@@ -6,6 +6,7 @@ Template.chatrow.helpers({
     messages: function() {
         var messages = Messages.find({}, { sort: { time: 1}});
         var messagesArray = messages.fetch();
+        console.log(messagesArray[0]);
         /*if (messagesArray.length > 50){
             // just for development, limit the size of the collection
             for (var i = 0; i < 25; i++){
@@ -17,14 +18,23 @@ Template.chatrow.helpers({
             $(".chat").animate({
                 scrollTop: $(".chat")[0].scrollHeight
             }, "slow");
+            $(".postNumber").each(function(index){
+                $(this).text((index+1));
+            });
         }
         return messages;
     }
 });
 
+// Make the date number something human-readadble
 Handlebars.registerHelper("prettifyTime", function(timestamp) {
     var dateObj = new Date(timestamp);
     return new Date(timestamp).toLocaleString();
+});
+
+// Hide part of the id
+Handlebars.registerHelper("chopID", function(id) {
+    return id.substring(0,9);
 });
 
 Template.input.events = {
@@ -35,61 +45,6 @@ Template.input.events = {
     }
 };
 
-
-
-// Smooth scrolling
-$(function() {
-    $('a[href*=#]:not([href=#])').click(function() {
-        if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'') && location.hostname == this.hostname) {
-            var target = $(this.hash);
-            target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
-            if (target.length) {
-                $('html,body').animate({
-                    scrollTop: target.offset().top
-                }, 1000);
-                return false;
-            }
-        }
-    });
-});
-
-
-function hidingFunction(index, that){
-    // Track distance between each initial top position and
-    // original center of screen. If the distance is greater than
-    // a specified fraction of the screen height, make it disappear
-    var topDist = $(that).position().top; // distance from top of chat row top top of screen
-    var botDist = ph+pt-topDist; // distance from top of chat row to bottom of screen
-    if (topDist < 0 || botDist < 0){
-        $(that).css("opacity","0");
-    }
-    else if (topDist < limit){
-        $(that).css({
-            "opacity": topDist/limit,
-            "font-size": (15*topDist/limit) + "px"
-        });
-        $(that).find(".bubble").css({
-            "width": (w*topDist/limit) + "%"
-        });
-    }
-    else if (botDist < limit+bottomBuffer){
-        $(that).css({
-            "opacity": botDist/(limit+bottomBuffer),
-            "font-size": (15*botDist/(limit+bottomBuffer)) + "px"
-        });
-        $(that).find(".bubble").css({
-            "width": (w*botDist/(limit+bottomBuffer)) + "%"
-        });
-    }
-    else {
-        $(that).css({
-            "font-size": "15px"
-        });
-        $(that).find(".bubble").css({
-            "width": w + "%"
-        });
-    }
-}
 
 function hidingFunction2(index, that){
     // Track distance between each initial top position and
@@ -124,7 +79,8 @@ function hidingFunction2(index, that){
             "bubbleWidth": (-90/limit*(midDist-buffer) + 100) + "%",
             "margin-left": (10/limit*(midDist-buffer) + 5) + "%",
             "margin-right": (10/limit*(midDist-buffer) + 5) + "%",
-            "avatarWidth": (-3/limit*(midDist-buffer) + 5) + "%"
+            "avatarWidth": (-3/limit*(midDist-buffer) + 5) + "%",
+            "time-font-size": (-10.5/limit*(midDist-buffer) + 12) + "px"
         };
         changeRow(that, properties);
     }
@@ -133,7 +89,6 @@ function hidingFunction2(index, that){
         var color = randElem(colors);
         $(that).data("color", color);
         $(that).find(".bubble").css("background-color", color.replace("n","")).addClass(color.replace("#",""));
-        //$(that).find(".avatar").css("background-color", color.replace("n","")).addClass(color.replace("#",""));
     }
 
 }
@@ -151,6 +106,9 @@ function changeRow(that, properties){
     $(that).find(".avatar").css({
         "width": nextProperties["avatarWidth"]
     });
+    $(that).find(".time").css({
+        "font-size": nextProperties["time-font-size"]
+    });
 }
 
 
@@ -167,14 +125,16 @@ var maxProperties = {
     "bubbleWidth": "100%",
     "margin-left": "5%",
     "margin-right": "5%",
-    "avatarWidth": "5%"
+    "avatarWidth": "5%",
+    "time-font-size": "12px"
 };
 var defaultProperties = {
     "font-size": "1.5px",
     "bubbleWidth": "10%",
     "margin-left": "15%",
     "margin-right": "15%",
-    "avatarWidth": "2%"
+    "avatarWidth": "2%",
+    "time-font-size": "1.5px"
 };
 
 // add n so can be used ass class
@@ -206,11 +166,7 @@ $(window).load(function(){
     $(".filler-row").height(mid + "px");
 
     $(".chat").scroll(function(){
-        // Not running this when not necessary prevents the bouncing
-        //if ($(".chat-row").last().position().top - mid > buffer){
-            hideAndSeek();
-        //}
-        //console.log($(".chat-row").last().position().top, mid, $(".chat-row").last().position().top - mid, $(".chat")[0].scrollHeight, $(".chat")[0].scrollHeight-$(".chat-row").last().position().top-$(".chat-row").last().outerHeight());
+        hideAndSeek();
     });
 
     hideAndSeek = function(){

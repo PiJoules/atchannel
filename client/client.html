@@ -57,11 +57,14 @@
         </div>
         <div class="bubble-container">
             <div class="bubble">
-                <p>
-                    <strong>{{name}}</strong>
-                    <strong style="float: right;">{{prettifyTime time}}</strong>
+                <p class="chat-row-header">
+                    <strong><span class="postNumber"></span> &nbsp; {{name}} [sage]</strong>
+                    <strong>ID:{{chopID _id}}</strong>
                 </p>
                 <p>{{message}}</p>
+                <p class="time">
+                    <span>{{prettifyTime time}}</span>
+                </p>
             </div>
         </div>
     </div>
