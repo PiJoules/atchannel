@@ -6,12 +6,12 @@ Template.chatrow.helpers({
     messages: function() {
         var messages = Messages.find({}, { sort: { time: 1}});
         var messagesArray = messages.fetch();
-        if (messagesArray.length > 50){
+        /*if (messagesArray.length > 50){
             // just for development, limit the size of the collection
             for (var i = 0; i < 25; i++){
                 Messages.remove(messagesArray[i]["_id"]);
             }
-        }
+        }*/
         if (messagesArray.length > 0){
             hideAndSeek();
             $(".chat").animate({
