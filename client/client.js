@@ -129,7 +129,7 @@ Template.chatrow.rendered = function () {
 
     post = function(){
         if ($("#message").val().trim() !== ""){
-            Messages.insert({
+            Meteor.call("addPost",{
                 name: name,
                 message: $("#message").val().trim(),
                 time: Date.now(),
@@ -180,7 +180,7 @@ Template.chatrow.rendered = function () {
     $("#submit-channel").click(function(){
         var channelName = $("#new-channel-name").val().trim();
         if (channelName !== "" && isAlphaNumeric(channelName)){
-            Messages.insert({
+            Meteor.call("addPost",{
                 name: "Channel Creator",
                 message: channelName + "Channel is now open",
                 time: Date.now(),
@@ -216,7 +216,9 @@ Template.channels.helpers({
     channels: function() {
         // Return each distinct channel name
         var channels = _.uniq(Messages.find({}, { channel: 1 }).map(function(x) {return x.channel;}), true);
-        channels.splice(channels.indexOf("main"), 1);
+        while (channels.indexOf("main") !== -1){
+            channels.splice(channels.indexOf("main"), 1);
+        }
         return channels;
     }
 });
