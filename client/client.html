@@ -7,7 +7,17 @@
 
 <template name="home">
     <div class="chat">
-        <button id="about-modal-revealer" class="btn btn-info">About @channel</button>
+
+        <div class="top-stuff">
+            <div class="btn-group" role="group" aria-label="..." style="float: left;">
+                <button id="about-modal-revealer" class="btn btn-default">About @channel</button>
+            </div>
+
+            <div class="btn-group" role="group" aria-label="..." style="float: right;">
+                <button id="existing-channels-revealer" class="btn btn-default">Find channels</button>
+                <button id="creating-channel-revealer" class="btn btn-default">Create a channel</button>
+            </div>
+        </div>
 
         <div class="row chat-row" style="height: 50%; text-align: center; padding-top: 80px;">
             <h1>Welcome to</h1>
@@ -45,6 +55,7 @@
         </div>
     </div>
 
+    <!-- About @channel modal -->
     <div class="modal fade" id="aboutModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -98,10 +109,61 @@
             </div>
         </div>
     </div>
+
+    <!-- existing channels modal -->
+    <div class="modal fade" id="existing-channels" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="exampleModalLabel">Find a channel</h4>
+                </div>
+                <div class="modal-body">
+                    {{> channels}}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- create a channel modal -->
+    <div class="modal fade" id="creating-channel" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title">Create a channel</h4>
+                </div>
+                <div class="modal-body">
+                    <p><small>Enter the name of a new channel you want to create. It must contain only alphanumeric characters.</small></p>
+                    <p><small>You do not need to end it with the word "Channel" when creating one. It will be added for you.</small></p>
+                    <div class="form-group">
+                        <label for="recipient-name" class="control-label">Channel:</label>
+                        <input type="text" class="form-control" id="new-channel-name" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button id="submit-channel" type="button" class="btn btn-primary">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </template>
 
-<template name="test">
-    <a target="_blank" href="/">back to home</a>
+<template name="redirect-template"></template>
+
+<template name="could-not-find">
+    <h1>Could not find the page you were looking for</h1>
+</template>
+
+<template name="channels">
+    <p><a href="/redirect/main">@channel</a></p>
+    {{#each channels}}
+        <p><a href="/redirect/{{this}}">{{this}}Channel</a></p>
+    {{/each}}
 </template>
 
 <template name="input">

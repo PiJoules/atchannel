@@ -52,25 +52,37 @@ var channel = "main";
 /**
  * Router
  */
-Router.route('/', {
-    action: function() {
-        console.log(channel);
+Router.route('/', function() {
+    this.render('home');
+});
+Router.route('/could-not-find',function(){
+    this.render("redirect-template");
+});
+Router.route('/redirect/main',function(){
+    this.redirect("/");
+    location.reload();
+});
+Router.route('/redirect/:channel',function(){
+    var channels = _.uniq(Messages.find({}, { channel: 1 }).map(function(x) {return x.channel;}), true);
+    if (channels.indexOf(channel) === -1){
+        this.redirect("could-not-find");
+    }
+    else{
+        this.redirect("/" + this.params.channel);
+        location.reload();
+    }
+});
+Router.route('/:channel', function() {
+    channel = this.params.channel;
+
+    var channels = _.uniq(Messages.find({}, { channel: 1 }).map(function(x) {return x.channel;}), true);
+    if (channels.indexOf(channel) === -1){
+        this.render("redirect-template");
+    }
+    else{
         this.render('home');
     }
 });
-/*Router.route('/test',function(){
-    console.log("no params in test");
-});*/
-Router.route('/:channel', {
-    action: function() {
-        channel = this.params.channel;
-        console.log(channel);
-        this.render('home');
-    }
-});
-/*Router.route('/test/:channel',function(){
-    console.log(typeof this.params.channel, this.params.channel);
-});*/
 
 
 /**
@@ -82,7 +94,6 @@ Template.chatrow.helpers({
         var messages = Messages.find({channel: channel}, { sort: { time: 1}});
         messagesArray = messages.fetch();
 
-        console.log("messages helper", messagesArray.length, $(".chat").length);
         tryToSetupHideAndSeek();
 
         return messages;
@@ -143,13 +154,12 @@ Template.chatrow.rendered = function () {
 
     $("#submit-username").click(function(){
         var input = $("#selected-user-name").val().trim();
-        var isAlphaNumeric = !/[^a-zA-Z0-9]/.test(input);
-        if (input !== "" && isAlphaNumeric){
+        if (input !== "" && isAlphaNumeric(input)){
             name = input;
             $(".username").text(name);
             $("#myModal").modal("hide");
         }
-        else if (!isAlphaNumeric){
+        else if (!isAlphaNumeric(input)){
             alert("Please enter alphanumeric characters only");
         }
     });
@@ -159,16 +169,38 @@ Template.chatrow.rendered = function () {
         $("#aboutModal").modal();
     });
 
+    $("#existing-channels-revealer").click(function(){
+        $("#existing-channels").modal();
+    });
+
+    $("#creating-channel-revealer").click(function(){
+        $("#creating-channel").modal();
+    });
+
+    $("#submit-channel").click(function(){
+        var channelName = $("#new-channel-name").val().trim();
+        if (channelName !== "" && isAlphaNumeric(channelName)){
+            Messages.insert({
+                name: "Channel Creator",
+                message: channelName + "Channel is now open",
+                time: Date.now(),
+                channel: channelName
+            });
+            Router.go("/redirect/" + channelName);
+        }
+        else if (!isAlphaNumeric(channelName)){
+            alert("Please enter alphanumeric characters only");
+        }
+    });
+
     if (channel !== "main"){
         $("#channel-name").text(channel + "Channel");
     }
 
-    //console.log("rendered", messagesArray);
     tryToSetupHideAndSeek();
 };
 
 Template.chatrow.destroyed = function () {
-    //console.log("destroyed", messagesArray);
     chatrowsAreSetup = false;
 };
 
@@ -179,6 +211,15 @@ Template.input.events = {
         }
     }
 };
+
+Template.channels.helpers({
+    channels: function() {
+        // Return each distinct channel name
+        var channels = _.uniq(Messages.find({}, { channel: 1 }).map(function(x) {return x.channel;}), true);
+        channels.splice(channels.indexOf("main"), 1);
+        return channels;
+    }
+});
 
 
 /**
@@ -199,26 +240,20 @@ Handlebars.registerHelper("chopID", function() {
 
 
 function tryToSetupHideAndSeek(){
-    //console.log(typeof messagesArray, typeof $, typeof chatrowsAreSetup, messagesArray.length, $(".chat").length, chatrowsAreSetup);
-    //if (typeof messagesArray !== "undefined" && typeof $ !== "undefined" && typeof chatrowsAreSetup !== "undefined"){
-        //if (messagesArray.length > 0 && $(".chat").length > 0 && !chatrowsAreSetup){
-        try{
-            hideAndSeek();
-            $(".chat").animate({
-                scrollTop: $(".chat")[0].scrollHeight
-            }, "slow", function(){
-                $(".postNumber").each(function(index){
-                    $(this).text((index+1));
-                });
-                chatrowsAreSetup = true;
-                //console.log("ran hide and seek");
+    try{
+        hideAndSeek();
+        $(".chat").animate({
+            scrollTop: $(".chat")[0].scrollHeight
+        }, "slow", function(){
+            $(".postNumber").each(function(index){
+                $(this).text((index+1));
             });
-        }
-        catch(err){
-            //console.log(err);
-        }
-        //}
-    //}
+            chatrowsAreSetup = true;
+        });
+    }
+    catch(err){
+
+    }
 }
 
 
@@ -293,4 +328,9 @@ function changeRow(that, properties){
 
 function randElem(array){
     return array[Math.floor(Math.random()*array.length)];
+}
+
+
+function isAlphaNumeric(input){
+    return !/[^a-zA-Z0-9]/.test(input);
 }

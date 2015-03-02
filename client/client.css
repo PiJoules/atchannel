@@ -4,10 +4,12 @@ html, body {
 	background-image: url("/blu_stripes.png");
 }
 
-#about-modal-revealer {
+
+.top-stuff {
 	position: absolute;
 	top: 20px;
 	left: 20px;
+	width: calc(100% - 40px);
 }
 
 .chat {
