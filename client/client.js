@@ -179,7 +179,8 @@ Template.chatrow.rendered = function () {
 
     $("#submit-channel").click(function(){
         var channelName = $("#new-channel-name").val().trim();
-        if (channelName !== "" && isAlphaNumeric(channelName)){
+        var channels = _.uniq(Messages.find({}, { channel: 1 }).map(function(x) {return x.channel;}), true);
+        if (channelName !== "" && isAlphaNumeric(channelName) && channels.indexOf(channelName) === -1){
             Meteor.call("addPost",{
                 name: "Channel Creator",
                 message: channelName + "Channel is now open",
@@ -191,6 +192,13 @@ Template.chatrow.rendered = function () {
         else if (!isAlphaNumeric(channelName)){
             alert("Please enter alphanumeric characters only");
         }
+        else if (channels.indexOf(channelName) !== -1){
+            alert("This channel already exists. Please choose a different name.");
+        }
+    });
+
+    $("#todo-list-revealer").click(function(){
+        $("#todo-list").modal();
     });
 
     if (channel !== "main"){

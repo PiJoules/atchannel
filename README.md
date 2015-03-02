@@ -8,7 +8,7 @@
 
 <h2>What you can do to help</h2>
 
-<p>Obviously, it's not finished, and that's why I need help. I'm having trouble finding the proper assets or pictures necessary to build the website.</p>
+<p>Obviously, @channel is not finished, and that's why I need help. I'm having trouble finding the proper assets or pictures necessary to build the website.</p>
 
 <p>For example, I can't seem to find the proper striped, blue background as shown in the picture. I also can't find images of the smiling face anywhere. I'm also unsure what the top of the website actually looks like and what the black line on the right is.</p>
 
@@ -20,7 +20,7 @@
 
 <h2>Info I can provide you</h2>
 
-<p>For more appearances of @channel ont he show, it's shown mostly in, I believe, episodes 2, 3, and 11. Here are also some other screencaps I took of it:</p>
+<p>For more appearances of @channel on the show, it's shown mostly in, I believe, episodes 2, 3, and 11. Here are also some other screencaps I took of it:</p>
 
 <ul>
 <li><a target="_blank" href="https://raw.githubusercontent.com/PiJoules/-channel/master/public/@channel-ep2-1140.png">Episode 2 (11:40)</a></li>
@@ -37,3 +37,15 @@
 
 <p>Thanks in advance.</p>
 <p><small>El psy congroo</small></p>
+
+<h2>Todo</h2>
+
+<ul>
+    <li>Add black line on the side (possibly a timeline, though why would there be times in the bottom right of each message)</li>
+    <li>Find better matching background of horizontal blue stripes</li>
+    <li>Find and incorporate the actual smiley faces used instead of the current ones</li>
+    <li>Add arrows on the side of the screen to scroll to the top and bottom of the page</li>
+    <li>If the user enters their username already, save the name locally and do not load show the "Choose a username" box again; add an option to change username</li>
+    <li>Add ability to post images</li>
+    <li>Suggestions for other features that aren't explicitely described in the visual novel or anime...</li>
+</ul>
