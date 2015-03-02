@@ -11,7 +11,7 @@
 
         <div class="row chat-row" style="height: 50%; text-align: center; padding-top: 80px;">
             <h1>Welcome to</h1>
-            <h1 style="font-size: 90px;">@channel</h1>
+            <h1 id="channel-name" style="font-size: 90px;">@channel</h1>
         </div>
         {{> chatrow}}
         <div class="row filler-row" style="visibility: hidden; height: 50%;"></div>
@@ -124,7 +124,7 @@
             <div class="bubble">
                 <p class="chat-row-header">
                     <strong><span class="postNumber"></span> &nbsp; {{name}} [sage]</strong>
-                    <strong>ID:{{chopID _id}}</strong>
+                    <strong>ID:{{chopID}}</strong>
                 </p>
                 <p>{{message}}</p>
                 <p class="time">

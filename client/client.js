@@ -1,17 +1,6 @@
 
 
 /**
- * Router
- */
-Router.route('/', {
-    action: function() {
-        this.render('home');
-    }
-});
-Router.route('/test');
-
-
-/**
  * Globals
  */
 
@@ -57,6 +46,31 @@ var colors = [
 ];
 
 var name = 'Anonymous';
+var channel = "main";
+
+
+/**
+ * Router
+ */
+Router.route('/', {
+    action: function() {
+        console.log(channel);
+        this.render('home');
+    }
+});
+/*Router.route('/test',function(){
+    console.log("no params in test");
+});*/
+Router.route('/:channel', {
+    action: function() {
+        channel = this.params.channel;
+        console.log(channel);
+        this.render('home');
+    }
+});
+/*Router.route('/test/:channel',function(){
+    console.log(typeof this.params.channel, this.params.channel);
+});*/
 
 
 /**
@@ -65,10 +79,10 @@ var name = 'Anonymous';
 
 Template.chatrow.helpers({
     messages: function() {
-        var messages = Messages.find({}, { sort: { time: 1}});
+        var messages = Messages.find({channel: channel}, { sort: { time: 1}});
         messagesArray = messages.fetch();
 
-        //console.log(messagesArray.length, $(".chat").length);
+        console.log("messages helper", messagesArray.length, $(".chat").length);
         tryToSetupHideAndSeek();
 
         return messages;
@@ -83,6 +97,12 @@ Template.chatrow.rendered = function () {
     pt = $(".chat").position().top; // parent top
     ph = $(".chat").height(); // parent height
     mid = pt + ph/2 - bottomBuffer;
+
+    $(window).resize(function(){
+        pt = $(".chat").position().top; // parent top
+        ph = $(".chat").height(); // parent height
+        mid = pt + ph/2 - bottomBuffer;
+    });
 
     $(".filler-row").height(mid + "px");
 
@@ -101,14 +121,15 @@ Template.chatrow.rendered = function () {
             Messages.insert({
                 name: name,
                 message: $("#message").val().trim(),
-                time: Date.now()
+                time: Date.now(),
+                channel: channel
             });
 
             $("#message").val("");
 
             $(".chat").animate({
                 scrollTop: $(".chat")[0].scrollHeight
-            }, "slow", function(){
+            }, "fast", function(){
                 $(".postNumber").each(function(index){
                     $(this).text((index+1));
                 });
@@ -138,6 +159,9 @@ Template.chatrow.rendered = function () {
         $("#aboutModal").modal();
     });
 
+    if (channel !== "main"){
+        $("#channel-name").text(channel + "Channel");
+    }
 
     //console.log("rendered", messagesArray);
     tryToSetupHideAndSeek();
@@ -167,16 +191,18 @@ Handlebars.registerHelper("prettifyTime", function(timestamp) {
     return new Date(timestamp).toLocaleString();
 });
 
-// Hide part of the id
-Handlebars.registerHelper("chopID", function(id) {
-    return id.substring(0,9);
+// Return a random id because the @channel has ids
+Handlebars.registerHelper("chopID", function() {
+    return (new Date().getTime() * Math.random() * Math.pow(10,9)).toString(36).substring(0,9);
 });
 
 
 
 function tryToSetupHideAndSeek(){
-    if (typeof messagesArray !== "undefined" && typeof $ !== "undefined" && typeof chatrowsAreSetup !== "undefined"){
-        if (messagesArray.length > 0 && $(".chat").length > 0 && !chatrowsAreSetup){
+    //console.log(typeof messagesArray, typeof $, typeof chatrowsAreSetup, messagesArray.length, $(".chat").length, chatrowsAreSetup);
+    //if (typeof messagesArray !== "undefined" && typeof $ !== "undefined" && typeof chatrowsAreSetup !== "undefined"){
+        //if (messagesArray.length > 0 && $(".chat").length > 0 && !chatrowsAreSetup){
+        try{
             hideAndSeek();
             $(".chat").animate({
                 scrollTop: $(".chat")[0].scrollHeight
@@ -185,9 +211,14 @@ function tryToSetupHideAndSeek(){
                     $(this).text((index+1));
                 });
                 chatrowsAreSetup = true;
+                //console.log("ran hide and seek");
             });
         }
-    }
+        catch(err){
+            //console.log(err);
+        }
+        //}
+    //}
 }
 
 
