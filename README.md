@@ -44,7 +44,6 @@
     <li>Add black line on the side (possibly a timeline, though why would there be times in the bottom right of each message)</li>
     <li>Find better matching background of horizontal blue stripes</li>
     <li>Find and incorporate the actual smiley faces used instead of the current ones</li>
-    <li>Add arrows on the side of the screen to scroll to the top and bottom of the page</li>
     <li>Add ability to post images</li>
     <li>Suggestions for other features that aren't explicitely described in the visual novel or anime...</li>
 </ul>
