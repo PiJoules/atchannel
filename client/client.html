@@ -10,13 +10,14 @@
 
         <div class="top-stuff">
             <div class="btn-group" role="group" aria-label="..." style="float: left;">
-                <button id="about-modal-revealer" class="btn btn-default">About @channel</button>
-                <button id="todo-list-revealer" class="btn btn-default">Todo List</button>
+                <button class="btn btn-default" data-toggle="modal" data-target="#aboutModal">About @channel</button>
+                <button class="btn btn-default" data-toggle="modal" data-target="#todo-list">Todo List</button>
             </div>
 
             <div class="btn-group" role="group" aria-label="..." style="float: right;">
-                <button id="existing-channels-revealer" class="btn btn-default">Find channels</button>
-                <button id="creating-channel-revealer" class="btn btn-default">Create a channel</button>
+                <button class="btn btn-default" data-toggle="modal" data-target="#existing-channels"><span class="glyphicon glyphicon-search"></span></button>
+                <button class="btn btn-default" data-toggle="modal" data-target="#creating-channel"><span class="glyphicon glyphicon-plus"></span></button>
+                <button class="btn btn-default" data-toggle="modal" data-target="#myModal"><span class="glyphicon glyphicon-cog"></span></button>
             </div>
         </div>
 

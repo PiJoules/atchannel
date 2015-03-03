@@ -156,6 +156,7 @@ Template.chatrow.rendered = function () {
         var input = $("#selected-user-name").val().trim();
         if (input !== "" && isAlphaNumeric(input)){
             name = input;
+            sessionStorage.atchannelUsername = name;
             $(".username").text(name);
             $("#myModal").modal("hide");
         }
@@ -163,19 +164,14 @@ Template.chatrow.rendered = function () {
             alert("Please enter alphanumeric characters only");
         }
     });
-    $('#myModal').modal();
 
-    $("#about-modal-revealer").click(function(){
-        $("#aboutModal").modal();
-    });
-
-    $("#existing-channels-revealer").click(function(){
-        $("#existing-channels").modal();
-    });
-
-    $("#creating-channel-revealer").click(function(){
-        $("#creating-channel").modal();
-    });
+    if (sessionStorage.getItem("atchannelUsername") === null){
+        $('#myModal').modal();
+    }
+    else{
+        name = sessionStorage.atchannelUsername;
+        $(".username").text(name);
+    }
 
     $("#submit-channel").click(function(){
         var channelName = $("#new-channel-name").val().trim();
@@ -195,10 +191,6 @@ Template.chatrow.rendered = function () {
         else if (channels.indexOf(channelName) !== -1){
             alert("This channel already exists. Please choose a different name.");
         }
-    });
-
-    $("#todo-list-revealer").click(function(){
-        $("#todo-list").modal();
     });
 
     if (channel !== "main"){
