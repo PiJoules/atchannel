@@ -253,11 +253,11 @@ function tryToSetupHideAndSeek(){
                 $(this).find(".postNumber").text((index+1));
 
                 // Encode any URLs
-                // (https?:\/\/)?((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|((\\d{1,3}\\.){3}\\d{1,3}))(\\:\\d+)?(\/[-a-z\\d%_.~+]*)*(\\?[;&a-z\\d%_.~+=-]*)?(\\#[-a-z\\d_]*)?
+                // (https?:\/\/)?((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|((\\d{1,3}\\.){3}\\d{1,3}))(\\:\\d+)?(\/[-a-z\\d%_.~+\@]*)*(\\?[;&a-z\\d%_.~+=-]*)?(\\#[-a-z\\d_]*)?
                 var regex = new RegExp( '(https?:\\/\\/)?'+ // protocol
                                         '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
                                         '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
-                                        '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
+                                        '(\\:\\d+)?(\\/[-a-z\\d%_.~+\@]*)*'+ // port and path
                                         '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
                                         '(\\#[-a-z\\d_]*)?', 'ig');
                 var message = $(this).find(".message").text();
