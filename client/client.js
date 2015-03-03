@@ -216,10 +216,12 @@ Template.channels.helpers({
     channels: function() {
         // Return each distinct channel name
         var channels = _.uniq(Messages.find({}, { channel: 1 }).map(function(x) {return x.channel;}), true);
-        while (channels.indexOf("main") !== -1){
-            channels.splice(channels.indexOf("main"), 1);
-        }
-        return channels;
+        var uniqueChannels = [];
+        $.each(channels, function(index, element){
+            if($.inArray(element, uniqueChannels) === -1 && element !== "main")
+                uniqueChannels.push(element);
+        });
+        return uniqueChannels;
     }
 });
 
