@@ -5,7 +5,6 @@
  */
 
 var messagesArray;
-var chatrowsAreSetup = false;
 
 // Because botDist measures dist from top of elem to bottom,
 // add a buffer to allow for elems coming from bottom to be invisible more
@@ -47,6 +46,7 @@ var colors = [
 
 var name = 'Anonymous';
 var channel = "main";
+var currentRow = 1;
 
 
 /**
@@ -100,10 +100,6 @@ Template.chatrow.helpers({
     }
 });
 
-Template.chatrow.created = function () {
-    // Put something here for when the chatrow is first created
-};
-
 Template.chatrow.rendered = function () {
     pt = $(".chat").position().top; // parent top
     ph = $(".chat").height(); // parent height
@@ -113,6 +109,23 @@ Template.chatrow.rendered = function () {
         pt = $(".chat").position().top; // parent top
         ph = $(".chat").height(); // parent height
         mid = pt + ph/2 - bottomBuffer;
+    });
+
+    $(document).keydown(function(e) {
+        // only check for arrow keys if not focused in input area
+        if (!$("input").is(":focus")){
+            switch(e.which) {
+                case 37: // left
+                    scrollToPrevPost();
+                    break;
+
+                case 39: // right
+                    scrollToNextPost();
+                    break;
+
+                default: return; // exit this handler for other keys
+            }
+        }
     });
 
     $(".filler-row").height(mid + "px");
@@ -166,7 +179,7 @@ Template.chatrow.rendered = function () {
     }
     else{
         name = sessionStorage.atchannelUsername;
-        $(".username").text(name);
+        $("#message").attr("placeholder", "Post message as '" + name + "'");
     }
 
     $("#submit-channel").click(function(){
@@ -189,15 +202,18 @@ Template.chatrow.rendered = function () {
         }
     });
 
+    $(".chat-input .prevPost").click(function(){
+        scrollToPrevPost();
+    });
+    $(".chat-input .nextPost").click(function(){
+        scrollToNextPost();
+    });
+
     if (channel !== "main"){
         $("#channel-name").text(channel + "Channel");
     }
 
     tryToSetupHideAndSeek();
-};
-
-Template.chatrow.destroyed = function () {
-    chatrowsAreSetup = false;
 };
 
 Template.input.events = {
@@ -248,7 +264,7 @@ function tryToSetupHideAndSeek(){
             $(".chat-row").each(function(index){
                 $(this).find(".postNumber").text(index);
 
-                // Encode any URLs
+                // Wrap any URLs in A tags, but keep rest of message as text
                 // (https?:\/\/)?((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|((\\d{1,3}\\.){3}\\d{1,3}))(\\:\\d+)?(\/[-a-z\\d%_.~+\@]*)*(\\?[;&a-z\\d%_.~+=-]*)?(\\#[-a-z\\d_]*)?
                 var regex = new RegExp( '(https?:\\/\\/)?'+ // protocol
                                         '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
@@ -269,7 +285,6 @@ function tryToSetupHideAndSeek(){
                 newElements.push( document.createTextNode(message.substring(lastIndex)) );
                 $(this).find(".message").empty().append(newElements);
             });
-            chatrowsAreSetup = true;
         });
     }
     catch(err){
@@ -291,6 +306,7 @@ function hidingFunction(index, that){
     }
     else if (midDist < buffer) {
         changeRow(that,maxProperties);
+        currentRow = index;
     }
     else {
         /*
@@ -354,4 +370,16 @@ function randElem(array){
 
 function isAlphaNumeric(input){
     return !/[^a-zA-Z0-9]/.test(input);
+}
+
+function scrollToPrevPost(){
+    $(".chat").animate({
+        scrollTop: $(".chat").scrollTop() - $(".chat-row:eq(" + (currentRow-1) + ")").outerHeight()
+    }, "fast");
+}
+
+function scrollToNextPost(){
+    $(".chat").animate({
+        scrollTop: $(".chat").scrollTop() + $(".chat-row:eq(" + (currentRow+1) + ")").outerHeight()
+    }, "fast");
 }
