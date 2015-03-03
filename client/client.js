@@ -249,8 +249,29 @@ function tryToSetupHideAndSeek(){
         $(".chat").animate({
             scrollTop: $(".chat")[0].scrollHeight
         }, "slow", function(){
-            $(".postNumber").each(function(index){
-                $(this).text((index+1));
+            $(".chat-row").each(function(index){
+                $(this).find(".postNumber").text((index+1));
+
+                // Encode any URLs
+                // (https?:\/\/)?((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|((\\d{1,3}\\.){3}\\d{1,3}))(\\:\\d+)?(\/[-a-z\\d%_.~+]*)*(\\?[;&a-z\\d%_.~+=-]*)?(\\#[-a-z\\d_]*)?
+                var regex = new RegExp( '(https?:\\/\\/)?'+ // protocol
+                                        '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
+                                        '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
+                                        '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
+                                        '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
+                                        '(\\#[-a-z\\d_]*)?', 'ig');
+                var message = $(this).find(".message").text();
+                var startIndexes = [], endIndexes = [];
+                var newElements = [];
+                var lastIndex = 0;
+                while (match=regex.exec(message)) {
+                    var url = message.substr(match.index, match[0].length);
+                    newElements.push( document.createTextNode(message.substring(lastIndex, match.index)) );
+                    newElements.push($("<a href='" + url + "' target='_blank'>" + url + "</a>"));
+                    lastIndex = match.index + match[0].length;
+                }
+                newElements.push( document.createTextNode(message.substring(lastIndex)) );
+                $(this).find(".message").empty().append(newElements);
             });
             chatrowsAreSetup = true;
         });
@@ -337,4 +358,9 @@ function randElem(array){
 
 function isAlphaNumeric(input){
     return !/[^a-zA-Z0-9]/.test(input);
+}
+
+function isValidURL(url){
+    $("#URLtester").val(url);
+    return $("#URLtester")[0].validity.valid;
 }

@@ -176,6 +176,9 @@
         </div>
     </div>
 
+    <!-- hidden input for testing validity of links -->
+    <input id="URLtester" type="url" style="display: none;" />
+
 </template>
 
 <template name="redirect-template"></template>
@@ -213,7 +216,7 @@
                     <strong><span class="postNumber"></span> &nbsp; {{name}} [sage]</strong>
                     <strong>ID:{{chopID}}</strong>
                 </p>
-                <p>{{message}}</p>
+                <p class="message">{{message}}</p>
                 <p class="time">
                     <span>{{prettifyTime time}}</span>
                 </p>
