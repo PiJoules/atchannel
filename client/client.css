@@ -30,8 +30,44 @@ html, body {
 .chat-input, .chat-input .input-group {
 	width: 100%;
 }
-.chat-input, .chat-input * {
+.chat-input {
 	height: 50px;
+	background-color: #ddeaf7;
+	border: 0px solid #ddeaf7;
+}
+.chat-input .input-group-btn .btn {
+	height: 50px;
+	background-color: transparent;
+	border: 0px solid transparent;
+	padding-left: 0;
+	padding-right: 10px;
+}
+.chat-input .input-group-btn .btn * {
+	font-size: 40px;
+	color: #555555;
+}
+#message {
+	height: 30px;
+	margin-top: 10px;
+	margin-left: 10px;
+	width: calc(100% - 20px);
+	border-radius: 10px;
+	color: white;
+}
+#message::-webkit-input-placeholder {
+   color: #dddddd;
+}
+
+#message:-moz-placeholder { /* Firefox 18- */
+   color: #dddddd;
+}
+
+#message::-moz-placeholder {  /* Firefox 19+ */
+   color: #dddddd;
+}
+
+#message:-ms-input-placeholder {
+   color: #dddddd;
 }
 
 .avatar {

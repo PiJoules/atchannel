@@ -192,11 +192,18 @@
 </template>
 
 <template name="input">
-    <div class="input-group">
+    <!--<div class="input-group">
         <span class="input-group-addon username" id="basic-addon2">Anonymous</span>
         <input type="text" id="message" class="form-control" placeholder="Message" aria-describedby="basic-addon2" style="/*background-color: #9596bf;*/">
         <span class="input-group-btn">
             <button id="post" class="btn btn-default" type="button" style="line-height: 50px;"><span class="glyphicon glyphicon-send" style="font-size: 25px;"></span></button>
+        </span>
+    </div>-->
+    <div class="input-group">
+        <input type="text" id="message" class="form-control" placeholder="Message" aria-describedby="basic-addon2" style="background-color: #9596bf;">
+        <span class="input-group-btn">
+            <button class="btn btn-default" style="color: black;"><span class="fa fa-caret-left"></span></button>
+            <button class="btn btn-default"><span class="fa fa-caret-right"></span></button>
         </span>
     </div>
 </template>

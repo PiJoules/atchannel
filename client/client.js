@@ -148,10 +148,6 @@ Template.chatrow.rendered = function () {
         }
     };
 
-    $("#post").click(function(){
-        post();
-    });
-
     $("#submit-username").click(function(){
         var input = $("#selected-user-name").val().trim();
         if (input !== "" && isAlphaNumeric(input)){
