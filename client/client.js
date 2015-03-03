@@ -359,8 +359,3 @@ function randElem(array){
 function isAlphaNumeric(input){
     return !/[^a-zA-Z0-9]/.test(input);
 }
-
-function isValidURL(url){
-    $("#URLtester").val(url);
-    return $("#URLtester")[0].validity.valid;
-}
