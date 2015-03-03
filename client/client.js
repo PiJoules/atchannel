@@ -250,7 +250,7 @@ function tryToSetupHideAndSeek(){
             scrollTop: $(".chat")[0].scrollHeight
         }, "slow", function(){
             $(".chat-row").each(function(index){
-                $(this).find(".postNumber").text((index+1));
+                $(this).find(".postNumber").text(index);
 
                 // Encode any URLs
                 // (https?:\/\/)?((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|((\\d{1,3}\\.){3}\\d{1,3}))(\\:\\d+)?(\/[-a-z\\d%_.~+\@]*)*(\\?[;&a-z\\d%_.~+=-]*)?(\\#[-a-z\\d_]*)?
