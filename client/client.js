@@ -166,7 +166,7 @@ Template.chatrow.rendered = function () {
         if (input !== "" && isAlphaNumeric(input)){
             name = input;
             sessionStorage.atchannelUsername = name;
-            $(".username").text(name);
+            $("#message").attr("placeholder", "Post message as '" + name + "'");
             $("#myModal").modal("hide");
         }
         else if (!isAlphaNumeric(input)){
