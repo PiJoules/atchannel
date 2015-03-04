@@ -9,7 +9,7 @@
 var bottomBuffer = 30; // decrease to shift the bump down; increase to move it up
 var buffer = 50; // distance from mid (either above or below)
 var pt, ph, mid;
-var limit = 100.0;
+var limit = 100.0; // distance from mid at which to start resizing
 
 var maxPropertiesNumeric = {
     "font-size": 15,
@@ -64,7 +64,11 @@ var currentRow = 1;
 
 /**
  * Router
+ *
+ * Use /redirect/:channel for reloading the page after redirecting to it
+ * since just redirecting to it doesn't actually render the template for some reason
  */
+
 Router.route('/', function() {
     this.render('home');
 });
@@ -87,7 +91,6 @@ Router.route('/redirect/:channel',function(){
 });
 Router.route('/:channel', function() {
     channel = this.params.channel;
-
     var channels = _.uniq(Messages.find({}, { channel: 1 }).map(function(x) {return x.channel;}), true);
     if (channels.indexOf(channel) === -1){
         this.render("redirect-template");
@@ -104,21 +107,16 @@ Router.route('/:channel', function() {
 
 Template.chatrow.helpers({
     messages: function() {
-        var messages = Messages.find({channel: channel}, { sort: { time: 1}});
         tryToSetupHideAndSeek();
-        return messages;
+        return Messages.find({channel: channel}, { sort: { time: 1}});
     }
 });
 
 Template.chatrow.rendered = function () {
-    pt = $(".chat").position().top; // parent top
-    ph = $(".chat").height(); // parent height
-    mid = pt + ph/2 - bottomBuffer;
+    resetParentDimensions();
 
     $(window).resize(function(){
-        pt = $(".chat").position().top; // parent top
-        ph = $(".chat").height(); // parent height
-        mid = pt + ph/2 - bottomBuffer;
+        resetParentDimensions();
         setTimeline();
     });
 
@@ -229,15 +227,13 @@ Template.chatrow.rendered = function () {
         $("#channel-name").text(channel + "Channel");
     }
 
-    tryToSetupHideAndSeek();
-};
-
-Template.input.events = {
-    'keydown input#message' : function (event) {
-        if (event.which == 13) { // 13 is the enter key event
+    $("#message").keyup(function(e){
+        if(e.keyCode == 13) {
             post();
         }
-    }
+    });
+
+    tryToSetupHideAndSeek();
 };
 
 Template.channels.helpers({
@@ -464,4 +460,11 @@ function markTimeline(index){
         $("#timeline li").css("background-color", "initial");
         $("#timeline li:eq(" + index + ")").css("background-color", "#abdfde");
     }
+}
+
+
+function resetParentDimensions(){
+    pt = $(".chat").position().top; // parent top
+    ph = $(".chat").height(); // parent height
+    mid = pt + ph/2 - bottomBuffer;
 }
