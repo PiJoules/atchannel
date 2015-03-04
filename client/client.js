@@ -9,8 +9,7 @@ var messagesArray;
 // Because botDist measures dist from top of elem to bottom,
 // add a buffer to allow for elems coming from bottom to be invisible more
 var bottomBuffer = 30; // decrease to shift the bump down; increase to move it up
-var buffer = 50;
-var w = 90;
+var buffer = 50; // distance from mid (either above or below)
 var pt, ph, mid;
 var limit = 100.0;
 
@@ -154,7 +153,7 @@ Template.chatrow.rendered = function () {
 
     hideAndSeek = function(){
         // limit the rows to resize only to those onscreen
-        var rows = $(".chat-row").filter(function(index){
+        var rows = $(".chat-row").filter(function(){
             return $(this).position().top+$(this).outerHeight() > 0 && $(this).position().top < ph;
         });
         rows.each(function(index){
@@ -266,7 +265,6 @@ Template.channels.helpers({
 
 // Make the date number something human-readadble
 Handlebars.registerHelper("prettifyTime", function(timestamp) {
-    var dateObj = new Date(timestamp);
     return new Date(timestamp).toLocaleString();
 });
 
@@ -301,7 +299,6 @@ function tryToSetupHideAndSeek(){
                                         '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
                                         '(\\#[-a-z\\d_]*)?', 'ig');
                 var message = $(this).find(".message").text();
-                var startIndexes = [], endIndexes = [];
                 var newElements = [];
                 var lastIndex = 0;
                 while (match=regex.exec(message)) {
