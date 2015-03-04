@@ -135,7 +135,11 @@ Template.chatrow.rendered = function () {
     });
 
     hideAndSeek = function(){
-        $(".chat-row").each(function(index){
+        // limit the rows to resize only to those onscreen
+        var rows = $(".chat-row").filter(function(index){
+            return $(this).position().top+$(this).outerHeight() > 0 && $(this).position().top < ph;
+        });
+        rows.each(function(index){
             hidingFunction(index, this);
         });
     };
@@ -165,7 +169,7 @@ Template.chatrow.rendered = function () {
         var input = $("#selected-user-name").val().trim();
         if (input !== "" && isAlphaNumeric(input)){
             name = input;
-            sessionStorage.atchannelUsername = name;
+            localStorage.atchannelUsername = name;
             $("#message").attr("placeholder", "Post message as '" + name + "'");
             $("#myModal").modal("hide");
         }
@@ -174,11 +178,11 @@ Template.chatrow.rendered = function () {
         }
     });
 
-    if (sessionStorage.getItem("atchannelUsername") === null){
+    if (localStorage.getItem("atchannelUsername") === null){
         $('#myModal').modal();
     }
     else{
-        name = sessionStorage.atchannelUsername;
+        name = localStorage.atchannelUsername;
         $("#message").attr("placeholder", "Post message as '" + name + "'");
     }
 
@@ -202,12 +206,8 @@ Template.chatrow.rendered = function () {
         }
     });
 
-    $(".chat-input .prevPost").click(function(){
-        scrollToPrevPost();
-    });
-    $(".chat-input .nextPost").click(function(){
-        scrollToNextPost();
-    });
+    $(".chat-input .prevPost").click(scrollToPrevPost());
+    $(".chat-input .nextPost").click(scrollToNextPost());
 
     if (channel !== "main"){
         $("#channel-name").text(channel + "Channel");
@@ -254,6 +254,10 @@ Handlebars.registerHelper("chopID", function() {
 });
 
 
+
+/**
+ * Miscellanious functions
+ */
 
 function tryToSetupHideAndSeek(){
     try{
