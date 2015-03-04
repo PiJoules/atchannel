@@ -427,8 +427,19 @@ function setTimeline(){
     var ticCount = parseInt(ph/ticHeight)+1;
     var postGap = parseFloat( ($(".chat-row").length-1)/ticCount );
     $("#timeline").empty();
+    var lastNumber = 0;
     for (var i = 0; i < ticCount; i++){
-        $("#timeline").append("<li><a href='javascript: void(0)' data-index='" + (Math.ceil(postGap*i)+1) + "'>" + (Math.ceil(postGap*i)+1) + "</a> -</li>");
+        var index = Math.ceil(postGap*i)+1;
+
+        // ensure the line doesn't go past the total number of posts
+        if (index > $(".chat-row").length-1)
+            break;
+
+        // ensure no duplicate numbers are shown
+        if (index !== lastNumber)
+            $("#timeline").append("<li><a href='javascript: void(0)' data-index='" + index + "'>" + index + "</a> -</li>");
+
+        lastNumber = index;
     }
     markTimeline();
     $("#timeline a").click(function(){
