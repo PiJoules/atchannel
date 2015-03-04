@@ -6,18 +6,25 @@
 </body>
 
 <template name="home">
+
+    <div style="position: fixed; right: 26px; text-align: right; width: 40px; z-index: 2;">
+        <ul id="timeline" style="display: inline-block;"></ul>
+    </div>
+
     <div class="chat">
 
         <div class="top-stuff">
-            <div class="btn-group" role="group" aria-label="..." style="float: left;">
+            <div class="btn-group" role="group" aria-label="..." style="width: 33%;">
                 <button class="btn btn-default" data-toggle="modal" data-target="#aboutModal">About @channel</button>
                 <button class="btn btn-default" data-toggle="modal" data-target="#todo-list">Todo List</button>
             </div>
 
-            <div class="btn-group" role="group" aria-label="..." style="float: right;">
-                <button class="btn btn-default" data-toggle="modal" data-target="#existing-channels"><span class="glyphicon glyphicon-search"></span></button>
-                <button class="btn btn-default" data-toggle="modal" data-target="#creating-channel"><span class="glyphicon glyphicon-plus"></span></button>
-                <button class="btn btn-default" data-toggle="modal" data-target="#myModal"><span class="glyphicon glyphicon-cog"></span></button>
+            <div style="width: 33%; text-align: center; display: inline-block;">
+                <div class="btn-group" role="group" aria-label="...">
+                    <button class="btn btn-default" data-toggle="modal" data-target="#existing-channels"><span class="glyphicon glyphicon-search"></span></button>
+                    <button class="btn btn-default" data-toggle="modal" data-target="#creating-channel"><span class="glyphicon glyphicon-plus"></span></button>
+                    <button class="btn btn-default" data-toggle="modal" data-target="#myModal"><span class="glyphicon glyphicon-cog"></span></button>
+                </div>
             </div>
         </div>
 

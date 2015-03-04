@@ -14,21 +14,37 @@ var w = 90;
 var pt, ph, mid;
 var limit = 100.0;
 
+var maxPropertiesNumeric = {
+    "font-size": 15,
+    "bubbleWidth": 100,
+    "margin-left": 5,
+    "margin-right": 10,
+    "avatarWidth": 5,
+    "time-font-size": 12
+};
 var maxProperties = {
-    "font-size": "15px",
-    "bubbleWidth": "100%",
-    "margin-left": "5%",
-    "margin-right": "5%",
-    "avatarWidth": "5%",
-    "time-font-size": "12px"
+    "font-size": maxPropertiesNumeric["font-size"] + "px",
+    "bubbleWidth": maxPropertiesNumeric["bubbleWidth"] + "%",
+    "margin-left": maxPropertiesNumeric["margin-left"] + "%",
+    "margin-right": maxPropertiesNumeric["margin-right"] + "%",
+    "avatarWidth": maxPropertiesNumeric["avatarWidth"] + "%",
+    "time-font-size": maxPropertiesNumeric["time-font-size"] + "px"
+};
+var defaultPropertiesNumeric = {
+    "font-size": 1.5,
+    "bubbleWidth": 10,
+    "margin-left": 15,
+    "margin-right": 15,
+    "avatarWidth": 2,
+    "time-font-size": 1.5
 };
 var defaultProperties = {
-    "font-size": "1.5px",
-    "bubbleWidth": "10%",
-    "margin-left": "15%",
-    "margin-right": "15%",
-    "avatarWidth": "2%",
-    "time-font-size": "1.5px"
+    "font-size": defaultPropertiesNumeric["font-size"] + "px",
+    "bubbleWidth": defaultPropertiesNumeric["bubbleWidth"] + "%",
+    "margin-left": defaultPropertiesNumeric["margin-left"] + "%",
+    "margin-right": defaultPropertiesNumeric["margin-right"] + "%",
+    "avatarWidth": defaultPropertiesNumeric["avatarWidth"] + "%",
+    "time-font-size": defaultPropertiesNumeric["time-font-size"] + "px"
 };
 
 // add n so can be used ass class
@@ -109,6 +125,7 @@ Template.chatrow.rendered = function () {
         pt = $(".chat").position().top; // parent top
         ph = $(".chat").height(); // parent height
         mid = pt + ph/2 - bottomBuffer;
+        setTimeline();
     });
 
     $(document).keydown(function(e) {
@@ -132,6 +149,7 @@ Template.chatrow.rendered = function () {
 
     $(".chat").scroll(function(){
         hideAndSeek();
+        markTimeline();
     });
 
     hideAndSeek = function(){
@@ -206,8 +224,12 @@ Template.chatrow.rendered = function () {
         }
     });
 
-    $(".chat-input .prevPost").click(scrollToPrevPost());
-    $(".chat-input .nextPost").click(scrollToNextPost());
+    $(".chat-input .prevPost").click(function(){
+        scrollToPrevPost();
+    });
+    $(".chat-input .nextPost").click(function(){
+        scrollToNextPost();
+    });
 
     if (channel !== "main"){
         $("#channel-name").text(channel + "Channel");
@@ -265,6 +287,8 @@ function tryToSetupHideAndSeek(){
         $(".chat").animate({
             scrollTop: $(".chat")[0].scrollHeight
         }, "slow", function(){
+            setTimeline();
+            markTimeline($("#timeline li").length-1);
             $(".chat-row").each(function(index){
                 $(this).find(".postNumber").text(index);
 
@@ -310,7 +334,7 @@ function hidingFunction(index, that){
     }
     else if (midDist < buffer) {
         changeRow(that,maxProperties);
-        currentRow = index;
+        currentRow = $(".chat-row").index(that);
     }
     else {
         /*
@@ -386,4 +410,55 @@ function scrollToNextPost(){
     $(".chat").animate({
         scrollTop: $(".chat").scrollTop() + $(".chat-row:eq(" + (currentRow+1) + ")").outerHeight()
     }, "fast");
+}
+
+function scrollToPost(i,callback){
+    $(".chat").animate({
+        scrollTop: $(".chat").scrollTop() + $(".chat-row:eq(" + i + ")").position().top - ph/2
+    }, "fast", function(){
+        if (typeof callback !== "undefined"){
+            callback(i);
+        }
+    });
+}
+
+function setTimeline(){
+    var ticHeight = 30; // the height of each li element in px
+    var ticCount = parseInt(ph/ticHeight)+1;
+    var postGap = parseFloat( ($(".chat-row").length-1)/ticCount );
+    $("#timeline").empty();
+    for (var i = 0; i < ticCount; i++){
+        $("#timeline").append("<li><a href='javascript: void(0)' data-index='" + (Math.ceil(postGap*i)+1) + "'>" + (Math.ceil(postGap*i)+1) + "</a> -</li>");
+    }
+    markTimeline();
+    $("#timeline a").click(function(){
+        var index = parseInt($(this).data("index"));
+        // RECURSION B*TCH !!!!!!
+        var checkingFunction = function(index){
+            if (index > currentRow){
+                scrollToPost(index++, checkingFunction);
+            }
+            else if (index < currentRow){
+                scrollToPost(index--, checkingFunction);
+            }
+            else {
+                markTimeline();
+            }
+        };
+        checkingFunction(index);
+    });
+}
+
+
+function markTimeline(index){
+    if (typeof index === "undefined"){
+        if ($("#timeline a[data-index='" + currentRow + "']").length > 0){
+            $("#timeline li").css("background-color", "initial");
+            $("#timeline a[data-index='" + currentRow + "']").parent().css("background-color", "#abdfde");
+        }
+    }
+    else {
+        $("#timeline li").css("background-color", "initial");
+        $("#timeline li:eq(" + index + ")").css("background-color", "#abdfde");
+    }
 }

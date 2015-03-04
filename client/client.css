@@ -31,9 +31,11 @@ html, body {
 	width: 100%;
 }
 .chat-input {
+	position: relative;
 	height: 50px;
 	background-color: #ddeaf7;
 	border: 0px solid #ddeaf7;
+	z-index: 2;
 }
 .chat-input .input-group-btn .btn {
 	height: 50px;
@@ -176,6 +178,23 @@ html, body {
 	width: 100%;
 	margin: auto;
 	display: block;
+}
+
+#timeline {
+	list-style: none;
+	padding: 0;
+	border-right: 5px solid #444444;
+	color: #444444;
+}
+#timeline li {
+	height: 30px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	padding-left: 10px;
+	border-radius: 10px;
+}
+#timeline a {
+	color: #444444;
 }
 
 
