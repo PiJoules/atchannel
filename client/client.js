@@ -4,8 +4,6 @@
  * Globals
  */
 
-var messagesArray;
-
 // Because botDist measures dist from top of elem to bottom,
 // add a buffer to allow for elems coming from bottom to be invisible more
 var bottomBuffer = 30; // decrease to shift the bump down; increase to move it up
@@ -107,10 +105,7 @@ Router.route('/:channel', function() {
 Template.chatrow.helpers({
     messages: function() {
         var messages = Messages.find({channel: channel}, { sort: { time: 1}});
-        messagesArray = messages.fetch();
-
         tryToSetupHideAndSeek();
-
         return messages;
     }
 });
@@ -334,28 +329,28 @@ function hidingFunction(index, that){
         currentRow = $(".chat-row").index(that);
     }
     else {
-        /*
-        # NOTES
-        font size: (15-1.5)/(0-limit)*midDist + 15
-        bubbleWidth: (100-10)/(0-limit)*midDist + 100
-        margin-left: (5-15)/(0-limit)*midDist + 5
-        margin-right: (5-15)/(0-limit)*midDist + 5
-        avatar: (5-2)/(0-limit)*midDist + 5
-
-        15 = -14.5/limit*buffer + yIndex
-        yIndex = 15 + 14.5/limit*buffer
-        font-size = 15 + 14.5/limit*buffer + 14.5/limit*(-midDist)
-                  = 14.5/limit*(buffer-midDist) + 15
-
-        property = (max-default)/limit*(midDist-buffer) + max
-        */
+        /**
+         * # NOTES
+         * font size: (15-1.5)/(0-limit)*midDist + 15
+         * bubbleWidth: (100-10)/(0-limit)*midDist + 100
+         * margin-left: (5-15)/(0-limit)*midDist + 5
+         * margin-right: (5-15)/(0-limit)*midDist + 5
+         * avatar: (5-2)/(0-limit)*midDist + 5
+         *
+         * 15 = -14.5/limit*buffer + yIndex
+         * yIndex = 15 + 14.5/limit*buffer
+         * font-size = 15 + 14.5/limit*buffer + 14.5/limit*(-midDist)
+         *       = 14.5/limit*(buffer-midDist) + 15
+         *
+         * property = (max-default)/limit*(midDist-buffer) + max
+         */
         var properties = {
-            "font-size": (-14.5/limit*(midDist-buffer) + 15) + "px",
-            "bubbleWidth": (-90/limit*(midDist-buffer) + 100) + "%",
-            "margin-left": (10/limit*(midDist-buffer) + 5) + "%",
-            "margin-right": (10/limit*(midDist-buffer) + 5) + "%",
-            "avatarWidth": (-3/limit*(midDist-buffer) + 5) + "%",
-            "time-font-size": (-10.5/limit*(midDist-buffer) + 12) + "px"
+            "font-size": ( ( defaultPropertiesNumeric["font-size"]-maxPropertiesNumeric["font-size"] )/limit*(midDist-buffer) + maxPropertiesNumeric["font-size"] ) + "px",
+            "bubbleWidth": ( ( defaultPropertiesNumeric["bubbleWidth"]-maxPropertiesNumeric["bubbleWidth"] )/limit*(midDist-buffer) + maxPropertiesNumeric["bubbleWidth"] ) + "%",
+            "margin-left": ( ( defaultPropertiesNumeric["margin-left"]-maxPropertiesNumeric["margin-left"] )/limit*(midDist-buffer) + maxPropertiesNumeric["margin-left"] ) + "%",
+            "margin-right": ( ( defaultPropertiesNumeric["margin-right"]-maxPropertiesNumeric["margin-right"] )/limit*(midDist-buffer) + maxPropertiesNumeric["margin-right"] ) + "%",
+            "avatarWidth": ( ( defaultPropertiesNumeric["avatarWidth"]-maxPropertiesNumeric["avatarWidth"] )/limit*(midDist-buffer) + maxPropertiesNumeric["avatarWidth"] ) + "%",
+            "time-font-size": ( ( defaultPropertiesNumeric["time-font-size"]-maxPropertiesNumeric["time-font-size"] )/limit*(midDist-buffer) + maxPropertiesNumeric["time-font-size"] ) + "px"
         };
         changeRow(that, properties);
     }
