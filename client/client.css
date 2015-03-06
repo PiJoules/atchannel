@@ -1,7 +1,7 @@
 
 html, body {
 	height: 100%;
-	background-image: url("/blu_stripes.png");
+	background-image: url("/background.png");
 }
 
 
@@ -118,9 +118,9 @@ html, body {
 	-moz-border-top-right-radius: 10px;
 	border-top-right-radius: 10px;
 
-	-webkit-box-shadow: -10px 10px 10px -5px rgba(0,0,0,0.75);
-	-moz-box-shadow: -10px 10px 10px -5px rgba(0,0,0,0.75);
-	box-shadow: -10px 10px 10px -5px rgba(0,0,0,0.75);
+	-webkit-box-shadow: -7px 7px 7px -2px rgba(0,0,0,0.75);
+	-moz-box-shadow: -7px 7px 7px -2px rgba(0,0,0,0.75);
+	box-shadow: -7px 7px 7px -2px rgba(0,0,0,0.5);
 }
 .bubble:after {
 	content: '';
