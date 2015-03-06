@@ -283,6 +283,11 @@ Handlebars.registerHelper("chopID", function() {
     return (new Date().getTime() * Math.random() * Math.pow(10,9)).toString(36).substring(0,9);
 });
 
+Handlebars.registerHelper("randPic", function() {
+    var faceNum = Math.floor(Math.random()*4)+1;
+    return "face" + faceNum + ".png";
+});
+
 
 
 /**
@@ -300,6 +305,13 @@ function tryToSetupHideAndSeek(){
             markTimeline($("#timeline li").length-1);
             $(".chat-row").each(function(index){
                 $(this).find(".postNumber").text(index);
+
+                //style="-webkit-filter: brightness(105%);"
+                /*var src = $(this).find(".avatar img").attr("src");console.log($(this).find(".avatar img").length);
+                if (src.indexOf("face3.png") !== -1 || src.indexOf("face4.png") !== -1){
+                    $(this).find(".avatar img").css("-webkit-filter", "brightness(110%)");
+                    console.log(src);
+                }*/
 
                 // Wrap any URLs in A tags, but keep rest of message as text
                 // (https?:\/\/)?((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|((\\d{1,3}\\.){3}\\d{1,3}))(\\:\\d+)?(\/[-a-z\\d%_.~+\@]*)*(\\?[;&a-z\\d%_.~+=-]*)?(\\#[-a-z\\d_]*)?
