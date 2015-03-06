@@ -147,32 +147,6 @@ Template.chatrow.rendered = function () {
         markTimeline();
     });
 
-    post = function(){
-        if ($("#message").val().trim() !== ""){
-            Meteor.call("addPost",{
-                name: name,
-                message: $("#message").val().trim(),
-                time: Date.now(),
-                channel: channel
-            });
-
-            $("#message").val("");
-
-            $(".chat").animate({
-                scrollTop: $(".chat")[0].scrollHeight
-            }, "fast", function(){
-                $(".chat-row").each(function(index){
-                    $(this).find(".postNumber").text(index);
-                    if (typeof $(this).data("color") === "undefined"){
-                        var color = randElem(colors);
-                        $(this).data("color", color);
-                        $(this).find(".bubble").css("background-color", color.replace("n","")).addClass(color.replace("#",""));
-                    }
-                });
-            });
-        }
-    };
-
     $("#submit-username").click(function(){
         var input = $("#selected-user-name").val().trim();
         if (input !== "" && isAlphaNumeric(input)){
@@ -285,6 +259,32 @@ Handlebars.registerHelper("randPic", function() {
 /**
  * Miscellanious functions
  */
+
+function post(){
+    if ($("#message").val().trim() !== ""){
+        Meteor.call("addPost",{
+            name: name,
+            message: $("#message").val().trim(),
+            time: Date.now(),
+            channel: channel
+        });
+
+        $("#message").val("");
+
+        $(".chat").animate({
+            scrollTop: $(".chat")[0].scrollHeight
+        }, "fast", function(){
+            $(".chat-row").each(function(index){
+                $(this).find(".postNumber").text(index);
+                if (typeof $(this).data("color") === "undefined"){
+                    var color = randElem(colors);
+                    $(this).data("color", color);
+                    $(this).find(".bubble").css("background-color", color.replace("n","")).addClass(color.replace("#",""));
+                }
+            });
+        });
+    }
+}
 
 function tryToSetupHideAndSeek(){
     try{
