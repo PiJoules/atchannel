@@ -111,7 +111,6 @@ Template.chatrow.helpers({
     messages: function() {
         var messages = Messages.find({channel: channel}, { sort: { time: 1}});
         messagesCount = messages.fetch().length;
-        console.log("in messages helper, messagescount: " + messagesCount);
         return messages;
     }
 });
@@ -150,11 +149,12 @@ Template.chatrow.rendered = function () {
 
     hideAndSeek = function(){
         // limit the rows to resize only to those onscreen
-        var rows = $(".chat-row").filter(function(){
+        var rows = $(".chat-row").filter(function(index){
             return $(this).position().top+$(this).outerHeight() > 0 && $(this).position().top < ph;
         });
+        changeRow($(".chat-row").not(rows));
         rows.each(function(index){
-            hidingFunction(index, this);
+            hidingFunction(index, $(this));
         });
     };
 
@@ -237,7 +237,6 @@ Template.chatrow.rendered = function () {
         }
     });
 
-    console.log("in rendered callback, rowcount: " + $(".chat-row").length);
     if ($(".chat-row").length > 1 && $(".chat-row").length-1 === messagesCount){
         tryToSetupHideAndSeek();
     }
@@ -247,7 +246,6 @@ Template.chatrow.rendered = function () {
                 if ($(".chat-row").length > 1 && $(".chat-row").length-1 === messagesCount){
                     tryToSetupHideAndSeek();
                     window.clearInterval(intervalID);
-                    console.log("cleared the interval");
                 }
             }, 1000);
         }
@@ -296,7 +294,6 @@ Handlebars.registerHelper("randPic", function() {
 
 function tryToSetupHideAndSeek(){
     try{
-        console.log("setting up hideAndSeek, rowcount: " + $(".chat-row").length);
         hideAndSeek();
         $(".chat").animate({
             scrollTop: $(".chat")[0].scrollHeight
@@ -306,12 +303,11 @@ function tryToSetupHideAndSeek(){
             $(".chat-row").each(function(index){
                 $(this).find(".postNumber").text(index);
 
-                //style="-webkit-filter: brightness(105%);"
-                /*var src = $(this).find(".avatar img").attr("src");console.log($(this).find(".avatar img").length);
-                if (src.indexOf("face3.png") !== -1 || src.indexOf("face4.png") !== -1){
-                    $(this).find(".avatar img").css("-webkit-filter", "brightness(110%)");
-                    console.log(src);
-                }*/
+                if (typeof $(this).data("color") === "undefined"){
+                    var color = randElem(colors);
+                    $(this).data("color", color);
+                    $(this).find(".bubble").css("background-color", color.replace("n","")).addClass(color.replace("#",""));
+                }
 
                 // Wrap any URLs in A tags, but keep rest of message as text
                 // (https?:\/\/)?((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|((\\d{1,3}\\.){3}\\d{1,3}))(\\:\\d+)?(\/[-a-z\\d%_.~+\@]*)*(\\?[;&a-z\\d%_.~+=-]*)?(\\#[-a-z\\d_]*)?
@@ -333,7 +329,6 @@ function tryToSetupHideAndSeek(){
                 newElements.push( document.createTextNode(message.substring(lastIndex)) );
                 $(this).find(".message").empty().append(newElements);
             });
-            console.log("finished setting up hide and seek");
         });
     }
     catch(err){
@@ -348,13 +343,13 @@ function hidingFunction(index, that){
     // Track distance between each initial top position and
     // original center of screen. If the distance is greater than
     // a specified fraction of the screen height, make it disappear
-    var midDist = Math.abs($(that).position().top - mid);
+    var midDist = Math.abs(that.position().top - mid);
 
     if (midDist > limit+buffer){
         changeRow(that);
     }
     else if (midDist < buffer) {
-        changeRow(that,maxProperties);
+        changeRow(that, maxProperties);
         currentRow = $(".chat-row").index(that);
     }
     else {
@@ -384,29 +379,23 @@ function hidingFunction(index, that){
         changeRow(that, properties);
     }
 
-    if (typeof $(that).data("color") === "undefined"){
-        var color = randElem(colors);
-        $(that).data("color", color);
-        $(that).find(".bubble").css("background-color", color.replace("n","")).addClass(color.replace("#",""));
-    }
-
 }
 
 // Function for resizing a row
 function changeRow(that, properties){
     var nextProperties = $.extend({}, defaultProperties, properties);
-    $(that).css({
+    that.css({
         "font-size": nextProperties["font-size"],
         "margin-left": nextProperties["margin-left"],
         "margin-right": nextProperties["margin-right"]
     });
-    $(that).find(".bubble").css({
+    that.find(".bubble").css({
         "width": nextProperties["bubbleWidth"]
     });
-    $(that).find(".avatar").css({
+    that.find(".avatar").css({
         "width": nextProperties["avatarWidth"]
     });
-    $(that).find(".time").css({
+    that.find(".time").css({
         "font-size": nextProperties["time-font-size"]
     });
 }
