@@ -11,6 +11,8 @@ var buffer = 50; // distance from mid (either above or below)
 var pt, ph, mid;
 var limit = 100.0; // distance from mid at which to start resizing
 
+var intervalID, messagesCount = 0;
+
 var maxPropertiesNumeric = {
     "font-size": 15,
     "bubbleWidth": 100,
@@ -107,8 +109,10 @@ Router.route('/:channel', function() {
 
 Template.chatrow.helpers({
     messages: function() {
-        tryToSetupHideAndSeek();
-        return Messages.find({channel: channel}, { sort: { time: 1}});
+        var messages = Messages.find({channel: channel}, { sort: { time: 1}});
+        messagesCount = messages.fetch().length;
+        console.log("in messages helper, messagescount: " + messagesCount);
+        return messages;
     }
 });
 
@@ -233,7 +237,22 @@ Template.chatrow.rendered = function () {
         }
     });
 
-    tryToSetupHideAndSeek();
+    console.log("in rendered callback, rowcount: " + $(".chat-row").length);
+    if ($(".chat-row").length > 1 && $(".chat-row").length-1 === messagesCount){
+        tryToSetupHideAndSeek();
+    }
+    else {
+        function intervalTrigger(){
+            return window.setInterval(function(){
+                if ($(".chat-row").length > 1 && $(".chat-row").length-1 === messagesCount){
+                    tryToSetupHideAndSeek();
+                    window.clearInterval(intervalID);
+                    console.log("cleared the interval");
+                }
+            }, 1000);
+        }
+        intervalID = intervalTrigger();
+    }
 };
 
 Template.channels.helpers({
@@ -272,6 +291,7 @@ Handlebars.registerHelper("chopID", function() {
 
 function tryToSetupHideAndSeek(){
     try{
+        console.log("setting up hideAndSeek, rowcount: " + $(".chat-row").length);
         hideAndSeek();
         $(".chat").animate({
             scrollTop: $(".chat")[0].scrollHeight
@@ -301,6 +321,7 @@ function tryToSetupHideAndSeek(){
                 newElements.push( document.createTextNode(message.substring(lastIndex)) );
                 $(this).find(".message").empty().append(newElements);
             });
+            console.log("finished setting up hide and seek");
         });
     }
     catch(err){

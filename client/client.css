@@ -1,7 +1,6 @@
 
 html, body {
 	height: 100%;
-	background-image: url("/background.png");
 }
 
 
@@ -17,6 +16,9 @@ html, body {
 	overflow-y: scroll;
 	overflow-x: hidden;
 	position: relative;
+
+	background-image: url("/background.png");
+	background-size: 100% calc(100% + 50px);
 }
 
 .chat-row {
