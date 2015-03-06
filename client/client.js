@@ -112,12 +112,13 @@ Template.chatrow.helpers({
     messages: function() {
         var messages = Messages.find({channel: channel}, { sort: { time: 1}});
         messagesCount = messages.fetch().length;
-
+        console.log("received messages");
+        hideAndSeek();
         return messages;
     }
 });
 
-Template.chatrow.rendered = function () {
+Template.home.rendered = function () {
     resetParentDimensions();
 
     $(window).resize(function(){
@@ -245,17 +246,16 @@ Template.channels.helpers({
 
 // Make the date number something human-readadble
 Handlebars.registerHelper("prettifyTime", function(timestamp) {
-    return new Date(timestamp).toLocaleString();
+    return prettifyTime(timestamp);
 });
 
 // Return a random id because the @channel has ids
 Handlebars.registerHelper("chopID", function() {
-    return (new Date().getTime() * Math.random() * Math.pow(10,9)).toString(36).substring(0,9);
+    return chopID();
 });
 
 Handlebars.registerHelper("randPic", function() {
-    var faceNum = Math.floor(Math.random()*4)+1;
-    return "face" + faceNum + ".png";
+    return randPic();
 });
 
 
@@ -279,7 +279,6 @@ function post(){
             scrollTop: $(".chat")[0].scrollHeight
         }, "fast", function(){
             $(".chat-row").each(function(index){
-                $(this).find(".postNumber").text(index);
                 if (typeof $(this).data("color") === "undefined"){
                     var color = randElem(colors);
                     $(this).data("color", color);
@@ -299,8 +298,6 @@ function tryToSetupHideAndSeek(){
             setTimeline();
             markTimeline($("#timeline li").length-1);
             $(".chat-row").each(function(index){
-                $(this).find(".postNumber").text(index);
-
                 if (typeof $(this).data("color") === "undefined"){
                     var color = randElem(colors);
                     $(this).data("color", color);
@@ -344,6 +341,14 @@ function hideAndSeek(){
     rows.each(function(index){
         hidingFunction(index, $(this));
 
+        // Set post number
+        if (typeof $(this).data("number") === "undefined"){
+            var num = $(".chat-row").index(this);
+            $(this).data("number", num);
+            $(this).find(".postNumber").text(num);
+        }
+
+        // Set color of pointer
         if (typeof $(this).data("color") === "undefined"){
             var color = randElem(colors);
             $(this).data("color", color);
@@ -493,4 +498,17 @@ function resetParentDimensions(){
     pt = $(".chat").position().top; // parent top
     ph = $(".chat").height(); // parent height
     mid = pt + ph/2 - bottomBuffer;
+}
+
+function prettifyTime(timestamp){
+    return new Date(timestamp).toLocaleString();
+}
+
+function chopID(){
+    return (new Date().getTime() * Math.random() * Math.pow(10,9)).toString(36).substring(0,9);
+}
+
+function randPic(){
+    var faceNum = Math.floor(Math.random()*4)+1;
+    return "face" + faceNum + ".png";
 }
