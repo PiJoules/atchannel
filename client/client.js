@@ -147,17 +147,6 @@ Template.chatrow.rendered = function () {
         markTimeline();
     });
 
-    hideAndSeek = function(){
-        // limit the rows to resize only to those onscreen
-        var rows = $(".chat-row").filter(function(index){
-            return $(this).position().top+$(this).outerHeight() > 0 && $(this).position().top < ph;
-        });
-        changeRow($(".chat-row").not(rows));
-        rows.each(function(index){
-            hidingFunction(index, $(this));
-        });
-    };
-
     post = function(){
         if ($("#message").val().trim() !== ""){
             Meteor.call("addPost",{
@@ -173,7 +162,7 @@ Template.chatrow.rendered = function () {
                 scrollTop: $(".chat")[0].scrollHeight
             }, "fast", function(){
                 $(".chat-row").each(function(index){
-                    $(this).find(".postNumber").text((index+1));
+                    $(this).find(".postNumber").text(index);
                     if (typeof $(this).data("color") === "undefined"){
                         var color = randElem(colors);
                         $(this).data("color", color);
@@ -339,6 +328,24 @@ function tryToSetupHideAndSeek(){
     catch(err){
 
     }
+}
+
+
+function hideAndSeek(){
+    // limit the rows to resize only to those onscreen
+    var rows = $(".chat-row").filter(function(index){
+        return $(this).position().top+$(this).outerHeight() > 0 && $(this).position().top < ph;
+    });
+    changeRow($(".chat-row").not(rows));
+    rows.each(function(index){
+        hidingFunction(index, $(this));
+
+        if (typeof $(this).data("color") === "undefined"){
+            var color = randElem(colors);
+            $(this).data("color", color);
+            $(this).find(".bubble").css("background-color", color.replace("n","")).addClass(color.replace("#",""));
+        }
+    });
 }
 
 
