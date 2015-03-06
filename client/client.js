@@ -172,8 +172,13 @@ Template.chatrow.rendered = function () {
             $(".chat").animate({
                 scrollTop: $(".chat")[0].scrollHeight
             }, "fast", function(){
-                $(".postNumber").each(function(index){
-                    $(this).text((index+1));
+                $(".chat-row").each(function(index){
+                    $(this).find(".postNumber").text((index+1));
+                    if (typeof $(this).data("color") === "undefined"){
+                        var color = randElem(colors);
+                        $(this).data("color", color);
+                        $(this).find(".bubble").css("background-color", color.replace("n","")).addClass(color.replace("#",""));
+                    }
                 });
             });
         }
@@ -354,18 +359,6 @@ function hidingFunction(index, that){
     }
     else {
         /**
-         * # NOTES
-         * font size: (15-1.5)/(0-limit)*midDist + 15
-         * bubbleWidth: (100-10)/(0-limit)*midDist + 100
-         * margin-left: (5-15)/(0-limit)*midDist + 5
-         * margin-right: (5-15)/(0-limit)*midDist + 5
-         * avatar: (5-2)/(0-limit)*midDist + 5
-         *
-         * 15 = -14.5/limit*buffer + yIndex
-         * yIndex = 15 + 14.5/limit*buffer
-         * font-size = 15 + 14.5/limit*buffer + 14.5/limit*(-midDist)
-         *       = 14.5/limit*(buffer-midDist) + 15
-         *
          * property = (max-default)/limit*(midDist-buffer) + max
          */
         var properties = {
