@@ -12,6 +12,8 @@ var pt, ph, mid;
 var limit = 100.0; // distance from mid at which to start resizing
 
 var intervalID, messagesCount = 0;
+var currentCount = 0;
+var nextAmount = 25;
 
 var maxPropertiesNumeric = {
     "font-size": 15,
@@ -62,6 +64,7 @@ var colors = [
 var name = 'Anonymous';
 var channel = "main";
 var currentRow = 1;
+var didRender = false;
 
 
 /**
@@ -78,8 +81,7 @@ Router.route('/could-not-find',function(){
     this.render("redirect-template");
 });
 Router.route('/redirect/main',function(){
-    this.redirect("/");
-    location.reload();
+    window.location.replace("/");
 });
 Router.route('/redirect/:channel',function(){
     var channels = _.uniq(Messages.find({}, { channel: 1 }).map(function(x) {return x.channel;}), true);
@@ -87,8 +89,7 @@ Router.route('/redirect/:channel',function(){
         this.redirect("could-not-find");
     }
     else{
-        this.redirect("/" + this.params.channel);
-        location.reload();
+        window.location.replace("/" + this.params.channel);
     }
 });
 Router.route('/:channel', function() {
@@ -111,6 +112,7 @@ Template.chatrow.helpers({
     messages: function() {
         var messages = Messages.find({channel: channel}, { sort: { time: 1}});
         messagesCount = messages.fetch().length;
+
         return messages;
     }
 });
@@ -219,6 +221,8 @@ Template.chatrow.rendered = function () {
         }
         intervalID = intervalTrigger();
     }
+
+    didRender = true;
 };
 
 Template.channels.helpers({
