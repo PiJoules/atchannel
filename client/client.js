@@ -1,4 +1,37 @@
 
+/**
+ * NOTES
+ *
+
+ // function for setting the postNumbers on the DB
+ function setPostNumbers(){
+         for (var i = 0; i < channels.length; i++){
+                 var channel = channels[i];
+                 var posts = db.messages.find({channel: channel}).sort({time: 1});
+                 for (var j = 0; j < posts.length(); j++){
+                         db.messages.update(
+                                 { _id: posts[j]["_id"] },
+                                 { $set: { postNumber: j+1 } },
+                                 {}
+                         );
+                 }
+         }
+ }
+
+ // function for updating post number
+ function getNextSequenceValue(sequenceName){
+   var sequenceDocument = db.counters.findAndModify(
+      {
+         query:{_id: sequenceName },
+         update: {$inc:{sequence_value:1}},
+         new:true
+      });
+   return sequenceDocument.sequence_value;
+}
+
+ *
+ */
+
 
 /**
  * Globals
@@ -64,7 +97,6 @@ var colors = [
 var name = 'Anonymous';
 var channel = "main";
 var currentRow = 1;
-var didRender = false;
 
 
 /**
@@ -112,8 +144,13 @@ Template.chatrow.helpers({
     messages: function() {
         var messages = Messages.find({channel: channel}, { sort: { time: 1}});
         messagesCount = messages.fetch().length;
-        console.log("received messages");
-        hideAndSeek();
+        console.log("received messages: " + messages.count());
+        /**
+         * ISSUES!!!
+         * Posting on one machine does not reformat the chat-row on another machine
+         */
+        //hideAndSeek();
+        tryToSetupHideAndSeek();
         return messages;
     }
 });
@@ -223,7 +260,7 @@ Template.home.rendered = function () {
         intervalID = intervalTrigger();
     }
 
-    didRender = true;
+    console.log("rendered page");
 };
 
 Template.channels.helpers({
@@ -263,7 +300,7 @@ Handlebars.registerHelper("randPic", function() {
 /**
  * Miscellanious functions
  */
-
+//db.awwx_mongo_counter.insert({_id: "test", "seq": 4})
 function post(){
     if ($("#message").val().trim() !== ""){
         Meteor.call("addPost",{
@@ -298,12 +335,6 @@ function tryToSetupHideAndSeek(){
             setTimeline();
             markTimeline($("#timeline li").length-1);
             $(".chat-row").each(function(index){
-                if (typeof $(this).data("color") === "undefined"){
-                    var color = randElem(colors);
-                    $(this).data("color", color);
-                    $(this).find(".bubble").css("background-color", color.replace("n","")).addClass(color.replace("#",""));
-                }
-
                 // Wrap any URLs in A tags, but keep rest of message as text
                 // (https?:\/\/)?((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|((\\d{1,3}\\.){3}\\d{1,3}))(\\:\\d+)?(\/[-a-z\\d%_.~+\@]*)*(\\?[;&a-z\\d%_.~+=-]*)?(\\#[-a-z\\d_]*)?
                 var regex = new RegExp( '(https?:\\/\\/)?'+ // protocol
@@ -327,7 +358,7 @@ function tryToSetupHideAndSeek(){
         });
     }
     catch(err){
-
+        console.log("could not setup hideAndSeek: " + err);
     }
 }
 
@@ -340,13 +371,6 @@ function hideAndSeek(){
     changeRow($(".chat-row").not(rows));
     rows.each(function(index){
         hidingFunction(index, $(this));
-
-        // Set post number
-        if (typeof $(this).data("number") === "undefined"){
-            var num = $(".chat-row").index(this);
-            $(this).data("number", num);
-            $(this).find(".postNumber").text(num);
-        }
 
         // Set color of pointer
         if (typeof $(this).data("color") === "undefined"){
