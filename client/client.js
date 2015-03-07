@@ -1,35 +1,7 @@
 
 /**
  * NOTES
- *
-
- // function for setting the postNumbers on the DB
- function setPostNumbers(){
-         for (var i = 0; i < channels.length; i++){
-                 var channel = channels[i];
-                 var posts = db.messages.find({channel: channel}).sort({time: 1});
-                 for (var j = 0; j < posts.length(); j++){
-                         db.messages.update(
-                                 { _id: posts[j]["_id"] },
-                                 { $set: { postNumber: j+1 } },
-                                 {}
-                         );
-                 }
-         }
- }
-
- // function for updating post number
- function getNextSequenceValue(sequenceName){
-   var sequenceDocument = db.counters.findAndModify(
-      {
-         query:{_id: sequenceName },
-         update: {$inc:{sequence_value:1}},
-         new:true
-      });
-   return sequenceDocument.sequence_value;
-}
-
- *
+ * 
  */
 
 
@@ -300,7 +272,6 @@ Handlebars.registerHelper("randPic", function() {
 /**
  * Miscellanious functions
  */
-//db.awwx_mongo_counter.insert({_id: "test", "seq": 4})
 function post(){
     if ($("#message").val().trim() !== ""){
         Meteor.call("addPost",{
