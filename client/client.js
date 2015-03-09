@@ -1,9 +1,4 @@
 
-/**
- * NOTES
- * 
- */
-
 
 /**
  * Globals
@@ -17,8 +12,7 @@ var pt, ph, mid;
 var limit = 100.0; // distance from mid at which to start resizing
 
 var intervalID, messagesCount = 0;
-var currentCount = 0;
-var nextAmount = 25;
+var nextAmount = 50;
 
 var maxPropertiesNumeric = {
     "font-size": 15,
@@ -112,18 +106,36 @@ Router.route('/:channel', function() {
  * Templates
  */
 
+Session.set("skip", 0);
+Session.set("limit", nextAmount);
 Template.chatrow.helpers({
+    // can return either the collection or the array of objects
     messages: function() {
-        var messages = Messages.find({channel: channel}, { sort: { time: 1}});
-        messagesCount = messages.fetch().length;
-        console.log("received messages: " + messages.count());
-        /**
-         * ISSUES!!!
-         * Posting on one machine does not reformat the chat-row on another machine
-         */
-        //hideAndSeek();
-        tryToSetupHideAndSeek();
-        return messages;
+        var messages = Messages.find({channel: channel}, { sort: { time: -1}, limit: Session.get("limit"), skip: Session.get("skip") });
+        var messagesArray = messages.fetch().reverse();
+        messagesCount = messagesArray.length;
+
+        console.log(messagesCount, $(".load-prev").length);
+        if (messagesCount > 0){
+            if ($(".chat").length > 0 && $(".chat-row").length > 1){
+                console.log(nextAmount, messagesCount, $(".chat-row").length);
+                scrollToPost(Math.min(nextAmount, messagesCount), hideAndSeek);
+            }
+            $(".load-prev").parent().hide({
+                complete: function(){
+                    console.log("hidden");
+                }
+            });
+        }
+        else {
+            $(".load-prev").parent().show({
+                complete: function(){
+                    console.log("shown");
+                }
+            });
+        }
+
+        return messagesArray;
     }
 });
 
@@ -207,6 +219,10 @@ Template.home.rendered = function () {
         scrollToNextPost();
     });
 
+    $(".load-prev").click(function(){
+        Session.set("limit", Session.get("limit")+nextAmount);
+    });
+
     if (channel !== "main"){
         $("#channel-name").text(channel + "Channel");
     }
@@ -232,7 +248,6 @@ Template.home.rendered = function () {
         intervalID = intervalTrigger();
     }
 
-    console.log("rendered page");
 };
 
 Template.channels.helpers({
@@ -302,6 +317,7 @@ function tryToSetupHideAndSeek(){
         hideAndSeek();
         $(".chat").animate({
             scrollTop: $(".chat")[0].scrollHeight
+            //scrollTop: 0
         }, "slow", function(){
             setTimeline();
             markTimeline($("#timeline li").length-1);
@@ -329,7 +345,7 @@ function tryToSetupHideAndSeek(){
         });
     }
     catch(err){
-        console.log("could not setup hideAndSeek: " + err);
+
     }
 }
 
