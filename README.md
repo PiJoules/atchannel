@@ -41,6 +41,5 @@
 <h2>Todo</h2>
 
 <ul>
-    <li>Find and incorporate the actual smiley faces used instead of the current ones</li>
     <li>Add ability to post images</li>
 </ul>
