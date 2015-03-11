@@ -118,7 +118,6 @@ Template.chatrow.helpers({
         var messagesArray = messages.fetch().reverse();
         messagesCount = messagesArray.length;
 
-        console.log(justSentPost);
         if (messagesCount > 0){
             smallestPostNumber = messagesArray[0].postNumber;
             largestPostNumber = Math.max(messagesArray[messagesArray.length-1].postNumber, largestPostNumber);
@@ -238,6 +237,13 @@ Template.home.rendered = function () {
             post();
         }
     });
+
+    if (messagesCount < nextAmount || smallestPostNumber === 1){
+        $(".load-prev").parent().hide();
+    }
+    else {
+        $(".load-prev").parent().show();
+    }
 
     if ($(".chat-row").length > 1 && $(".chat-row").length-1 === messagesCount){
         tryToSetupHideAndSeek();
