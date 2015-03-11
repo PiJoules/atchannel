@@ -456,13 +456,18 @@ function scrollToNextPost(){
 }
 
 function scrollToPost(i,callback){
-    $(".chat").animate({
-        scrollTop: $(".chat").scrollTop() + $(".chat-row:eq(" + i + ")").position().top - ph/2
-    }, "fast", function(){
-        if (typeof callback !== "undefined"){
-            callback(i);
-        }
-    });
+    try {
+        $(".chat").animate({
+            scrollTop: $(".chat").scrollTop() + $(".chat-row:eq(" + i + ")").position().top - ph/2
+        }, "fast", function(){
+            if (typeof callback !== "undefined"){
+                callback(i);
+            }
+        });
+    }
+    catch (err){
+
+    }
 }
 
 function setTimeline(){
