@@ -12,10 +12,12 @@ var pt, ph, mid;
 var limit = 100.0; // distance from mid at which to start resizing
 
 var intervalID, messagesCount = 0;
+var hidingFunctionIntervalID;
 var nextAmount = 50;
 var smallestPostNumber = 0;
 var largestPostNumber = 0;
 var justSentPost = false;
+var justLoadedMore = false;
 
 var maxPropertiesNumeric = {
     "font-size": 15,
@@ -123,8 +125,20 @@ Template.chatrow.helpers({
             largestPostNumber = Math.max(messagesArray[messagesArray.length-1].postNumber, largestPostNumber);
             setTimeline();
 
-            if ($(".chat").length > 0 && $(".chat-row").length > 1 && !justSentPost){
+            if ($(".chat").length > 0 && $(".chat-row").length > 1 && !justSentPost && justLoadedMore){
                 scrollToPost(Math.min(nextAmount, messagesCount), hideAndSeek);
+            }
+
+            if (typeof $(".chat-row").last().data("postnumber") === "undefined" || parseInt($(".chat-row").last().data("postnumber")) !== largestPostNumber){
+                function hidingFunctionIntervalTrigger(){
+                    return window.setInterval(function(){
+                        if (parseInt($(".chat-row").last().data("postnumber")) === largestPostNumber){
+                            hideAndSeek();
+                            window.clearInterval(hidingFunctionIntervalID);
+                        }
+                    }, 100);
+                }
+                hidingFunctionIntervalID = hidingFunctionIntervalTrigger();
             }
 
             if (messagesCount < nextAmount || smallestPostNumber === 1){
@@ -139,6 +153,7 @@ Template.chatrow.helpers({
         }
 
         justSentPost = false;
+        justLoadedMore = false;
 
         return messagesArray;
     }
@@ -225,6 +240,7 @@ Template.home.rendered = function () {
     });
 
     $(".load-prev").click(function(){
+        justLoadedMore = true;
         Session.set("limit", Session.get("limit")+nextAmount);
     });
 
