@@ -13,6 +13,9 @@ var limit = 100.0; // distance from mid at which to start resizing
 
 var intervalID, messagesCount = 0;
 var nextAmount = 50;
+var smallestPostNumber = 0;
+var largestPostNumber = 0;
+var justSentPost = false;
 
 var maxPropertiesNumeric = {
     "font-size": 15,
@@ -115,25 +118,28 @@ Template.chatrow.helpers({
         var messagesArray = messages.fetch().reverse();
         messagesCount = messagesArray.length;
 
-        console.log(messagesCount, $(".load-prev").length);
+        console.log(justSentPost);
         if (messagesCount > 0){
-            if ($(".chat").length > 0 && $(".chat-row").length > 1){
-                console.log(nextAmount, messagesCount, $(".chat-row").length);
+            smallestPostNumber = messagesArray[0].postNumber;
+            largestPostNumber = Math.max(messagesArray[messagesArray.length-1].postNumber, largestPostNumber);
+            setTimeline();
+
+            if ($(".chat").length > 0 && $(".chat-row").length > 1 && !justSentPost){
                 scrollToPost(Math.min(nextAmount, messagesCount), hideAndSeek);
             }
-            $(".load-prev").parent().hide({
-                complete: function(){
-                    console.log("hidden");
-                }
-            });
+
+            if (messagesCount < nextAmount || smallestPostNumber === 1){
+                $(".load-prev").parent().hide();
+            }
+            else {
+                $(".load-prev").parent().show();
+            }
         }
         else {
-            $(".load-prev").parent().show({
-                complete: function(){
-                    console.log("shown");
-                }
-            });
+            $(".load-prev").parent().hide();
         }
+
+        justSentPost = false;
 
         return messagesArray;
     }
@@ -289,6 +295,8 @@ Handlebars.registerHelper("randPic", function() {
  */
 function post(){
     if ($("#message").val().trim() !== ""){
+        justSentPost = true;
+
         Meteor.call("addPost",{
             name: name,
             message: $("#message").val().trim(),
@@ -317,7 +325,6 @@ function tryToSetupHideAndSeek(){
         hideAndSeek();
         $(".chat").animate({
             scrollTop: $(".chat")[0].scrollHeight
-            //scrollTop: 0
         }, "slow", function(){
             setTimeline();
             markTimeline($("#timeline li").length-1);
@@ -455,19 +462,16 @@ function scrollToPost(i,callback){
 function setTimeline(){
     var ticHeight = 30; // the height of each li element in px
     var ticCount = parseInt(ph/ticHeight)+1;
-    var postGap = parseFloat( ($(".chat-row").length-1)/ticCount );
+    //var postGap = parseFloat( ($(".chat-row").length-1)/ticCount );
+    var postGap = parseFloat( (largestPostNumber-smallestPostNumber+1)/ticCount );
     $("#timeline").empty();
     var lastNumber = 0;
     for (var i = 0; i < ticCount; i++){
         var index = Math.ceil(postGap*i)+1;
 
-        // ensure the line doesn't go past the total number of posts
-        if (index > $(".chat-row").length-1)
-            break;
-
         // ensure no duplicate numbers are shown
         if (index !== lastNumber)
-            $("#timeline").append("<li><a href='javascript: void(0)' data-index='" + index + "'>" + index + "</a> -</li>");
+            $("#timeline").append("<li><a href='javascript: void(0)' data-index='" + index + "'>" + (index+smallestPostNumber) + "</a> -</li>");
 
         lastNumber = index;
     }
