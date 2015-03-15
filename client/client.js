@@ -212,6 +212,10 @@ Template.home.rendered = function () {
         $("#message").attr("placeholder", "Post message as '" + name + "'");
     }
 
+    $("#new-channel-name").keyup(function(){
+        $(".new-channel-name").text($("#new-channel-name").val().trim() + "Channel");
+    });
+
     $("#submit-channel").click(function(){
         var channelName = $("#new-channel-name").val().trim();
         var channels = _.uniq(Messages.find({}, { channel: 1 }).map(function(x) {return x.channel;}), true);
