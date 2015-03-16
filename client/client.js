@@ -116,7 +116,7 @@ Session.set("limit", nextAmount);
 Template.chatrow.helpers({
     // can return either the collection or the array of objects
     messages: function() {
-        var messages = Messages.find({channel: channel}, { sort: { time: -1}, limit: Session.get("limit"), skip: Session.get("skip") });
+        var messages = Messages.find({channel: channel}, { sort: { postNumber: -1}, limit: Session.get("limit"), skip: Session.get("skip") });
         var messagesArray = messages.fetch().reverse();
         messagesCount = messagesArray.length;
 
