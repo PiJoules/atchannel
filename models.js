@@ -1,6 +1,6 @@
 
- /**
- * Models
+/**
+ * Collections
  */
 
 Messages = new Mongo.Collection('messages');

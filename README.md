@@ -4,6 +4,8 @@ The goal of this website is to replicate the @channel as seen in the anime Stein
 ![@channel](https://raw.githubusercontent.com/PiJoules/-channel/master/public/@channel.png)
 
 ## Todo
+- Improve scrolling
+- Add ability to switch between styles prtrayed in the anime and the visual novel
 - Add ability to post images and videos
 
 ## Suggestions
