@@ -1,5 +1,4 @@
 
-
 /**
  * Globals
  */
@@ -116,9 +115,15 @@ Session.set("limit", nextAmount);
 Template.chatrow.helpers({
     // can return either the collection or the array of objects
     messages: function() {
-        var messages = Messages.find({channel: channel}, { sort: { postNumber: -1}, limit: Session.get("limit"), skip: Session.get("skip") });
+        var count = Count.findOne({_id: channel});
+        console.log(count);
+        if (typeof count === "undefined")
+            return [];
+        var messages = Messages.find({channel: channel, postNumber: { $gt: count.seq-Session.get("limit") }}, {sort: {postNumber: -1}});
+        
         var messagesArray = messages.fetch().reverse();
         messagesCount = messagesArray.length;
+        console.log(messagesCount);
 
         if (messagesCount > 0){
             smallestPostNumber = messagesArray[0].postNumber;
