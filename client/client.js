@@ -116,6 +116,7 @@ Template.chatrow.helpers({
     // can return either the collection or the array of objects
     messages: function() {
         var count = Count.findOne({_id: channel});
+        console.log("1" + count);
         if (typeof count === "undefined")
             return [];
         var messages = Messages.find({channel: channel, postNumber: { $gt: count.seq-Session.get("limit") }}, {sort: {postNumber: -1}});
@@ -136,8 +137,10 @@ Template.chatrow.helpers({
                 function hidingFunctionIntervalTrigger(){
                     return window.setInterval(function(){
                         if (parseInt($(".chat-row").last().data("postnumber")) === largestPostNumber){
+                            console.log("hiding and seeking");
                             hideAndSeek();
                             window.clearInterval(hidingFunctionIntervalID);
+                            console.log("end of hiding and seeking");
                         }
                     }, 100);
                 }
@@ -157,6 +160,8 @@ Template.chatrow.helpers({
 
         justSentPost = false;
         justLoadedMore = false;
+
+        console.log("2" + count);
 
         return messagesArray;
     }
@@ -283,6 +288,8 @@ Template.home.rendered = function () {
         intervalID = intervalTrigger();
     }
 
+    console.log("end of rendered");
+
 };
 
 Template.channels.helpers({
@@ -360,7 +367,7 @@ function tryToSetupHideAndSeek(){
             $(".chat-row").each(function(index){
                 // Wrap any URLs in A tags, but keep rest of message as text
                 // (https?:\/\/)?((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|((\\d{1,3}\\.){3}\\d{1,3}))(\\:\\d+)?(\/[-a-z\\d%_.~+\@]*)*(\\?[;&a-z\\d%_.~+=-]*)?(\\#[-a-z\\d_]*)?
-                var regex = new RegExp( '(https?:\\/\\/)?'+ // protocol
+                /*var regex = new RegExp( '(https?:\\/\\/)?'+ // protocol
                                         '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
                                         '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
                                         '(\\:\\d+)?(\\/[-a-z\\d%_.~+\@]*)*'+ // port and path
@@ -376,7 +383,7 @@ function tryToSetupHideAndSeek(){
                     lastIndex = match.index + match[0].length;
                 }
                 newElements.push( document.createTextNode(message.substring(lastIndex)) );
-                $(this).find(".message").empty().append(newElements);
+                $(this).find(".message").empty().append(newElements);*/
             });
         });
     }

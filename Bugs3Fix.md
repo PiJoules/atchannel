@@ -3,6 +3,8 @@ Some bugs I found that need 3 be fixed.
 
 ## Major
 - **Scrolling**
+- **URL regex detection**
+  - Need to find a new way of allowing people to post links without using the old regex expression and the while loop. This caused the main page to freeze on load.
 
 ## Minor
 - **Noticable lengthy loading times for smaller channels**
