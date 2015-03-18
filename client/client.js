@@ -82,9 +82,15 @@ var styles = Object.freeze({
     "vn": 2
 }); // use freeze to prevent object from changing
 
+
 var currentStyle;
 if (sessionStorage.getItem("style") === null){
-    setStyle(styles.anime);
+    if (Meteor.Device.isTablet() || Meteor.Device.isPhone()){
+        setStyle(styles.vn);
+    }
+    else {
+        setStyle(styles.anime);
+    }
 }
 else {
     currentStyle = parseInt(sessionStorage.getItem("style"));
@@ -139,9 +145,9 @@ Template.chatrow.helpers({
         var count = Count.findOne({_id: channel});
         if (typeof count === "undefined")
             return [];
-        var messages = Messages.find({channel: channel, postNumber: { $gt: count.seq-Session.get("limit") }}, {sort: {postNumber: -1}});
+        var messages = Messages.find({channel: channel, postNumber: { $gt: count.seq-Session.get("limit") }});
         
-        var messagesArray = messages.fetch().reverse();
+        var messagesArray = messages.fetch();
         messagesCount = messagesArray.length;
 
         if (messagesCount > 0){
