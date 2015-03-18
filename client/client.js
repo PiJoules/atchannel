@@ -145,7 +145,7 @@ Template.chatrow.helpers({
         var count = Count.findOne({_id: channel});
         if (typeof count === "undefined")
             return [];
-        var messages = Messages.find({channel: channel, postNumber: { $gt: count.seq-Session.get("limit") }});
+        var messages = Messages.find({channel: channel, postNumber: { $gt: count.seq-Session.get("limit") }}, { sort: {postNumber: 1} });
         
         var messagesArray = messages.fetch();
         messagesCount = messagesArray.length;
