@@ -3,6 +3,11 @@ html, body {
 	height: 100%;
 }
 
+.sample-photo {
+	width: 100%;
+	margin: auto;
+	display: block;
+}
 
 .top-stuff {
 	position: absolute;
@@ -16,12 +21,19 @@ html, body {
 	overflow-y: scroll;
 	overflow-x: hidden;
 	position: relative;
+}
 
+
+/**
+ * Anime designs
+ */
+
+.anime .chat {
 	background-image: url("/background.png");
 	background-size: 100% calc(100% + 50px);
 }
 
-.chat-row {
+.anime .chat-row {
 	padding-top: 15px;
 	padding-bottom: 15px;
 	font-size: 15px;
@@ -29,75 +41,69 @@ html, body {
 	margin-right: 15%;
 }
 
-.chat-input, .chat-input .input-group {
+.anime .chat-input, .anime .chat-input .input-group {
 	width: 100%;
 }
-.chat-input {
+.anime .chat-input {
 	position: relative;
 	height: 50px;
 	background-color: #ddeaf7;
 	border: 0px solid #ddeaf7;
 	z-index: 2;
 }
-.chat-input .input-group-btn .btn {
+.anime .chat-input .input-group-btn .btn {
 	height: 50px;
 	background-color: transparent;
 	border: 0px solid transparent;
 	padding-left: 0;
 	padding-right: 10px;
 }
-.chat-input .input-group-btn .btn * {
+.anime .chat-input .input-group-btn .btn * {
 	font-size: 40px;
 	color: #555555;
 }
-#message {
+.anime .message {
 	height: 30px;
 	margin-top: 10px;
 	margin-left: 10px;
 	width: calc(100% - 20px);
-	border-radius: 10px;
+	border-radius: 10px !important;
 	color: white;
+	background-color: #9596bf;
 }
-#message::-webkit-input-placeholder {
+.anime .message::-webkit-input-placeholder {
    color: #dddddd;
 }
 
-#message:-moz-placeholder { /* Firefox 18- */
+.anime .message:-moz-placeholder { /* Firefox 18- */
    color: #dddddd;
 }
 
-#message::-moz-placeholder {  /* Firefox 19+ */
+.anime .message::-moz-placeholder {  /* Firefox 19+ */
    color: #dddddd;
 }
 
-#message:-ms-input-placeholder {
+.anime .message:-ms-input-placeholder {
    color: #dddddd;
 }
 
-.avatar {
+.anime .avatar {
 	width: 5%;
 	display: inline-block;
 	vertical-align: top;
 	margin-top: -5px;
-
-	/* Transparent face with background as color (smile-transparent.png)
-	background-color: blue;
-	border: 3px solid black;
-	border-radius: 10px;
-	padding: 5px;*/
-
 }
 
-.avatar img {
+.anime .avatar img {
 	width: 100%;
 }
 
-.bubble-container {
+.anime .bubble-container {
 	width: 94%;
 	display: inline-block;
 }
 
-.bubble {
+.anime .bubble {
 	position: relative;
 	width: 100%;
 	padding: 10px;
@@ -124,7 +130,7 @@ html, body {
 	-moz-box-shadow: -7px 7px 7px -2px rgba(0,0,0,0.75);
 	box-shadow: -7px 7px 7px -2px rgba(0,0,0,0.5);
 }
-.bubble:after {
+.anime .bubble:after {
 	content: '';
 	position: absolute;
 	border-style: solid;
@@ -135,68 +141,119 @@ html, body {
 	left: -20px;
 	top: 0px;
 }
-.bubble.bbffff:after {
+.anime .bubble.bbffff:after {
 	border-color: transparent #BBFFFF;
 }
-.bubble.b694da:after {
+.anime .bubble.b694da:after {
 	border-color: transparent #b694da;
 }
-.bubble.bde0b1:after {
+.anime .bubble.bde0b1:after {
 	border-color: transparent #bde0b1;
 }
-.bubble.a0e1b4:after {
+.anime .bubble.a0e1b4:after {
 	border-color: transparent #a0e1b4;
 }
-.bubble.a63333:after {
+.anime .bubble.a63333:after {
 	border-color: transparent #a63333;
 }
-.bubble.d090c4:after {
+.anime .bubble.d090c4:after {
 	border-color: transparent #d090c4;
 }
-.bubble.fffed9:after {
+.anime .bubble.fffed9:after {
 	border-color: transparent #fffed9;
 }
-.bubble.ffd39b:after {
+.anime .bubble.ffd39b:after {
 	border-color: transparent #ffd39b;
 }
-.bubble.n74bbfb:after {
+.anime .bubble.n74bbfb:after {
 	border-color: transparent #74bbfb;
 }
-.bubble > p {
+.anime .bubble > p {
 	margin: 0;
 }
 
-.bubble .time {
+.anime .bubble .anime-time {
 	text-align: right;
 }
 
-.bubble .chat-row-header > * {
+.anime .bubble .chat-row-header > * {
 	width: 50%;
 	display: inline-block;
 	float: left;
 }
 
-.sample-photo {
-	width: 100%;
-	margin: auto;
-	display: block;
-}
-
-#timeline {
+.anime .timeline {
 	list-style: none;
 	padding: 0;
 	border-right: 5px solid #444444;
 	color: #444444;
+	display: inline-block;
 }
-#timeline li {
+.anime .timeline li {
 	height: 30px;
 	padding-top: 5px;
 	padding-bottom: 5px;
 	padding-left: 10px;
 	border-radius: 10px;
 }
-#timeline a {
+.anime .timeline a {
 	color: #444444;
+}
+
+.anime .vn-time {
+	display: none !important;
+}
+
+.anime .sage {
+	display: inline !important;
+}
+
+
+/**
+ * VN designs
+ */
+
+.vn .chat-row {
+	padding-top: 15px;
+	padding-bottom: 0px;
+	font-size: 15px;
+	margin-left: 5%;
+	margin-right: 5%;
+}
+.vn .chat-row .postMessage {
+	padding-left: 20px;
+}
+
+.vn .chat-input, .vn .chat-input .input-group {
+	width: 100%;
+}
+.vn .chat-input {
+	position: relative;
+	height: 50px;
+	z-index: 2;
+}
+.vn .chat-input * {
+	height: 50px;
+	line-height: 40px;
+}
+.vn .chat-input button span {
+	font-size: 20px;
+}
+
+.vn .avatar {
+	display: none;
+}
+
+.vn .timeline {
+	display: none;
+}
+
+.vn .sage {
+	display: none;
+}
+
+.vn .anime-time {
+	display: none;
 }
 
 

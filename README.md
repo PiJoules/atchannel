@@ -6,6 +6,8 @@ The goal of this website is to replicate the @channel as seen in the anime Stein
 ## Todo
 - Improve scrolling
 - Add ability to switch between styles prtrayed in the anime and the visual novel
+- Allow for multiline posts
+- Allow for markdown
 - Add ability to post images and videos
 
 ## Suggestions

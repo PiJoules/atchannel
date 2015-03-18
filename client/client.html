@@ -8,7 +8,7 @@
 <template name="home">
 
     <div style="position: fixed; right: 26px; text-align: right; min-width: 40px; z-index: 2;">
-        <ul id="timeline" style="display: inline-block;"></ul>
+        <ul class="timeline"></ul>
     </div>
 
     <div class="chat">
@@ -22,7 +22,15 @@
                 <div class="btn-group" role="group" aria-label="...">
                     <button class="btn btn-default" data-toggle="modal" data-target="#existing-channels"><span class="glyphicon glyphicon-search"></span></button>
                     <button class="btn btn-default" data-toggle="modal" data-target="#creating-channel"><span class="glyphicon glyphicon-plus"></span></button>
-                    <button class="btn btn-default" data-toggle="modal" data-target="#myModal"><span class="glyphicon glyphicon-cog"></span></button>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                            <span class="glyphicon glyphicon-cog"></span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="javascript: void(0)" data-toggle="modal" data-target="#myModal">Change Username</a></li>
+                            <li><a href="javascript: void(0)" class="design-switch">Switch to VN design</a></li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
@@ -147,7 +155,7 @@
 
 <template name="input">
     <div class="input-group">
-        <input type="text" id="message" class="form-control" placeholder="Post message as 'Anonymous'" aria-describedby="basic-addon2" style="background-color: #9596bf;">
+        <input type="text" class="message form-control" placeholder="Post message as 'Anonymous'" aria-describedby="basic-addon2">
         <span class="input-group-btn">
             <button class="btn btn-default prevPost"><span class="fa fa-caret-left"></span></button>
             <button class="btn btn-default nextPost"><span class="fa fa-caret-right"></span></button>
@@ -168,11 +176,12 @@
         <div class="bubble-container">
             <div class="bubble">
                 <p class="chat-row-header">
-                    <strong><span class="postNumber">{{postNumber}}</span> &nbsp; {{name}} [sage]</strong>
+                    <strong><span class="postNumber">{{postNumber}}</span> &nbsp; Name: {{name}} <span class="sage">[sage]</span></strong>
+                    <span class="vn-time">&nbsp;:{{prettifyTime time}}</span>
                     <strong>ID:{{chopID}}</strong>
                 </p>
-                <p class="message">{{message}}</p>
-                <p class="time">
+                <p class="postMessage">{{message}}</p>
+                <p class="anime-time">
                     <span>{{prettifyTime time}}</span>
                 </p>
             </div>

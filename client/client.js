@@ -1,6 +1,7 @@
 
+
 /**
- * Globals
+ * Resizing Globals
  */
 
 // Because botDist measures dist from top of elem to bottom,
@@ -9,14 +10,6 @@ var bottomBuffer = 30; // decrease to shift the bump down; increase to move it u
 var buffer = 50; // distance from mid (either above or below)
 var pt, ph, mid;
 var limit = 100.0; // distance from mid at which to start resizing
-
-var intervalID, messagesCount = 0;
-var hidingFunctionIntervalID;
-var nextAmount = 50;
-var smallestPostNumber = 0;
-var largestPostNumber = 0;
-var justSentPost = false;
-var justLoadedMore = false;
 
 var maxPropertiesNumeric = {
     "font-size": 15,
@@ -51,6 +44,19 @@ var defaultProperties = {
     "time-font-size": defaultPropertiesNumeric["time-font-size"] + "px"
 };
 
+
+/**
+ * Messages Globals
+ */
+var intervalID, messagesCount = 0;
+var hidingFunctionIntervalID;
+var nextAmount = 50;
+var smallestPostNumber = 0;
+var largestPostNumber = 0;
+var justSentPost = false;
+var justLoadedMore = false;
+
+
 // add n so can be used ass class
 var colors = [
     "#bbffff", // light blue
@@ -64,10 +70,25 @@ var colors = [
     "n#74bbfb", // darker blue
 ];
 
+
+/**
+ * Page Globals
+ */
 var name = 'Anonymous';
 var channel = "main";
 var currentRow = 1;
+var styles = Object.freeze({
+    "anime": 1,
+    "vn": 2
+}); // use freeze to prevent object from changing
 
+var currentStyle;
+if (sessionStorage.getItem("style") === null){
+    setStyle(styles.anime);
+}
+else {
+    currentStyle = parseInt(sessionStorage.getItem("style"));
+}
 
 /**
  * Router
@@ -116,7 +137,6 @@ Template.chatrow.helpers({
     // can return either the collection or the array of objects
     messages: function() {
         var count = Count.findOne({_id: channel});
-        console.log("1" + count);
         if (typeof count === "undefined")
             return [];
         var messages = Messages.find({channel: channel, postNumber: { $gt: count.seq-Session.get("limit") }}, {sort: {postNumber: -1}});
@@ -134,17 +154,17 @@ Template.chatrow.helpers({
             }
 
             if (typeof $(".chat-row").last().data("postnumber") === "undefined" || parseInt($(".chat-row").last().data("postnumber")) !== largestPostNumber){
-                function hidingFunctionIntervalTrigger(){
-                    return window.setInterval(function(){
-                        if (parseInt($(".chat-row").last().data("postnumber")) === largestPostNumber){
-                            console.log("hiding and seeking");
-                            hideAndSeek();
-                            window.clearInterval(hidingFunctionIntervalID);
-                            console.log("end of hiding and seeking");
-                        }
-                    }, 100);
-                }
-                hidingFunctionIntervalID = hidingFunctionIntervalTrigger();
+
+                    function hidingFunctionIntervalTrigger(){
+                        return window.setInterval(function(){
+                            if (parseInt($(".chat-row").last().data("postnumber")) === largestPostNumber){
+                                hideAndSeek();
+                                window.clearInterval(hidingFunctionIntervalID);
+                            }
+                        }, 100);
+                    }
+                    hidingFunctionIntervalID = hidingFunctionIntervalTrigger();
+
             }
 
             if (messagesCount < nextAmount || smallestPostNumber === 1){
@@ -161,13 +181,17 @@ Template.chatrow.helpers({
         justSentPost = false;
         justLoadedMore = false;
 
-        console.log("2" + count);
-
         return messagesArray;
     }
 });
 
 Template.home.rendered = function () {
+
+    switchDesigns(currentStyle);
+    $(".design-switch").click(function(){
+        switchDesigns();
+    });
+
     resetParentDimensions();
 
     $(window).resize(function(){
@@ -204,7 +228,7 @@ Template.home.rendered = function () {
         if (input !== "" && isAlphaNumeric(input)){
             name = input;
             localStorage.atchannelUsername = name;
-            $("#message").attr("placeholder", "Post message as '" + name + "'");
+            $(".message").attr("placeholder", "Post message as '" + name + "'");
             $("#myModal").modal("hide");
         }
         else if (!isAlphaNumeric(input)){
@@ -217,7 +241,7 @@ Template.home.rendered = function () {
     }
     else{
         name = localStorage.atchannelUsername;
-        $("#message").attr("placeholder", "Post message as '" + name + "'");
+        $(".message").attr("placeholder", "Post message as '" + name + "'");
     }
 
     $("#new-channel-name").keyup(function(){
@@ -260,7 +284,7 @@ Template.home.rendered = function () {
         $("#channel-name").text(channel + "Channel");
     }
 
-    $("#message").keyup(function(e){
+    $(".message").keyup(function(e){
         if(e.keyCode == 13) {
             post();
         }
@@ -287,8 +311,6 @@ Template.home.rendered = function () {
         }
         intervalID = intervalTrigger();
     }
-
-    console.log("end of rendered");
 
 };
 
@@ -330,28 +352,30 @@ Handlebars.registerHelper("randPic", function() {
  * Miscellanious functions
  */
 function post(){
-    if ($("#message").val().trim() !== ""){
+    if ($(".message").val().trim() !== ""){
         justSentPost = true;
 
         Meteor.call("addPost",{
             name: name,
-            message: $("#message").val().trim(),
+            message: $(".message").val().trim(),
             time: Date.now(),
             channel: channel
         });
 
-        $("#message").val("");
+        $(".message").val("");
 
         $(".chat").animate({
             scrollTop: $(".chat")[0].scrollHeight
         }, "fast", function(){
-            $(".chat-row").each(function(index){
-                if (typeof $(this).data("color") === "undefined"){
-                    var color = randElem(colors);
-                    $(this).data("color", color);
-                    $(this).find(".bubble").css("background-color", color.replace("n","")).addClass(color.replace("#",""));
-                }
-            });
+            if (currentStyle === styles.anime){
+                $(".chat-row").each(function(index){
+                    if (typeof $(this).data("color") === "undefined"){
+                        var color = randElem(colors);
+                        $(this).data("color", color);
+                        $(this).find(".bubble").css("background-color", color.replace("n","")).addClass(color.replace("#",""));
+                    }
+                });
+            }
         });
     }
 }
@@ -363,28 +387,7 @@ function tryToSetupHideAndSeek(){
             scrollTop: $(".chat")[0].scrollHeight
         }, "slow", function(){
             setTimeline();
-            markTimeline($("#timeline li").length-1);
-            $(".chat-row").each(function(index){
-                // Wrap any URLs in A tags, but keep rest of message as text
-                // (https?:\/\/)?((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|((\\d{1,3}\\.){3}\\d{1,3}))(\\:\\d+)?(\/[-a-z\\d%_.~+\@]*)*(\\?[;&a-z\\d%_.~+=-]*)?(\\#[-a-z\\d_]*)?
-                /*var regex = new RegExp( '(https?:\\/\\/)?'+ // protocol
-                                        '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
-                                        '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
-                                        '(\\:\\d+)?(\\/[-a-z\\d%_.~+\@]*)*'+ // port and path
-                                        '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
-                                        '(\\#[-a-z\\d_]*)?', 'ig');
-                var message = $(this).find(".message").text();
-                var newElements = [];
-                var lastIndex = 0;
-                while (match=regex.exec(message)) {
-                    var url = message.substr(match.index, match[0].length);
-                    newElements.push( document.createTextNode(message.substring(lastIndex, match.index)) );
-                    newElements.push($("<a href='" + url + "' target='_blank'>" + url + "</a>"));
-                    lastIndex = match.index + match[0].length;
-                }
-                newElements.push( document.createTextNode(message.substring(lastIndex)) );
-                $(this).find(".message").empty().append(newElements);*/
-            });
+            markTimeline($(".timeline li").length-1);
         });
     }
     catch(err){
@@ -394,21 +397,23 @@ function tryToSetupHideAndSeek(){
 
 
 function hideAndSeek(){
-    // limit the rows to resize only to those onscreen
-    var rows = $(".chat-row").filter(function(index){
-        return $(this).position().top+$(this).outerHeight() > 0 && $(this).position().top < ph;
-    });
-    changeRow($(".chat-row").not(rows));
-    rows.each(function(index){
-        hidingFunction(index, $(this));
+    if (currentStyle === styles.anime){
+        // limit the rows to resize only to those onscreen
+        var rows = $(".chat-row").filter(function(index){
+            return $(this).position().top+$(this).outerHeight() > 0 && $(this).position().top < ph;
+        });
+        changeRow($(".chat-row").not(rows));
+        rows.each(function(index){
+            hidingFunction(index, $(this));
 
-        // Set color of pointer
-        if (typeof $(this).data("color") === "undefined"){
-            var color = randElem(colors);
-            $(this).data("color", color);
-            $(this).find(".bubble").css("background-color", color.replace("n","")).addClass(color.replace("#",""));
-        }
-    });
+            // Set color of pointer
+            if (typeof $(this).data("color") === "undefined"){
+                var color = randElem(colors);
+                $(this).data("color", color);
+                $(this).find(".bubble").css("background-color", color.replace("n","")).addClass(color.replace("#",""));
+            }
+        });
+    }
 }
 
 
@@ -458,7 +463,7 @@ function changeRow(that, properties){
     that.find(".avatar").css({
         "width": nextProperties["avatarWidth"]
     });
-    that.find(".time").css({
+    that.find(".anime-time").css({
         "font-size": nextProperties["time-font-size"]
     });
 }
@@ -501,51 +506,53 @@ function scrollToPost(i,callback){
 }
 
 function setTimeline(){
-    var ticHeight = 30; // the height of each li element in px
-    var ticCount = parseInt(ph/ticHeight)+1;
-    //var postGap = parseFloat( ($(".chat-row").length-1)/ticCount );
-    var postGap = parseFloat( (largestPostNumber-smallestPostNumber+1)/ticCount );
-    $("#timeline").empty();
-    var lastNumber = 0;
-    for (var i = 0; i < ticCount; i++){
-        var index = Math.ceil(postGap*i)+1;
+    if (currentStyle === styles.anime){
+        var ticHeight = 30; // the height of each li element in px
+        var ticCount = parseInt(ph/ticHeight)+1;
+        //var postGap = parseFloat( ($(".chat-row").length-1)/ticCount );
+        var postGap = parseFloat( (largestPostNumber-smallestPostNumber+1)/ticCount );
+        $(".timeline").empty();
+        var lastNumber = 0;
+        for (var i = 0; i < ticCount; i++){
+            var index = Math.ceil(postGap*i)+1;
 
-        // ensure no duplicate numbers are shown
-        if (index !== lastNumber)
-            $("#timeline").append("<li><a href='javascript: void(0)' data-index='" + index + "'>" + (index+smallestPostNumber) + "</a> -</li>");
+            // ensure no duplicate numbers are shown
+            if (index !== lastNumber)
+                $(".timeline").append("<li><a href='javascript: void(0)' data-index='" + index + "'>" + (index+smallestPostNumber) + "</a> -</li>");
 
-        lastNumber = index;
+            lastNumber = index;
+        }
+        markTimeline();
+        $(".timeline a").click(function(){
+            var index = parseInt($(this).data("index"));
+            // RECURSION B*TCH !!!!!!
+            var checkingFunction = function(index){
+                if (index > currentRow){
+                    scrollToPost(index++, checkingFunction);
+                }
+                else if (index < currentRow){
+                    scrollToPost(index--, checkingFunction);
+                }
+                else {
+                    markTimeline();
+                }
+            };
+            checkingFunction(index);
+        });
     }
-    markTimeline();
-    $("#timeline a").click(function(){
-        var index = parseInt($(this).data("index"));
-        // RECURSION B*TCH !!!!!!
-        var checkingFunction = function(index){
-            if (index > currentRow){
-                scrollToPost(index++, checkingFunction);
-            }
-            else if (index < currentRow){
-                scrollToPost(index--, checkingFunction);
-            }
-            else {
-                markTimeline();
-            }
-        };
-        checkingFunction(index);
-    });
 }
 
 
 function markTimeline(index){
     if (typeof index === "undefined"){
-        if ($("#timeline a[data-index='" + currentRow + "']").length > 0){
-            $("#timeline li").css("background-color", "initial");
-            $("#timeline a[data-index='" + currentRow + "']").parent().css("background-color", "#abdfde");
+        if ($(".timeline a[data-index='" + currentRow + "']").length > 0){
+            $(".timeline li").css("background-color", "initial");
+            $(".timeline a[data-index='" + currentRow + "']").parent().css("background-color", "#abdfde");
         }
     }
     else {
-        $("#timeline li").css("background-color", "initial");
-        $("#timeline li:eq(" + index + ")").css("background-color", "#abdfde");
+        $(".timeline li").css("background-color", "initial");
+        $(".timeline li:eq(" + index + ")").css("background-color", "#abdfde");
     }
 }
 
@@ -556,8 +563,17 @@ function resetParentDimensions(){
     mid = pt + ph/2 - bottomBuffer;
 }
 
+// Add zero to the beginning of a single digit number to get a 2 digit one
+function zeroify(num){
+    return num < 10 ? '0' + num : num;
+}
+
 function prettifyTime(timestamp){
-    return new Date(timestamp).toLocaleString();
+    
+    var date = new Date(timestamp);
+    // yyyy/mm/dd (Day)  hh:mm:ss
+    // hh is from 00-23
+    return date.getFullYear() + "/" + zeroify(date.getMonth()+1) + "/" + zeroify(date.getDate()) + " (" + ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][date.getDay()] + ") " + zeroify(date.getHours()) + ":" + zeroify(date.getMinutes()) + ":" + zeroify(date.getSeconds());
 }
 
 function chopID(){
@@ -567,4 +583,49 @@ function chopID(){
 function randPic(){
     var faceNum = Math.floor(Math.random()*4)+1;
     return "face" + faceNum + ".png";
+}
+
+function setStyle(style){
+    sessionStorage.setItem("style", style);
+    currentStyle = style;
+
+    // stuff to do after changing the styles
+    if (style === styles.anime){
+        hideAndSeek();
+        $(".chat").animate({
+            scrollTop: 1
+        }, 100, function(){
+            setTimeline();
+            markTimeline($(".timeline li").length-1);
+        });
+    }
+    else if (style === styles.vn){
+        $(".chat-row:gt(0) *").removeAttr("style");
+        $(".chat-row:gt(0)").removeAttr("style").removeData("color").find(".bubble").removeClass().addClass("bubble");
+    }
+}
+
+function switchDesigns(style){
+    if (typeof style === "undefined"){
+        if ($("body").hasClass("anime")){
+            $("body").removeClass("anime").addClass("vn");
+            $(".design-switch").text("Switch to Anime design");
+            setStyle(styles.vn);
+        }
+        else {
+            $("body").removeClass("vn").addClass("anime");
+            $(".design-switch").text("Switch to VN design");
+            setStyle(styles.anime);
+        }
+    }
+    else if (style === styles.anime) {
+        $("body").removeClass("vn").addClass("anime");
+        $(".design-switch").text("Switch to VN design");
+        setStyle(style);
+    }
+    else if (style === styles.vn){
+        $("body").removeClass("anime").addClass("vn");
+        $(".design-switch").text("Switch to Anime design");
+        setStyle(style);
+    }
 }
