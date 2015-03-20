@@ -22,6 +22,29 @@ function changeRow(that, properties){
 }
 
 
+
+function getPosts(){
+    $.get("/getPosts", {channel: channel, start: messagesCount, length: nextAmount}).done(function(response){
+        messagesCount += response.messages.length;
+
+        if (response.messages.length < nextAmount){
+            $(".load-prev").parent().hide();
+        }
+        else {
+            $("#marker").after(response.html);
+
+            largestPostNumber = parseInt($(".chat-row .postNumber").last().text());
+            smallestPostNumber = parseInt($(".chat-row .postNumber").first().text());
+            setTimeline();
+
+            hideAndSeek();
+        }
+    }).fail(function(jqXHR, textStatus, errorThrown){
+        alert([textStatus, errorThrown]);
+    });
+}
+
+
 /**
  * Function for choosing the rows to resize
  */

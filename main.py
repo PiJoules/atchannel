@@ -9,7 +9,7 @@ from datetime import datetime
 import pymongo
 
 # Import the Flask Framework
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, Response
 app = Flask(__name__)
 
 # Create mongoconnection
@@ -29,10 +29,13 @@ def index(channel="main"):
 	if style is None:
 		style = "anime"
 
+	if not channelDoesExist(channel):
+		return "This channel does not exist", 404
+
 	channels = client.counter.find({"_id": {"$ne": "main"}}).sort("seq", pymongo.DESCENDING)
 	mainChannelCount = client.counter.find_one({"_id": "main"})["seq"]
-	cursor = client.messages.find({"channel": channel}, limit=limit, sort=[("postNumber", -1)])
-	messages = list( cursor )[::-1]
+
+	messages = getPosts(channel, 0, limit)
 
 	return render_template("index.html",
 		messages = messages,
@@ -87,7 +90,7 @@ def addChannel():
 		if not channel.isalnum():
 			return "The channel name must contain only aphanumeric characters"
 
-		if channel in client.counter.distinct("_id"):
+		if channelDoesExist(channel):
 			return "This channel already exists"
 
 		client.counter.insert({
@@ -98,6 +101,30 @@ def addChannel():
 		return ""
 	else:
 		return "Unsucessful creation: the channel name is not provided"
+
+
+@app.route('/getPosts', methods=['GET'])
+def getPosts():
+	channel = request.args.get("channel")
+	start = request.args.get("start")
+	length = request.args.get("length")
+
+	if start is None or not start.isdigit():
+		return "Invalid starting index"
+	if length is None or not length.isdigit():
+		return "Invalid length"
+	if channel is None or channel.strip() == "":
+		return "Invalid channel name"
+
+	channel = channel.strip()
+	if not channelDoesExist(channel):
+		return "Channel does not exist"
+
+	start = int(start)
+	length = int(length)
+
+	messages = getPosts(channel, start, length)
+	return jsonify(messages=messages, html=getPostsHTML(messages))
 
 
 @app.errorhandler(404)
@@ -143,6 +170,23 @@ def utility_processor():
 
 	return dict(randID=randID, prettifyTime=prettifyTime, randFaceNum=randFaceNum, randColor=randColor)
 
+
+
+# Get posts from the database
+# 
+# The starting index starts from the beginning of the collection sorted by postNumber in reverse (the latest posts).
+# If the collection has 100 rows and we receive a starting index of 10 and length 25, messages with postNumbers
+# from 76 to 90. A staring index of 0 and length 90 will get postNumbers 11 to 100
+def getPosts(channel, start, length):
+	cursor = client.messages.find({"channel": channel}, skip=start, limit=length, sort=[("postNumber", -1)], fields={"_id": False})
+	messages = list( cursor )[::-1]
+	return messages
+
+def getPostsHTML(posts):
+	return render_template("posts.html", messages=posts)
+
+def channelDoesExist(channel):
+	return channel in client.counter.distinct("_id")
 
 
 if __name__ == '__main__':

@@ -48,7 +48,7 @@ var defaultProperties = {
 /**
  * Messages Globals
  */
-var intervalID, messagesCount = 0;
+var intervalID;
 var nextAmount = 50;
 var smallestPostNumber = 0;
 var largestPostNumber = 0;
@@ -161,6 +161,12 @@ $("#new-channel-name").keyup(function(e){
 });
 $("#submit-channel").click(function(){
     submitChannel();
+});
+
+
+// Load more posts
+$(".load-prev").click(function(){
+    getPosts();
 });
 
 

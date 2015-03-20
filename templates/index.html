@@ -51,31 +51,15 @@
                 </h1>
             </div>
 
+            {% if messages|length >= 50 %}
             <div class="row" style="margin-left: 15%; margin-right: 15%; margin-bottom: 30px; text-align: center;">
                 <button class="load-prev btn btn-default btn-block">Load 50 more</button>
             </div>
+            {% endif %}
 
-            {% for message in messages %}
-            {% set color = randColor() %}
-            <div class="row chat-row" data-postnumber="{{ message.postNumber|int }}">
-                <div class="avatar">
-                    <img src="/static/images/face{{ randFaceNum() }}.png" class="img-rounded" />
-                </div>
-                <div class="bubble-container">
-                    <div class="bubble" data-color="{{ color }}" style="background-color: {{ color }}; border-color: transparent {{ color }};">
-                        <p class="chat-row-header">
-                            <strong><span class="postNumber">{{ message.postNumber|int }}</span> &nbsp; Name: {{ message.name }} <span class="sage">[sage]</span></strong>
-                            <span class="vn-time">&nbsp;:{{ prettifyTime(message.time) }}</span>
-                            <strong>ID:{{ randID() }}</strong>
-                        </p>
-                        <p class="postMessage">{{ message.message }}</p>
-                        <p class="anime-time">
-                            <span>{{ prettifyTime(message.time) }}</span>
-                        </p>
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
+            <div id="marker" style="display: none;"></div>
+
+            {% include "posts.html" %}
 
             <div class="row filler-row" style="visibility: hidden;"></div>
         </div>
@@ -212,6 +196,7 @@
         <script type="text/javascript">
             // set any vars returned by flask here
             var channel = "{{ channel }}";
+            var messagesCount = {{ messages|length }};
         </script>
         <script type="text/javascript" src="/static/js/main.js"></script>
     </body>
