@@ -153,7 +153,10 @@ $("input[type=text].message").keyup(function(e){
 // Channel submission
 $("#new-channel-name").keyup(function(e){
     if(e.keyCode == 13) {
-        setUsername();
+        submitChannel();
+    }
+    else {
+        $(".new-channel-name").text($("#new-channel-name").val().trim() + "Channel");
     }
 });
 $("#submit-channel").click(function(){

@@ -10,9 +10,11 @@
     </head>
 
     <body>
+        {% if messages|length > 0 %}
         <div style="position: fixed; right: 26px; text-align: right; min-width: 40px; z-index: 2;">
             <ul class="timeline"></ul>
         </div>
+        {% endif %}
 
         <div class="chat">
 
@@ -152,11 +154,26 @@
                     <div class="modal-body">
                         <p>These are all the currently existing channels created by users on @channel</p>
 
-                        <p><a href="/main">@channel</a> ({{ mainChannelCount|int }} Posts)</p>
-                        {% for channel in channels %}
-                            {% if channel._id != "main" %}
-                            <p><a href="/{{channel._id}}">{{ channel._id }}Channel</a> ({{ channel.seq|int }} Posts)</p>
+                        <p>
+                            <a href="/main">@channel</a>
+                            ({{ mainChannelCount|int }}
+                            {% if mainChannelCount != 1 %}
+                                Posts)
+                            {% else %}
+                                Post)
                             {% endif %}
+                        </p>
+
+                        {% for channel in channels %}
+                            <p>
+                                <a href="/{{channel._id}}">{{ channel._id }}Channel</a>
+                                ({{ channel.seq|int }}
+                                {% if channel.seq != 1 %}
+                                    Posts)
+                                {% else %}
+                                    Post)
+                                {% endif %}
+                            </p>
                         {% endfor %}
                     </div>
                 </div>

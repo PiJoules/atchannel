@@ -32,7 +32,7 @@ def index(channel="main"):
 	channels = client.counter.find({"_id": {"$ne": "main"}}).sort("seq", pymongo.DESCENDING)
 	mainChannelCount = client.counter.find_one({"_id": "main"})["seq"]
 	cursor = client.messages.find({"channel": channel}, limit=limit, sort=[("postNumber", -1)])
-	messages = reversed( list( cursor ) )
+	messages = list( cursor )[::-1]
 
 	return render_template("index.html",
 		messages = messages,
