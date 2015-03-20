@@ -1,0 +1,10 @@
+# This requirements file lists all third-party dependencies for this project.
+#
+# Run 'pip install -r requirements.txt -t lib' to install these dependencies
+# in `lib/` subdirectory.
+# 
+# See https://cloud.google.com/appengine/docs/python/tools/libraries27 for libraries that are already included in the SDK.
+#
+# Note: The `lib` directory is added to `sys.path` by `appengine_config.py`.
+Flask==0.10
+pymongo==2.8

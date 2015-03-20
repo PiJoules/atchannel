@@ -24,13 +24,17 @@ html, body {
 	position: relative;
 }
 
+.filler-row {
+	height: 50%;
+}
+
 
 /**
  * Anime designs
  */
 
 .anime .chat {
-	background-image: url("/background.png");
+	background-image: url("/static/images/background.png");
 	background-size: 100% calc(100% + 50px);
 }
 
@@ -141,34 +145,9 @@ html, body {
 	z-index: 1;
 	left: -20px;
 	top: 0px;
+	border-color: inherit;
 }
-.anime .bubble.bbffff:after {
-	border-color: transparent #BBFFFF;
-}
-.anime .bubble.b694da:after {
-	border-color: transparent #b694da;
-}
-.anime .bubble.bde0b1:after {
-	border-color: transparent #bde0b1;
-}
-.anime .bubble.a0e1b4:after {
-	border-color: transparent #a0e1b4;
-}
-.anime .bubble.a63333:after {
-	border-color: transparent #a63333;
-}
-.anime .bubble.d090c4:after {
-	border-color: transparent #d090c4;
-}
-.anime .bubble.fffed9:after {
-	border-color: transparent #fffed9;
-}
-.anime .bubble.ffd39b:after {
-	border-color: transparent #ffd39b;
-}
-.anime .bubble.n74bbfb:after {
-	border-color: transparent #74bbfb;
-}
+
 .anime .bubble > p {
 	margin: 0;
 }
