@@ -6,3 +6,13 @@ The goal of this website is to replicate the @channel from the anime Steins;Gate
 
 **@channel as portrayed in the VN**
 !["@channel as portrayed in the VN"](static/images/VN/vn3.png "@channel as portrayed in the VN")
+
+## Dependencies
+- Flask
+- pymongo
+- jQuery
+- FitText
+- Mobile Detect
+- Bootstrap
+- Bootstrap Switch
+- Bootstrap Markdown

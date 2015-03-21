@@ -127,6 +127,11 @@ def getPosts():
 	return jsonify(messages=messages, html=getPostsHTML(messages))
 
 
+@app.route('/submitpost.html', methods=['GET'])
+def submitpost():
+	return render_template("submitpost.html")
+
+
 @app.errorhandler(404)
 def page_not_found(e):
     """Return a custom 404 error."""
