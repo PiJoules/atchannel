@@ -36,6 +36,10 @@ html, body {
 	height: 50%;
 }
 
+.dropdown-menu > li {
+	text-align: center;
+}
+
 
 /**
  * Anime designs
@@ -165,9 +169,15 @@ html, body {
 }
 
 .anime .bubble .chat-row-header > * {
-	width: 50%;
 	display: inline-block;
 	float: left;
+}
+
+.anime .bubble .chat-row-header .part1 {
+	width: 70%;
+}
+.anime .bubble .chat-row-header .part2 {
+	width: 30%;
 }
 
 .anime .timeline {

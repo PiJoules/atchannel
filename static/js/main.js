@@ -15,7 +15,7 @@ var maxPropertiesNumeric = {
     "font-size": 15,
     "bubbleWidth": 100,
     "margin-left": 5,
-    "margin-right": 10,
+    "margin-right": 15,
     "avatarWidth": 5,
     "time-font-size": 12
 };
@@ -75,26 +75,29 @@ if (sessionStorage.getItem("style") === null){
     }
 }
 else {
-    currentStyle = parseInt(sessionStorage.getItem("style"));
+    setStyle(parseInt(sessionStorage.getItem("style")));
 }
 
+var canAnimate;
+console.log(sessionStorage.getItem("canAnimate"));
+if (sessionStorage.getItem("canAnimate") === null){
+    setCanAnimate(currentStyle === styles.anime);
+}
+else {
+    setCanAnimate(sessionStorage.getItem("canAnimate") === "true" ? true : false);
+}
+console.log(canAnimate);
 
 /**
  * Main script
  */
-
-// Set design
-switchDesigns(currentStyle);
-$(".design-switch").click(function(){
-    switchDesigns();
-});
 
 // On scroll events
 $(".chat").scroll(function(){
     hideAndSeek();
     markTimeline();
 
-    if ($(this).scrollTop() > 50 && !$(".timeline-container").is(":visible")) {
+    if ($(this).scrollTop() > 50 && !$(".timeline-container").is(":visible") && window.innerWidth > 880) {
         $(".timeline-container").show("fast");
     }
     else if ($(this).scrollTop() <= 50 && $(".timeline-container").is(":visible")) {
@@ -106,6 +109,13 @@ $(".chat").scroll(function(){
 $(window).resize(function(){
     resetParentDimensions();
     setTimeline();
+
+    if (window.innerWidth <= 880 && $(".timeline-container").is(":visible")){
+        $(".timeline-container").hide();
+    }
+    else if (window.innerWidth > 880 && $(".chat").scrollTop() > 50 && !$(".timeline-container").is(":visible")) {
+        $(".timeline-container").show("fast");
+    }
 });
 
 // Set the arrow functionality
@@ -178,7 +188,37 @@ $(".load-prev").click(function(){
 
 
 // Resize title
-$("#channel-name").fitText(1.2);
+$(".fit-text").fitText(1.2);
+
+
+// Design toggle
+$("input.toggle-style").bootstrapSwitch({
+    onText: "Anime",
+    offText: "VN",
+    state: (currentStyle === styles.anime),
+    onSwitchChange: function(event, state){
+        if (state){
+            // Anime
+            setStyle(styles.anime);
+            $("input.toggle-resize").bootstrapSwitch("disabled", false);
+        }
+        else {
+            // VN
+            setStyle(styles.vn);
+            $("input.toggle-resize").bootstrapSwitch("disabled", true);
+        }
+    }
+});
+
+
+// Toggle resize animation
+$("input.toggle-resize").bootstrapSwitch({
+    state: canAnimate,
+    disabled: (currentStyle !== styles.anime),
+    onSwitchChange: function(event, state){
+        setCanAnimate(state);
+    }
+});
 
 
 // Stuff to do after the window loads
@@ -186,7 +226,8 @@ $("#channel-name").fitText(1.2);
 $(window).load(function(){
     resetParentDimensions();
 
-    $(".timeline-container").hide();
+    if ($(".chat").scrollTop() <= 50 || window.innerWidth <= 880)
+        $(".timeline-container").hide();
 
     largestPostNumber = parseInt($(".chat-row .postNumber").last().text());
     smallestPostNumber = parseInt($(".chat-row .postNumber").first().text());

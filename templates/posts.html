@@ -1,15 +1,15 @@
 {% for message in messages %}
 {% set color = randColor() %}
-<div class="row chat-row" data-postnumber="{{ message.postNumber|int }}">
+<div class="row chat-row" id="post{{ message.postNumber|int }}" data-postnumber="{{ message.postNumber|int }}">
     <div class="avatar">
         <img src="/static/images/face{{ randFaceNum() }}.png" class="img-rounded" />
     </div>
     <div class="bubble-container">
         <div class="bubble" data-color="{{ color }}" style="background-color: {{ color }}; border-color: transparent {{ color }};">
             <p class="chat-row-header">
-                <strong><span class="postNumber">{{ message.postNumber|int }}</span> &nbsp; Name: {{ message.name }} <span class="sage">[sage]</span></strong>
-                <span class="vn-time">&nbsp;:{{ prettifyTime(message.time) }}</span>
-                <strong>ID:{{ randID() }}</strong>
+                <strong class="part1"><span class="postNumber">{{ message.postNumber|int }}</span> &nbsp; Name: {{ message.name }} <span class="sage">[sage]</span></strong>
+                <span class="vn-time part2">&nbsp;:{{ prettifyTime(message.time) }}</span>
+                <strong class="part2">ID:{{ randID() }}</strong>
             </p>
             <p class="postMessage">{{ message.message }}</p>
             <p class="anime-time">

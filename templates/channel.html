@@ -9,6 +9,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" />
+        <link rel="stylesheet" type="text/css" href="/static/css/bootstrap-switch.min.css" />
         <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" />
         <link rel="stylesheet" type="text/css" href="/static/css/styles.css" />
     </head>
@@ -45,13 +46,14 @@
                                 <a class="btn" data-toggle="modal" data-target="#creating-channel"><span class="glyphicon glyphicon-plus"></span></a>
                             </li>
                             <li class="dropdown">
-                                <a class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                <a class="btn dropdown-toggle" data-toggle="modal" data-target="#settings-modal">
                                     <span class="glyphicon glyphicon-cog"></span>
                                 </a>
-                                <ul class="dropdown-menu" role="menu">
+                                <!--<ul class="dropdown-menu" role="menu">
                                     <li><a href="#" data-toggle="modal" data-target="#myModal">Change Username</a></li>
                                     <li><a href="#" class="design-switch">Switch to VN design</a></li>
-                                </ul>
+                                    <li><input type="checkbox" name="my-checkbox" checked></li>
+                                </ul>-->
                             </li>
                         </ul>
                     </div>
@@ -60,7 +62,7 @@
 
             <div class="row" style="height: calc(50% - 50px); text-align: center;">
                 <h1>Welcome to</h1>
-                <h1 id="channel-name">
+                <h1 id="channel-name" class="fit-text">
                     {% if channel == "main" %}
                         @channel
                     {% else %}
@@ -207,8 +209,36 @@
             </div>
         </div>
 
+        <!-- Settings modal -->
+        <div class="modal fade" id="settings-modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title">Settings</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <h4>Toggle Style</h4>
+                                <p>Toggle between the style of @channel portrayed in the anime and the visual novel.</p>
+                                <input class="toggle-style" type="checkbox" name="my-checkbox" checked>
+                            </div>
+                            <div class="col-sm-6">
+                                <h4>Toggle Resize</h4>
+                                <p>Toggle the resizing animations for each row while scrolling. (Can only toggle if on anime style.)</p>
+                                <input class="toggle-resize" type="checkbox" name="my-checkbox" checked>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <script type="text/javascript" src="/static/js/jquery.min.js"></script>
         <script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="/static/js/bootstrap-switch.min.js"></script>
         <script type="text/javascript" src="/static/js/mobile-detect.min.js"></script>
         <script type="text/javascript" src="/static/js/jquery.fittext.js"></script>
         <script type="text/javascript" src="/static/js/functions.js"></script>

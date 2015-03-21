@@ -49,7 +49,7 @@ function getPosts(){
  * Function for choosing the rows to resize
  */
 function hideAndSeek(){
-    if (currentStyle === styles.anime){
+    if (canAnimate && currentStyle !== styles.vn){
         // limit the rows to resize only to those onscreen
         var rows = $(".chat-row").filter(function(index){
         	var top = $(this).position().top;
@@ -165,6 +165,7 @@ function resetParentDimensions(){
  * Scroll to a row until it's equal to the current row
  */
 function scrollToPost(dest,callback){
+    console.log(dest, currentRow);
     if (currentRow !== dest){
 	    $(".chat").animate({
 	        scrollTop: $(".chat").scrollTop() + $(".chat-row:eq(" + dest + ")").position().top - ph/2
@@ -211,11 +212,18 @@ function setStyle(style){
 
     // stuff to do after changing the styles
     if (style === styles.anime){
+        $("body").removeClass("vn").addClass("anime");
+
     	setBubbleColors();
-        hideAndSeek();
+        if (canAnimate)
+            hideAndSeek();
+        else
+            changeRow($(".chat-row"), maxProperties);
         setTimeline();
     }
     else if (style === styles.vn){
+        $("body").removeClass("anime").addClass("vn");
+
     	// Remove all inline styles
         $(".chat-row *").removeAttr("style");
         $(".chat-row").removeAttr("style");
@@ -254,7 +262,13 @@ function setTimeline(){
 
         $(".timeline a").click(function(){
             var index = parseInt($(this).data("index"));
-            scrollToPost(index, markTimeline);
+            if (canAnimate){
+                scrollToPost(index, markTimeline);
+            }
+            else {
+                currentRow = index;
+                window.location.href = "#post" + (index+smallestPostNumber);
+            }
         });
     }
 }
@@ -302,29 +316,18 @@ function submitChannel(){
 
 
 /**
- * Function for switching the current style
+ * Function for setting canAnimate into session storage
  */
-function switchDesigns(style){
-    if (typeof style === "undefined"){
-        if ($("body").hasClass("anime")){
-            $("body").removeClass("anime").addClass("vn");
-            $(".design-switch").text("Switch to Anime design");
-            setStyle(styles.vn);
-        }
-        else {
-            $("body").removeClass("vn").addClass("anime");
-            $(".design-switch").text("Switch to VN design");
-            setStyle(styles.anime);
-        }
+function setCanAnimate(animate){
+    canAnimate = animate;
+    sessionStorage.setItem("canAnimate", canAnimate);
+
+    if (canAnimate){
+        hideAndSeek();
     }
-    else if (style === styles.anime) {
-        $("body").removeClass("vn").addClass("anime");
-        $(".design-switch").text("Switch to VN design");
-        setStyle(style);
-    }
-    else if (style === styles.vn){
-        $("body").removeClass("anime").addClass("vn");
-        $(".design-switch").text("Switch to Anime design");
-        setStyle(style);
+    else {
+        changeRow($(".chat-row"), maxProperties);
     }
 }
+
+
