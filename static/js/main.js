@@ -93,6 +93,13 @@ $(".design-switch").click(function(){
 $(".chat").scroll(function(){
     hideAndSeek();
     markTimeline();
+
+    if ($(this).scrollTop() > 50 && !$(".timeline-container").is(":visible")) {
+        $(".timeline-container").show("fast");
+    }
+    else if ($(this).scrollTop() <= 50 && $(".timeline-container").is(":visible")) {
+        $(".timeline-container").hide();
+    }
 });
 
 // Stuff to do on resize
@@ -170,10 +177,16 @@ $(".load-prev").click(function(){
 });
 
 
+// Resize title
+$("#channel-name").fitText(1.2);
+
+
 // Stuff to do after the window loads
 // Only need to include stuff that requires elements in the window
 $(window).load(function(){
     resetParentDimensions();
+
+    $(".timeline-container").hide();
 
     largestPostNumber = parseInt($(".chat-row .postNumber").last().text());
     smallestPostNumber = parseInt($(".chat-row .postNumber").first().text());

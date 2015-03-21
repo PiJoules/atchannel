@@ -37,7 +37,7 @@ def index(channel="main"):
 
 	messages = getPosts(channel, 0, limit)
 
-	return render_template("index.html",
+	return render_template("channel.html",
 		messages = messages,
 		style = style,
 		channel=channel,

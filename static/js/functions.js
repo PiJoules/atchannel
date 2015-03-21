@@ -28,7 +28,7 @@ function getPosts(){
         messagesCount += response.messages.length;
 
         if (response.messages.length < nextAmount){
-            $(".load-prev").parent().hide();
+            $(".load-prev").parent().remove();
         }
         else {
             $("#marker").after(response.html);
@@ -217,8 +217,8 @@ function setStyle(style){
     }
     else if (style === styles.vn){
     	// Remove all inline styles
-        $(".chat-row:gt(0) *").removeAttr("style");
-        $(".chat-row:gt(0)").removeAttr("style");
+        $(".chat-row *").removeAttr("style");
+        $(".chat-row").removeAttr("style");
     }
 }
 
@@ -233,17 +233,18 @@ function setTimeline(){
         var ticCount = parseInt(ph/ticHeight)+1;
         var postGap = parseFloat( (largestPostNumber-smallestPostNumber+1)/ticCount );
         $(".timeline").empty();
-        var lastNumber = 0;
+        var lastNumber = -1;
         for (var i = 0; i < ticCount; i++){
-            var index = Math.ceil(postGap*i)+1;
+            var index = Math.ceil(postGap*i);
 
 	        // ensure the line doesn't go past the total number of posts
 	        if (index > $(".chat-row").length-1)
 	            break;
 
             // ensure no duplicate numbers are shown
-            if (index !== lastNumber)
+            if (index !== lastNumber){
                 $(".timeline").append("<li><a href='javascript: void(0)' data-index='" + index + "'>" + (index+smallestPostNumber) + "</a> -</li>");
+            }
 
             lastNumber = index;
         }
@@ -281,22 +282,6 @@ function setUsername(){
  */
 function submitChannel(){
     var channelName = $("#new-channel-name").val().trim();
-    /*var channels = _.uniq(Messages.find({}, { channel: 1 }).map(function(x) {return x.channel;}), true);
-    if (channelName !== "" && isAlphaNumeric(channelName) && channels.indexOf(channelName) === -1){
-        Meteor.call("addPost",{
-            name: "Channel Creator",
-            message: channelName + "Channel is now open",
-            time: Date.now(),
-            channel: channelName
-        });
-        Router.go("/redirect/" + channelName);
-    }
-    else if (!isAlphaNumeric(channelName)){
-        alert("Please enter alphanumeric characters only");
-    }
-    else if (channels.indexOf(channelName) !== -1){
-        alert("This channel already exists. Please choose a different name.");
-    }*/
     if (channelName !== "" && isAlphaNumeric(channelName)){
 	    $.post("/addChannel", {channel: channelName}).done(function(response){
 	        if (response !== ""){

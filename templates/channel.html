@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>@channel</title>
+
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" />
+        <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" type="text/css" href="/static/css/styles.css" />
+    </head>
+
+    <body>
+        {% if messages|length > 0 %}
+        <div class="timeline-container">
+            <ul class="timeline"></ul>
+        </div>
+        {% endif %}
+
+        <div class="chat">
+            <nav class="navbar navbar-default" style="">
+                <div class="container">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <a class="navbar-brand" href="/">@channel</a>
+                    </div>
+
+                    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                        <ul class="nav navbar-nav navbar-left">
+                            <li><a class="text-center" href="#" data-toggle="modal" data-target="#aboutModal">About</a></li>
+                        </ul>
+                        <ul class="nav navbar-nav navbar-right">
+                            <li>
+                                <a class="btn" data-toggle="modal" data-target="#existing-channels"><span class="glyphicon glyphicon-search"></span></a>
+                            </li>
+                            <li>
+                                <a class="btn" data-toggle="modal" data-target="#creating-channel"><span class="glyphicon glyphicon-plus"></span></a>
+                            </li>
+                            <li class="dropdown">
+                                <a class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                    <span class="glyphicon glyphicon-cog"></span>
+                                </a>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li><a href="#" data-toggle="modal" data-target="#myModal">Change Username</a></li>
+                                    <li><a href="#" class="design-switch">Switch to VN design</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="row" style="height: calc(50% - 50px); text-align: center;">
+                <h1>Welcome to</h1>
+                <h1 id="channel-name">
+                    {% if channel == "main" %}
+                        @channel
+                    {% else %}
+                        {{ channel }}Channel
+                    {% endif %}
+                </h1>
+            </div>
+
+            {% if messages|length >= 50 %}
+            <div class="row" style="margin-left: 15%; margin-right: 15%; margin-bottom: 30px; text-align: center;">
+                <button class="load-prev btn btn-default btn-block">Load 50 more</button>
+            </div>
+            {% endif %}
+
+            <div id="marker" style="display: none;"></div>
+
+            {% include "posts.html" %}
+
+            <div class="row filler-row" style="visibility: hidden;"></div>
+        </div>
+        <div class="chat-input">
+            <div class="input-group">
+                <input type="text" class="message form-control" placeholder="Post message as 'Anonymous'" aria-describedby="basic-addon2">
+                <span class="input-group-btn">
+                    <button class="btn btn-default prevPost"><span class="fa fa-caret-left"></span></button>
+                    <button class="btn btn-default nextPost"><span class="fa fa-caret-right"></span></button>
+                </span>
+            </div>
+        </div>
+
+        <!-- username modal -->
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title" id="exampleModalLabel">Choose a username</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p><small>'Anonymous' will be your username if you don't enter one</small>
+                        </p>
+                        <div class="form-group">
+                            <input type="text" class="form-control submit-username" id="selected-user-name" placeholder="Username" />
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button id="submit-username" type="button" class="btn btn-primary">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- About @channel modal -->
+        <div class="modal fade" id="aboutModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title" id="exampleModalLabel">About @channel</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>The goal of this website is to replicate the @channel as seen in the anime Steins;Gate as much as possible.</p>
+
+                        <p>I've been attempting to create it based off @channel's portrayal in the anime (left) and in the visual novel (right). The anime portrayal is from episode 11.</p>
+
+                        <p>
+                            <img class="sample-photo" src="/static/images/@channel.gif" alt="@channel" />
+                            <img class="sample-photo" src="/static/images/VN/vn3.png" alt="@channel" />
+                        </p>
+
+                        <h3>Resources</h3>
+                        <ul>
+                            <li>Source code available <a href="https://github.com/PiJoules/-channel">here</a></li>
+                            <li>Got suggestions for @channel? Post them <a href="/redirect/Suggestions">here</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- existing channels modal -->
+        <div class="modal fade" id="existing-channels" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title" id="exampleModalLabel">Find a channel</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>These are all the currently existing channels created by users on @channel</p>
+
+                        <p>
+                            <a href="/main">@channel</a>
+                            ({{ mainChannelCount|int }}
+                            {% if mainChannelCount != 1 %}
+                                Posts)
+                            {% else %}
+                                Post)
+                            {% endif %}
+                        </p>
+
+                        {% for channel in channels %}
+                            <p>
+                                <a href="/{{channel._id}}">{{ channel._id }}Channel</a>
+                                ({{ channel.seq|int }}
+                                {% if channel.seq != 1 %}
+                                    Posts)
+                                {% else %}
+                                    Post)
+                                {% endif %}
+                            </p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- create a channel modal -->
+        <div class="modal fade" id="creating-channel" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title">Create a channel</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p><small>Enter the name of a new channel you want to create. It must contain only alphanumeric characters.</small></p>
+                        <p><small>You do not need to end it with the word "Channel" when creating one. It will be added for you.</small></p>
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="new-channel-name" placeholder="Channel Name" />
+                        </div>
+                        <p>Channel Name: <strong class="new-channel-name">NewChannel</strong></p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button id="submit-channel" type="button" class="btn btn-primary">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script type="text/javascript" src="/static/js/jquery.min.js"></script>
+        <script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="/static/js/mobile-detect.min.js"></script>
+        <script type="text/javascript" src="/static/js/jquery.fittext.js"></script>
+        <script type="text/javascript" src="/static/js/functions.js"></script>
+        <script type="text/javascript">
+            // set any vars returned by flask here
+            var channel = "{{ channel }}";
+            var messagesCount = {{ messages|length }};
+        </script>
+        <script type="text/javascript" src="/static/js/main.js"></script>
+    </body>
+
+</html>

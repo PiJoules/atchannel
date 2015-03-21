@@ -10,6 +10,14 @@ html, body {
 	margin-left: 10px;
 }
 
+.timeline-container {
+	position: fixed;
+	right: 26px; 
+	text-align: right; 
+	min-width: 40px; 
+	z-index: 2;
+}
+
 .top-stuff {
 	position: absolute;
 	top: 20px;
