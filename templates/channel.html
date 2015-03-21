@@ -230,14 +230,13 @@
         <script type="text/javascript" src="/static/js/bootstrap-markdown.js"></script>
         <script type="text/javascript" src="/static/js/mobile-detect.min.js"></script>
         <script type="text/javascript" src="/static/js/jquery.fittext.js"></script>
-        <script type="text/javascript" src="/static/js/functions.js"></script>
+        <script type="text/javascript" src="/static/js/module.js"></script>
         <script type="text/javascript">
             // set any vars returned by flask here
             var channel = "{{ channel }}";
             var messagesCount = {{ messages|length }};
-            //$("#post-markdown").markdown({autofocus:false,savable:false});
         </script>
-        <script type="text/javascript" src="/static/js/main.js"></script>
+        <script type="text/javascript" src="/static/js/channel.js"></script>
     </body>
 
 </html>

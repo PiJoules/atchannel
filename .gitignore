@@ -2,6 +2,7 @@
 dump
 lib/*
 private/*
+notes.md
 
 !lib/README.md
 !private/README.md
