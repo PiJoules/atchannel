@@ -223,9 +223,10 @@ html, body {
 	width: 100%;
 }
 .vn .chat-input {
-	position: relative;
+	position: fixed;
 	height: 50px;
 	z-index: 2;
+	bottom: 0;
 }
 .vn .chat-input * {
 	height: 50px;
