@@ -299,7 +299,7 @@ function setUsername(){
         name = input;
         localStorage.setItem("atchannelUsername", name);
         $(".message").attr("placeholder", "Post message as '" + name + "'");
-        $("#myModal").modal("hide");
+        $("#settings-modal").modal("hide");
     }
     else if (!isAlphaNumeric(input)){
         alert("Please enter alphanumeric characters only");
