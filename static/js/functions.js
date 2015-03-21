@@ -37,7 +37,12 @@ function getPosts(){
             smallestPostNumber = parseInt($(".chat-row .postNumber").first().text());
             setTimeline();
 
-            hideAndSeek();
+            if (canAnimate)
+                hideAndSeek();
+            else
+                changeRow($(".chat-row"), maxProperties);
+
+            setStyle(currentStyle);
         }
     }).fail(function(jqXHR, textStatus, errorThrown){
         alert([textStatus, errorThrown]);
