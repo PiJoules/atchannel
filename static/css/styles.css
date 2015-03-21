@@ -26,14 +26,12 @@ html, body {
 }
 
 .chat {
-	height: calc(100% - 50px);
-	overflow-y: scroll;
 	overflow-x: hidden;
 	position: relative;
 }
 
 .filler-row {
-	height: 50%;
+	height: 50vh;
 }
 
 .dropdown-menu > li {
@@ -44,11 +42,6 @@ html, body {
 /**
  * Anime designs
  */
-
-.anime .chat {
-	background-image: url("/static/images/background.png");
-	background-size: 100% calc(100% + 50px);
-}
 
 .anime .chat-row {
 	padding-top: 15px;
@@ -62,8 +55,9 @@ html, body {
 	width: 100%;
 }
 .anime .chat-input {
-	position: relative;
+	position: fixed;
 	height: 50px;
+	bottom: 0;
 	background-color: #ddeaf7;
 	border: 0px solid #ddeaf7;
 	z-index: 2;
@@ -106,7 +100,6 @@ html, body {
 
 .anime .avatar {
 	width: 5%;
-	display: inline-block;
 	vertical-align: top;
 	margin-top: -5px;
 }
@@ -152,7 +145,6 @@ html, body {
 	position: absolute;
 	border-style: solid;
 	border-width: 0px 20px 10px 0;
-	display: block;
 	width: 0;
 	z-index: 1;
 	left: -20px;
@@ -166,6 +158,11 @@ html, body {
 
 .anime .bubble .anime-time {
 	text-align: right;
+}
+
+.anime .bubble .chat-row-header {
+	display: table;
+	clear: both;
 }
 
 .anime .bubble .chat-row-header > * {
@@ -238,10 +235,6 @@ html, body {
 	font-size: 20px;
 }
 
-.vn .avatar {
-	display: none;
-}
-
 .vn .timeline {
 	display: none;
 }
@@ -257,10 +250,37 @@ html, body {
 
 /* For screens at least 768px wide (large screens/desltops) */
 @media screen and (min-width: 768px){
+	.anime .avatar {
+		display: inline-block;
+	}
+	.anime .bubble {
+		-webkit-border-top-left-radius: 0px;
+		-moz-border-top-left-radius: 0px;
+		border-top-left-radius: 0px;
+	}
+	.anime .bubble:after {
+		display: block;
+	}
 
+	.vn .avatar {
+		display: none;
+	}
+	.vn .bubble:after {
+		display: none;
+	}
 }
 
 /* For screens at most 767px wide (small screens/phones) */
 @media screen and (max-width: 767px){
-
+	.avatar {
+		display: none;
+	}
+	.bubble {
+		-webkit-border-top-left-radius: 10px;
+		-moz-border-top-left-radius: 10px;
+		border-top-left-radius: 10px;
+	}
+	.bubble:after {
+		display: none;
+	}
 }

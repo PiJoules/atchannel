@@ -15,6 +15,8 @@
     </head>
 
     <body>
+        <img id="background-image" src="/static/images/background.png" style="width: 100%; height: 100%; position: fixed; z-index: 0; top: 0; left: 0;" />
+
         {% if messages|length > 0 %}
         <div class="timeline-container">
             <ul class="timeline"></ul>
@@ -49,18 +51,13 @@
                                 <a class="btn dropdown-toggle" data-toggle="modal" data-target="#settings-modal">
                                     <span class="glyphicon glyphicon-cog"></span>
                                 </a>
-                                <!--<ul class="dropdown-menu" role="menu">
-                                    <li><a href="#" data-toggle="modal" data-target="#myModal">Change Username</a></li>
-                                    <li><a href="#" class="design-switch">Switch to VN design</a></li>
-                                    <li><input type="checkbox" name="my-checkbox" checked></li>
-                                </ul>-->
                             </li>
                         </ul>
                     </div>
                 </div>
             </nav>
 
-            <div class="row" style="height: calc(50% - 50px); text-align: center;">
+            <div class="row" style="height: calc(50vh - 50px); text-align: center;">
                 <h1>Welcome to</h1>
                 <h1 id="channel-name" class="fit-text">
                     {% if channel == "main" %}

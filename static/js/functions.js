@@ -39,6 +39,8 @@ function getPosts(){
 
             if (canAnimate)
                 hideAndSeek();
+            else if (md.mobile() && currentStyle === styles.vn)
+                changeRow($(".chat-row"), vnMobileProperties);
             else
                 changeRow($(".chat-row"), maxProperties);
 
@@ -170,7 +172,6 @@ function resetParentDimensions(){
  * Scroll to a row until it's equal to the current row
  */
 function scrollToPost(dest,callback){
-    console.log(dest, currentRow);
     if (currentRow !== dest){
 	    $(".chat").animate({
 	        scrollTop: $(".chat").scrollTop() + $(".chat-row:eq(" + dest + ")").position().top - ph/2
@@ -218,20 +219,30 @@ function setStyle(style){
     // stuff to do after changing the styles
     if (style === styles.anime){
         $("body").removeClass("vn").addClass("anime");
+        $("#background-image").show();
 
     	setBubbleColors();
+
         if (canAnimate)
             hideAndSeek();
+        else if (md.mobile() && currentStyle === styles.vn)
+            changeRow($(".chat-row"), vnMobileProperties);
         else
             changeRow($(".chat-row"), maxProperties);
+
         setTimeline();
     }
     else if (style === styles.vn){
         $("body").removeClass("anime").addClass("vn");
+        $("#background-image").hide();
 
-    	// Remove all inline styles
+        // Remove all inline styles
         $(".chat-row *").removeAttr("style");
         $(".chat-row").removeAttr("style");
+
+        if (md.mobile()){
+            changeRow($(".chat-row"), vnMobileProperties);
+        }
     }
 }
 
@@ -243,7 +254,7 @@ function setTimeline(){
     if (currentStyle === styles.anime){
     	// Fill the timeline with ticks
         var ticHeight = 30; // the height of each li element in px
-        var ticCount = parseInt(ph/ticHeight)+1;
+        var ticCount = parseInt((window.innerHeight-50)/ticHeight)+1;
         var postGap = parseFloat( (largestPostNumber-smallestPostNumber+1)/ticCount );
         $(".timeline").empty();
         var lastNumber = -1;
@@ -328,10 +339,26 @@ function setCanAnimate(animate){
     sessionStorage.setItem("canAnimate", canAnimate);
 
     if (canAnimate){
+        $(".chat").css({
+            "height": "calc(100% - 50px)",
+            "overflow-y": "scroll"
+        });
+        resetParentDimensions();
+
         hideAndSeek();
     }
     else {
-        changeRow($(".chat-row"), maxProperties);
+        $(".chat").css({
+            "height": "auto",
+            "overflow-y": "visible"
+        });
+
+        if (md.mobile() && currentStyle === styles.vn) {
+            changeRow($(".chat-row"), vnMobileProperties);
+        }
+        else {
+            changeRow($(".chat-row"), maxProperties);
+        }
     }
 }
 

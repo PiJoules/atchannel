@@ -4,6 +4,8 @@
  * Resizing Globals
  */
 
+var md = new MobileDetect(window.navigator.userAgent);
+
 // Because botDist measures dist from top of elem to bottom,
 // add a buffer to allow for elems coming from bottom to be invisible more
 var bottomBuffer = 30; // decrease to shift the bump down; increase to move it up
@@ -11,14 +13,27 @@ var buffer = 50; // distance from mid (either above or below)
 var pt, ph, mid; // parent dimensions
 var limit = 100.0; // distance from mid at which to start resizing
 
-var maxPropertiesNumeric = {
-    "font-size": 15,
-    "bubbleWidth": 100,
-    "margin-left": 5,
-    "margin-right": 15,
-    "avatarWidth": 5,
-    "time-font-size": 12
-};
+var maxPropertiesNumeric;
+if (md.mobile()){
+    maxPropertiesNumeric = {
+        "font-size": 12,
+        "bubbleWidth": 100,
+        "margin-left": 0,
+        "margin-right": 2,
+        "avatarWidth": 5,
+        "time-font-size": 9
+    }
+}
+else {
+    maxPropertiesNumeric = {
+        "font-size": 15,
+        "bubbleWidth": 100,
+        "margin-left": 5,
+        "margin-right": 15,
+        "avatarWidth": 5,
+        "time-font-size": 12
+    }
+}
 var maxProperties = {
     "font-size": maxPropertiesNumeric["font-size"] + "px",
     "bubbleWidth": maxPropertiesNumeric["bubbleWidth"] + "%",
@@ -43,6 +58,13 @@ var defaultProperties = {
     "avatarWidth": defaultPropertiesNumeric["avatarWidth"] + "%",
     "time-font-size": defaultPropertiesNumeric["time-font-size"] + "px"
 };
+var vnMobileProperties = {
+    "font-size": "12px",
+    "bubbleWidth": "100%",
+    "margin-left": "2%",
+    "margin-right": "2%",
+    "time-font-size": "9px"
+};
 
 
 /**
@@ -63,7 +85,6 @@ var styles = Object.freeze({
     "anime": 1,
     "vn": 2
 }); // use freeze to prevent object from changing
-var md = new MobileDetect(window.navigator.userAgent);
 
 var currentStyle;
 if (sessionStorage.getItem("style") === null){
@@ -79,14 +100,15 @@ else {
 }
 
 var canAnimate;
-console.log(sessionStorage.getItem("canAnimate"));
-if (sessionStorage.getItem("canAnimate") === null){
+if (md.mobile()){
+    setCanAnimate(false);
+}
+else if (sessionStorage.getItem("canAnimate") === null){
     setCanAnimate(currentStyle === styles.anime);
 }
 else {
     setCanAnimate(sessionStorage.getItem("canAnimate") === "true" ? true : false);
 }
-console.log(canAnimate);
 
 /**
  * Main script
@@ -102,6 +124,16 @@ $(".chat").scroll(function(){
     }
     else if ($(this).scrollTop() <= 50 && $(".timeline-container").is(":visible")) {
         $(".timeline-container").hide();
+    }
+});
+$(window).scroll(function(){
+    if (!canAnimate){
+        if ($(this).scrollTop() > 50 && !$(".timeline-container").is(":visible") && window.innerWidth > 880) {
+            $(".timeline-container").show("fast");
+        }
+        else if ($(this).scrollTop() <= 50 && $(".timeline-container").is(":visible")) {
+            $(".timeline-container").hide();
+        }
     }
 });
 
@@ -200,12 +232,14 @@ $("input.toggle-style").bootstrapSwitch({
         if (state){
             // Anime
             setStyle(styles.anime);
-            $("input.toggle-resize").bootstrapSwitch("disabled", false);
+            if (!md.mobile())
+                $("input.toggle-resize").bootstrapSwitch("disabled", false);
         }
         else {
             // VN
             setStyle(styles.vn);
-            $("input.toggle-resize").bootstrapSwitch("disabled", true);
+            if (!md.mobile())
+                $("input.toggle-resize").bootstrapSwitch("disabled", true);
         }
     }
 });
@@ -214,7 +248,7 @@ $("input.toggle-style").bootstrapSwitch({
 // Toggle resize animation
 $("input.toggle-resize").bootstrapSwitch({
     state: canAnimate,
-    disabled: (currentStyle !== styles.anime),
+    disabled: (currentStyle !== styles.anime || md.mobile()),
     onSwitchChange: function(event, state){
         setCanAnimate(state);
     }
@@ -226,7 +260,7 @@ $("input.toggle-resize").bootstrapSwitch({
 $(window).load(function(){
     resetParentDimensions();
 
-    if ($(".chat").scrollTop() <= 50 || window.innerWidth <= 880)
+    if ( ($(".chat").scrollTop() <= 50 && $(window).scrollTop() <= 50) || window.innerWidth <= 880)
         $(".timeline-container").hide();
 
     largestPostNumber = parseInt($(".chat-row .postNumber").last().text());
