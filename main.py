@@ -111,17 +111,6 @@ def addPost():
 		return "Unsucessful insertion: the username, message, time posted, and channel name are required as parameters."
 
 
-@app.route('/testPost', methods=['POST'])
-def testPost():
-	data = {
-		"response": request.form["g-recaptcha-response"],
-		"secret": secret,
-		"remoteip": request.remote_addr
-	}
-	response = requests.post("https://www.google.com/recaptcha/api/siteverify", data)
-	return jsonify(response=response.json(), form=request.form)
-
-
 # Add a Channel to the database
 @app.route('/addChannel', methods=['POST'])
 def addChannel():
