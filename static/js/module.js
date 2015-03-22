@@ -45,8 +45,16 @@ var atchannel = (function(){
 	var setStyle = function(nextStyle){
 		currentStyle = nextStyle;
 		localStorage.setItem(styleKey, currentStyle);
+		if (nextStyle === styles.anime){
+			$("body").removeClass("vn").addClass("anime");
+		}
+		else if (nextStyle === styles.vn){
+			$("body").removeClass("anime").addClass("vn");
+		}
 	};
 	var styleCallback; // called after setStyle is called with the style as the parameter
+	var prepareAnimeCallback;
+	var prepareVNCallback;
 	if (localStorage.getItem(styleKey) === null){
 	    if (isMobile()){
 			setStyle(styles.vn);
@@ -112,6 +120,12 @@ var atchannel = (function(){
 			if (typeof styleCallback !== "undefined"){
 				styleCallback(style);
 			}
+			if (typeof prepareAnimeCallback !== "undefined" && style === styles.anime){
+				prepareAnimeCallback();
+			}
+			if (typeof prepareVNCallback !== "undefined" && style === styles.vn){
+				prepareVNCallback();
+			}
 		},
 		setStyleCallback: function(callback){
 			styleCallback = callback;
@@ -127,6 +141,12 @@ var atchannel = (function(){
 				currentStyle = styles.anime;
 			else
 				currentStyle = styles.vn;
+		},
+		setPrepareAnimeCallback: function(callback){
+			prepareAnimeCallback = callback;
+		},
+		setPrepareVNCallback: function(callback){
+			prepareVNCallback = callback;
 		},
 
 		canAnimate: function(){

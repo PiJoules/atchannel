@@ -490,9 +490,6 @@ function removeAnimations(){
  * Stuff to do after switching to anime
  */
 function prepareAnime(){
-    $("body").removeClass("vn").addClass("anime");
-    $("#background-image").show();
-
     setBubbleColors();
 
     if (atchannel.canAnimate())
@@ -508,9 +505,6 @@ function prepareAnime(){
  * Stuff to do after switching to vn
  */
 function prepareVN(){
-    $("body").removeClass("anime").addClass("vn");
-    $("#background-image").hide();
-
     // Remove all inline styles
     $(".chat-row *").removeAttr("style");
     $(".chat-row").removeAttr("style");

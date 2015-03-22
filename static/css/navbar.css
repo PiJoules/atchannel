@@ -1,0 +1,79 @@
+.navbar {
+	border-radius: 0;
+}
+.anime .navbar-default {
+    background-color: #59b2b6;
+    border-color: #4496ad;
+}
+.anime .navbar-default .navbar-brand {
+    color: #ecf0f1;
+}
+.anime .navbar-default .navbar-brand:hover,
+.anime .navbar-default .navbar-brand:focus {
+    color: #ffffff;
+}
+.anime .navbar-default .navbar-text {
+    color: #ecf0f1;
+}
+.anime .navbar-default .navbar-nav > li > a {
+    color: #ecf0f1;
+}
+.anime .navbar-default .navbar-nav > li > a:hover,
+.anime .navbar-default .navbar-nav > li > a:focus {
+    color: #ffffff;
+}
+.anime .navbar-default .navbar-nav > .active > a,
+.anime .navbar-default .navbar-nav > .active > a:hover,
+.anime .navbar-default .navbar-nav > .active > a:focus {
+    color: #ffffff;
+    background-color: #4496ad;
+}
+.anime .navbar-default .navbar-nav > .open > a,
+.anime .navbar-default .navbar-nav > .open > a:hover,
+.anime .navbar-default .navbar-nav > .open > a:focus {
+    color: #ffffff;
+    background-color: #4496ad;
+}
+.anime .navbar-default .navbar-toggle {
+    border-color: #4496ad;
+}
+.anime .navbar-default .navbar-toggle:hover,
+.anime .navbar-default .navbar-toggle:focus {
+    background-color: #4496ad;
+}
+.anime .navbar-default .navbar-toggle .icon-bar {
+    background-color: #ecf0f1;
+}
+.anime .navbar-default .navbar-collapse,
+.anime .navbar-default .navbar-form {
+    border-color: #ecf0f1;
+}
+.anime .navbar-default .navbar-link {
+    color: #ecf0f1;
+}
+.anime .navbar-default .navbar-link:hover {
+    color: #ffffff;
+}
+@media (max-width: 767px) {
+    .anime .navbar-default .navbar-nav .open .dropdown-menu > li > a {
+        color: #ecf0f1;
+    }
+    .anime .navbar-default .navbar-nav .open .dropdown-menu > li > a:hover,
+    .anime .navbar-default .navbar-nav .open .dropdown-menu > li > a:focus {
+        color: #ffffff;
+    }
+    .anime .navbar-default .navbar-nav .open .dropdown-menu > .active > a,
+    .anime .navbar-default .navbar-nav .open .dropdown-menu > .active > a:hover,
+    .anime .navbar-default .navbar-nav .open .dropdown-menu > .active > a:focus {
+        color: #ffffff;
+        background-color: #4496ad;
+    }
+}
+
+.anime .background-image {
+    display: inline;
+}
+
+.vn .background-image {
+    display: none;
+}
