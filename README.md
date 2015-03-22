@@ -16,3 +16,5 @@ The goal of this website is to replicate the @channel from the anime Steins;Gate
 - Bootstrap
 - Bootstrap Switch
 - Bootstrap Markdown
+- reCaptcha
+- requests (python)

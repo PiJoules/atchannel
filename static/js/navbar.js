@@ -65,9 +65,11 @@ function setUsername(){
     }
     else {
         atchannel.setUsername(username);
-        $(".username").text(username);
+        $(".username").not("input").text(username);
+        $("input[type=text].username").val(username);
     }
 }
-$(".username").text(atchannel.getUsername());
+$(".username").not("input").text(atchannel.getUsername());
+$("input[type=text].username").val(atchannel.getUsername());
 
 

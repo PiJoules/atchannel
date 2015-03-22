@@ -12,21 +12,48 @@
         <link rel="stylesheet" type="text/css" href="/static/css/bootstrap-switch.min.css" />
         <link rel="stylesheet" type="text/css" href="/static/css/bootstrap-markdown.min.css" />
         <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" />
-        <link rel="stylesheet" type="text/css" href="/static/css/styles.css" />
+
+        <script src='https://www.google.com/recaptcha/api.js'></script>
     </head>
 
     <body>
         {% include "navbar.html" %}
 
         <div class="container">
-            <form>
-                <input name="title" type="text" placeholder="Title?" />
-                <textarea id="post-markdown" name="content" data-provide="markdown" rows="10"></textarea>
-                <label class="checkbox">
-                    <input name="publish" type="checkbox"> Publish
-                </label>
+            <h3>
+                Submit a post
+                {% if channel %}
+                    to {{ channel }}Channel
+                {% endif %}
+            </h3>
+            <form class="form-horizontal post">
+                <div class="form-group">
+                    <label class="control-label col-sm-1">Channel:</label>
+                    <div class="col-sm-11">
+                        <input class="form-control" name="channel" type="text" placeholder="Channel" value="{%if channel %}{{ channel }}{% endif %}" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-1">Username:</label>
+                    <div class="col-sm-11">
+                        <input class="form-control username" name="name" type="text" placeholder="Username" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-1">Post:</label>
+                    <div class="col-sm-11">
+                        <textarea id="post-markdown" name="message" data-provide="markdown" rows="15"></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-1">Verification:</label>
+                    <div class="col-sm-11">
+                        <div class="g-recaptcha" data-sitekey="6LdJ2wMTAAAAAJMyOwZQm6k-4NE4PsaodFgq7TmQ"></div>
+                    </div>
+                </div>
+                <input id="date" style="display: none;" type="text" name="time" value="" />
                 <hr>
-                <button type="submit" class="btn">Submit</button>
+                <button id="submit-post" type="submit" class="btn btn-default">Submit</button>
             </form> 
         </div>
 

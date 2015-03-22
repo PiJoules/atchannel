@@ -5,6 +5,7 @@ import vendor
 vendor.add('lib')
 
 import random
+import requests
 from datetime import datetime
 import pymongo
 
@@ -15,6 +16,10 @@ app = Flask(__name__)
 # Create mongoconnection
 from private.mongoClientConnection import MongoClientConnection
 client = MongoClientConnection().connection.atchannel
+
+# Get captcha secret
+from private.captchasecret import captcha
+secret = captcha().secret
 
 
 # Testing parameter passing to url
@@ -51,6 +56,7 @@ def submitpost():
 	mainChannelCount = client.counter.find_one({"_id": "main"})["seq"]
 
 	return render_template("submitpost.html",
+		channel=request.args.get("channel"),
 		channels=channels,
 		mainChannelCount=mainChannelCount
 	)
@@ -60,6 +66,19 @@ def submitpost():
 @app.route('/addPost', methods=['POST'])
 def addPost():
 	if "name" in request.form and "message" in request.form and "time" in request.form and "channel" in request.form:
+
+		if not "g-recaptcha-response" in request.form or request.form["g-recaptcha-response"] == "":
+			return "Please prove you are a human."
+
+		data = {
+			"response": request.form["g-recaptcha-response"],
+			"secret": secret,
+			"remoteip": request.remote_addr
+		}
+		response = requests.post("https://www.google.com/recaptcha/api/siteverify", data)
+		if not response.json()["success"]:
+			return "Sorry, Google does not think you are a human, and I agree with Google."
+
 		name = request.form["name"].strip()		
 		message = request.form["message"].strip()
 		time = request.form["time"].strip()
@@ -76,7 +95,7 @@ def addPost():
 
 		countUpdate = client.counter.find_and_modify({"_id": channel}, {"$inc": {"seq": 1}}, new=True)
 		if countUpdate is None:
-			return "Channel does not exist"
+			return "This channel does not exist"
 
 		client.messages.insert({
 			"name": name,
@@ -90,6 +109,17 @@ def addPost():
 		return ""
 	else:
 		return "Unsucessful insertion: the username, message, time posted, and channel name are required as parameters."
+
+
+@app.route('/testPost', methods=['POST'])
+def testPost():
+	data = {
+		"response": request.form["g-recaptcha-response"],
+		"secret": secret,
+		"remoteip": request.remote_addr
+	}
+	response = requests.post("https://www.google.com/recaptcha/api/siteverify", data)
+	return jsonify(response=response.json(), form=request.form)
 
 
 # Add a Channel to the database

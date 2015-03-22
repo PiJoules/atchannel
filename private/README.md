@@ -9,3 +9,10 @@ class MongoClientConnection:
 	def __init__(self):
 		self.connection = MongoClient("<MongoDB URI>")
 ```
+
+### captchasecret.py
+```py
+class captcha:
+	def __init__(self):
+		self.secret = "super secret key sssshhhhhhhhhhhh"
+```
