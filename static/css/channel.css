@@ -3,6 +3,10 @@ html, body {
 	height: 100%;
 }
 
+/*.chat-row {
+	zoom: 1;
+}*/
+
 .sample-photo {
 	width: calc(50% - 10px);
 	display: inline;
@@ -161,6 +165,7 @@ html, body {
 }
 
 .anime .bubble .chat-row-header {
+	width: 100%;
 	display: table;
 	clear: both;
 }
@@ -217,6 +222,7 @@ html, body {
 }
 .vn .chat-row .postMessage {
 	padding-left: 20px;
+	font-size: 15px;
 }
 
 .vn .chat-input, .vn .chat-input .input-group {

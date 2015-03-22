@@ -28,7 +28,7 @@ $("input.toggle-style").bootstrapSwitch({
     onSwitchChange: function(event, state){
         if (state){
             atchannel.setStyle(atchannel.styles.anime);
-            if (!atchannel.md.mobile())
+            if (!atchannel.isMobile())
                 $("input.toggle-resize").bootstrapSwitch("disabled", false);
         }
         else {
@@ -42,7 +42,7 @@ $("input.toggle-style").bootstrapSwitch({
 // Toggle resize animation
 $("input.toggle-resize").bootstrapSwitch({
     state: atchannel.canAnimate(),
-    disabled: (atchannel.isVNStyle() || atchannel.md.mobile()),
+    disabled: (atchannel.isVNStyle() || atchannel.isMobile()),
     onSwitchChange: function(event, state){
         atchannel.setAnimate(state);
     }

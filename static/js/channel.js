@@ -12,7 +12,7 @@ var pt, ph, mid; // parent dimensions
 var limit = 100.0; // distance from mid at which to start resizing
 
 var maxPropertiesNumeric;
-if (atchannel.md.mobile()){
+if (atchannel.isMobile()){
     maxPropertiesNumeric = {
         "font-size": 12,
         "bubbleWidth": 100,
@@ -61,6 +61,7 @@ var vnMobileProperties = {
     "bubbleWidth": "100%",
     "margin-left": "2%",
     "margin-right": "2%",
+    "avatarWidth": "0",
     "time-font-size": "9px"
 };
 
@@ -212,6 +213,7 @@ $(window).load(function(){
         removeAnimations();
     }
 
+    translateMarkdown();
 });
 
 
@@ -258,10 +260,10 @@ function getPosts(){
 
             if (atchannel.canAnimate())
                 hideAndSeek();
-            else if (atchannel.md.mobile() && atchannel.isVNStyle())
-                changeRow($(".chat-row"), vnMobileProperties);
+            else if (atchannel.isMobile() && atchannel.isVNStyle())
+                changeRow($(".chat-row"), vnMobileProperties, 1);
             else
-                changeRow($(".chat-row"), maxProperties);
+                changeRow($(".chat-row"), maxProperties, 1);
 
             if (atchannel.isAnimeStyle()){
                 prepareAnime();
@@ -269,6 +271,8 @@ function getPosts(){
             else {
                 prepareVN();
             }
+
+            translateMarkdown();
         }
     }).fail(function(jqXHR, textStatus, errorThrown){
         alert([textStatus, errorThrown]);
@@ -281,8 +285,7 @@ function getPosts(){
 /**
  * Function for actually resizing a row
  */
-function changeRow(that, properties){
-    var nextProperties = $.extend({}, defaultProperties, properties);
+function changeRow(that, nextProperties, percent){
     that.css({
         "font-size": nextProperties["font-size"],
         "margin-left": nextProperties["margin-left"],
@@ -297,6 +300,9 @@ function changeRow(that, properties){
     that.find(".anime-time").css({
         "font-size": nextProperties["time-font-size"]
     });
+    if (typeof percent !== "undefined"){
+        that.find(".postMessage").css("zoom", percent);
+    }
 }
 
 
@@ -312,7 +318,7 @@ function hideAndSeek(){
             var top = $(this).position().top;
             return top+$(this).outerHeight() > 0 && top < ph;
         });
-        changeRow($(".chat-row").not(rows));
+        changeRow($(".chat-row").not(rows), defaultProperties, 0.1);
         rows.each(function(index){
             hidingFunction($(this));
         });
@@ -331,16 +337,25 @@ function hidingFunction(that){
     var midDist = Math.abs(that.position().top - mid);
 
     if (midDist > limit+buffer){
-        changeRow(that);
+        changeRow(that, defaultProperties, 0.1);
     }
     else if (midDist < buffer) {
-        changeRow(that, maxProperties);
+        changeRow(that, maxProperties, 1);
         currentRow = $(".chat-row").index(that);
     }
     else {
         /**
          * property = (max-default)/limit*(midDist-buffer) + max
+         *
+         * at midDist = limit+buffer, 10%
+         * at midDist = buffer, 100%
+         * m = -0.9/limit
+         * 100% = -0.9/limit*buffer + b
+         * b = 1 + 0.9/limit*buffer
+         *
+         * percent = -0.9/limit*midDist + 1 + 0.9/limit*buffer
          */
+        var percent = -0.9/limit*midDist + 1 + 0.9/limit*buffer;
         var properties = {
             "font-size": ( ( defaultPropertiesNumeric["font-size"]-maxPropertiesNumeric["font-size"] )/limit*(midDist-buffer) + maxPropertiesNumeric["font-size"] ) + "px",
             "bubbleWidth": ( ( defaultPropertiesNumeric["bubbleWidth"]-maxPropertiesNumeric["bubbleWidth"] )/limit*(midDist-buffer) + maxPropertiesNumeric["bubbleWidth"] ) + "%",
@@ -349,7 +364,7 @@ function hidingFunction(that){
             "avatarWidth": ( ( defaultPropertiesNumeric["avatarWidth"]-maxPropertiesNumeric["avatarWidth"] )/limit*(midDist-buffer) + maxPropertiesNumeric["avatarWidth"] ) + "%",
             "time-font-size": ( ( defaultPropertiesNumeric["time-font-size"]-maxPropertiesNumeric["time-font-size"] )/limit*(midDist-buffer) + maxPropertiesNumeric["time-font-size"] ) + "px"
         };
-        changeRow(that, properties);
+        changeRow(that, properties, percent);
     }
 
 }
@@ -491,11 +506,11 @@ function removeAnimations(){
         "overflow-y": "visible"
     });
 
-    if (atchannel.md.mobile() && atchannel.isVNStyle()) {
-        changeRow($(".chat-row"), vnMobileProperties);
+    if (atchannel.isMobile() && atchannel.isVNStyle()) {
+        changeRow($(".chat-row"), vnMobileProperties, 1);
     }
     else {
-        changeRow($(".chat-row"), maxProperties);
+        changeRow($(".chat-row"), maxProperties, 1);
     }
 }
 
@@ -512,7 +527,7 @@ function prepareAnime(){
     if (atchannel.canAnimate())
         hideAndSeek();
     else
-        changeRow($(".chat-row"), maxProperties);
+        changeRow($(".chat-row"), maxProperties, 1);
 
     setTimeline();
 }
@@ -529,7 +544,16 @@ function prepareVN(){
     $(".chat-row *").removeAttr("style");
     $(".chat-row").removeAttr("style");
 
-    if (atchannel.md.mobile()){
-        changeRow($(".chat-row"), vnMobileProperties);
+    if (atchannel.isMobile()){
+        changeRow($(".chat-row"), vnMobileProperties, 1);
     }
+}
+
+
+function translateMarkdown(){
+    $(".postMessage").not(".translated").each(function(){
+        $(this).html(markdown.toHTML( $(this).text() ));
+
+        $(this).addClass("translated");
+    });
 }

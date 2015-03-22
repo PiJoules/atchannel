@@ -25,7 +25,9 @@
 var atchannel = (function(){
 
 	var md = new MobileDetect(window.navigator.userAgent);
-
+	var isMobile = function(){
+		return md.mobile() !== null;
+	};
 
 	// Username
 	var usernameKey = "atchannelUsername";
@@ -46,7 +48,7 @@ var atchannel = (function(){
 	};
 	var styleCallback; // called after setStyle is called with the style as the parameter
 	if (localStorage.getItem(styleKey) === null){
-	    if (md.mobile()){
+	    if (isMobile()){
 			setStyle(styles.vn);
 	    }
 	    else {
@@ -66,7 +68,7 @@ var atchannel = (function(){
 		localStorage.setItem(animateKey, animate);
 	};
 	var animateCallback; // called after setAnimate is called with animate as the parameter
-	if (md.mobile()){
+	if (isMobile()){
 	    setAnimate(false);
 	}
 	else if (localStorage.getItem(animateKey) === null){
@@ -86,7 +88,6 @@ var atchannel = (function(){
 	 * return the stuff that any page can access
 	 */
 	return {
-		md: md,
 		styles: styles,
 
 		getUsername: function(){
@@ -167,6 +168,7 @@ var atchannel = (function(){
 		randElem: function(array){
 			return array[Math.floor(Math.random()*array.length)];
 		},
+		isMobile: isMobile,
 	}
 
 })();
