@@ -138,37 +138,11 @@ $(document).keydown(function(e) {
 });
 
 
-// Username Change
-$("input[type=text].submit-username").keyup(function(e){
-    if(e.keyCode == 13) {
-        setUsername();
-    }
-});
-$("#submit-username").click(function(){
-    setUsername();
-});
-$(".message").attr("placeholder", "Post message as '" + atchannel.getUsername() + "'");
-
-
 // Posting
 $("input[type=text].message").keyup(function(e){
     if(e.keyCode == 13) {
         postMessage();
     }
-});
-
-
-// Channel submission
-$("#new-channel-name").keyup(function(e){
-    if(e.keyCode == 13) {
-        submitChannel();
-    }
-    else {
-        $(".new-channel-name").text($("#new-channel-name").val().trim() + "Channel");
-    }
-});
-$("#submit-channel").click(function(){
-    submitChannel();
 });
 
 
@@ -182,33 +156,32 @@ $(".load-prev").click(function(){
 $(".fit-text").fitText(1.2);
 
 
-// Design toggle
-$("input.toggle-style").bootstrapSwitch({
-    onText: "Anime",
-    offText: "VN",
-    state: atchannel.isAnimeStyle(),
-    onSwitchChange: function(event, state){
-        if (state){
-            setStyle(atchannel.styles.anime);
-            if (!atchannel.md.mobile())
-                $("input.toggle-resize").bootstrapSwitch("disabled", false);
-        }
-        else {
-            setStyle(atchannel.styles.vn);
-            $("input.toggle-resize").bootstrapSwitch("disabled", true);
-        }
+// Style change
+atchannel.setStyleCallback(function(){
+    // stuff to do after changing the styles
+    if (atchannel.isAnimeStyle()){
+        prepareAnime();
+    }
+    else {
+        prepareVN();
     }
 });
 
-
-// Toggle resize animation
-$("input.toggle-resize").bootstrapSwitch({
-    state: atchannel.canAnimate(),
-    disabled: (atchannel.isVNStyle() || atchannel.md.mobile()),
-    onSwitchChange: function(event, state){
-        setCanAnimate(state);
+// Animate change
+atchannel.setAnimateCallback(function(canAnimate){
+    if (canAnimate){
+        prepareAnimations();
+    }
+    else {
+        removeAnimations();
     }
 });
+
+// Username change
+atchannel.setUsernameCallback(function(username){
+    $(".message").attr("placeholder", "Post message as '" + username + "'");
+});
+$(".message").attr("placeholder", "Post message as '" + atchannel.getUsername() + "'");
 
 
 // Stuff to do after the window loads
@@ -249,20 +222,6 @@ $(window).load(function(){
 
 
 /**
- * Set username
- */
-function setUsername(){
-    var success = atchannel.setUsername($("#selected-user-name").val());
-    if (success){
-        $(".message").attr("placeholder", "Post message as '" + atchannel.getUsername() + "'");
-        $("#settings-modal").modal("hide");
-    }
-    else {
-        alert("Invalid username");
-    }
-}
-
-/**
  * Send a message to the server and refresh on success
  */
 function postMessage(){
@@ -280,16 +239,6 @@ function postMessage(){
             alert([textStatus, errorThrown]);
         });
     }
-}
-
-/**
- * Post a new channel to be made for the database
- */
-function submitChannel(){
-    var channelName = $("#new-channel-name").val().trim()
-    atchannel.submitChannel(channelName, function(){
-        window.location.replace("/" + channelName);
-    });
 }
 
 
@@ -477,22 +426,6 @@ function setBubbleColors(){
 
 
 /**
- * Function for saving the current style
- */
-function setStyle(style){
-    atchannel.setStyle(style);
-
-    // stuff to do after changing the styles
-    if (atchannel.isAnimeStyle()){
-        prepareAnime();
-    }
-    else {
-        prepareVN();
-    }
-}
-
-
-/**
  * Initliaze the timeline whenever
  */
 function setTimeline(){
@@ -531,21 +464,6 @@ function setTimeline(){
                 window.location.href = "#post" + (index+smallestPostNumber);
             }
         });
-    }
-}
-
-
-/**
- * Function for setting canAnimate into session storage
- */
-function setCanAnimate(animate){
-    atchannel.setAnimate(animate);
-
-    if (atchannel.canAnimate()){
-        prepareAnimations()
-    }
-    else {
-        removeAnimations();
     }
 }
 

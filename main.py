@@ -45,6 +45,16 @@ def index(channel="main"):
 		mainChannelCount=mainChannelCount
 	)
 
+@app.route('/submitpost.html', methods=['GET'])
+def submitpost():
+	channels = client.counter.find({"_id": {"$ne": "main"}}).sort("seq", pymongo.DESCENDING)
+	mainChannelCount = client.counter.find_one({"_id": "main"})["seq"]
+
+	return render_template("submitpost.html",
+		channels=channels,
+		mainChannelCount=mainChannelCount
+	)
+
 
 # Add a message to the database
 @app.route('/addPost', methods=['POST'])
@@ -126,10 +136,6 @@ def getPosts():
 	messages = getPosts(channel, start, length)
 	return jsonify(messages=messages, html=getPostsHTML(messages))
 
-
-@app.route('/submitpost.html', methods=['GET'])
-def submitpost():
-	return render_template("submitpost.html")
 
 
 @app.errorhandler(404)

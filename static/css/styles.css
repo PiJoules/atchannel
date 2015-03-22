@@ -288,10 +288,12 @@ html, body {
 
 
 
+.navbar {
+	border-radius: 0;
+}
 .anime .navbar-default {
     background-color: #59b2b6;
     border-color: #4496ad;
-    border-radius: 0;
 }
 .anime .navbar-default .navbar-brand {
     color: #ecf0f1;

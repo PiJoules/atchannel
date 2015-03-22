@@ -1,4 +1,4 @@
-<nav class="navbar navbar-default" style="">
+<nav class="navbar navbar-default">
     <div class="container">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
@@ -30,3 +30,143 @@
         </div>
     </div>
 </nav>
+
+
+<!-- existing channels modal -->
+<div class="modal fade" id="existing-channels" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="exampleModalLabel">Find a channel</h4>
+            </div>
+            <div class="modal-body">
+                <p>These are all the currently existing channels created by users on @channel</p>
+
+                <p>
+                    <a href="/main">@channel</a>
+                    ({{ mainChannelCount|int }}
+                    {% if mainChannelCount != 1 %}
+                        Posts)
+                    {% else %}
+                        Post)
+                    {% endif %}
+                </p>
+
+                {% for channel in channels %}
+                    <p>
+                        <a href="/{{channel._id}}">{{ channel._id }}Channel</a>
+                        ({{ channel.seq|int }}
+                        {% if channel.seq != 1 %}
+                            Posts)
+                        {% else %}
+                            Post)
+                        {% endif %}
+                    </p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- create a channel modal -->
+<div class="modal fade" id="creating-channel" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">Create a channel</h4>
+            </div>
+            <div class="modal-body">
+                <p><small>Enter the name of a new channel you want to create. It must contain only alphanumeric characters.</small></p>
+                <p><small>You do not need to end it with the word "Channel" when creating one. It will be added for you.</small></p>
+                <div class="form-group">
+                    <input type="text" class="form-control" id="new-channel-name" placeholder="Channel Name" />
+                </div>
+                <p>Channel Name: <strong class="new-channel-name">NewChannel</strong></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button id="submit-channel" type="button" class="btn btn-primary">Submit</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- About @channel modal -->
+<div class="modal fade" id="aboutModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="exampleModalLabel">About @channel</h4>
+            </div>
+            <div class="modal-body">
+                <p>The goal of this website is to replicate the @channel as seen in the anime Steins;Gate as much as possible.</p>
+
+                <p>I've been attempting to create it based off @channel's portrayal in the anime (left) and in the visual novel (right). The anime portrayal is from episode 11.</p>
+
+                <p>
+                    <img class="sample-photo" src="/static/images/@channel.gif" alt="@channel" />
+                    <img class="sample-photo" src="/static/images/VN/vn3.png" alt="@channel" />
+                </p>
+
+                <h3>Resources</h3>
+                <ul>
+                    <li>Source code available <a href="https://github.com/PiJoules/-channel">here</a></li>
+                    <li>Got suggestions for @channel? Post them <a href="/redirect/Suggestions">here</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Settings modal -->
+<div class="modal fade" id="settings-modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">Settings</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <h4>Toggle Style</h4>
+                        <p>Toggle between the style of @channel portrayed in the anime and the visual novel.</p>
+                        <input class="toggle-style" type="checkbox" name="my-checkbox" checked>
+                    </div>
+                    <div class="col-sm-6">
+                        <h4>Toggle Resize</h4>
+                        <p>Toggle the resizing animations for each row while scrolling. (Can only toggle if on anime style.)</p>
+                        <input class="toggle-resize" type="checkbox" name="my-checkbox" checked>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <h4>Change Username (<span class="username"></span>)</h4>
+                        <p><small>'Anonymous' will be your username if you don't enter one</small>
+                        </p>
+                        <div class="input-group">
+                            <input type="text" class="form-control submit-username" id="selected-user-name" placeholder="Username" />
+                            <span class="input-group-btn">
+                                <button id="submit-username" class="btn btn-default" type="button">Submit</button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+

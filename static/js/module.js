@@ -30,6 +30,7 @@ var atchannel = (function(){
 	// Username
 	var usernameKey = "atchannelUsername";
 	var username = localStorage.getItem(usernameKey) || "Anonymous";
+	var usernameCallback;
 
 
 	// Styles
@@ -43,6 +44,7 @@ var atchannel = (function(){
 		currentStyle = nextStyle;
 		localStorage.setItem(styleKey, currentStyle);
 	};
+	var styleCallback; // called after setStyle is called with the style as the parameter
 	if (localStorage.getItem(styleKey) === null){
 	    if (md.mobile()){
 			setStyle(styles.vn);
@@ -63,6 +65,7 @@ var atchannel = (function(){
 		animate = nextAnimate;
 		localStorage.setItem(animateKey, animate);
 	};
+	var animateCallback; // called after setAnimate is called with animate as the parameter
 	if (md.mobile()){
 	    setAnimate(false);
 	}
@@ -90,19 +93,28 @@ var atchannel = (function(){
 			return username;
 		},
 		setUsername: function(nextUsername){
-			// return true if successful
-			if (nextUsername.trim() !== ""){
-				username = nextUsername;
-				localStorage.setItem(usernameKey, username);
-				return true;
+			username = nextUsername;
+			localStorage.setItem(usernameKey, username);
+			if (typeof usernameCallback !== "undefined"){
+				usernameCallback(username);
 			}
-			return false;
+		},
+		setUsernameCallback: function(callback){
+			usernameCallback = callback;
 		},
 
 		getStyle: function(){
 			return currentStyle;
 		},
-		setStyle: setStyle,
+		setStyle: function(style){
+			setStyle(style);
+			if (typeof styleCallback !== "undefined"){
+				styleCallback(style);
+			}
+		},
+		setStyleCallback: function(callback){
+			styleCallback = callback;
+		},
 		isAnimeStyle: function(){
 			return currentStyle === styles.anime;
 		},
@@ -119,7 +131,15 @@ var atchannel = (function(){
 		canAnimate: function(){
 			return animate;
 		},
-		setAnimate: setAnimate,
+		setAnimate: function(nextAnimate){
+			setAnimate(nextAnimate);
+			if (typeof animateCallback !== "undefined"){
+				animateCallback(nextAnimate);
+			}
+		},
+		setAnimateCallback: function(callback){
+			animateCallback = callback;
+		},
 
 		submitChannel: function(channel, successCallback){
 			channel = channel.trim();
