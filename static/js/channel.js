@@ -139,14 +139,6 @@ $(document).keydown(function(e) {
 });
 
 
-// Posting
-$("input[type=text].message").keyup(function(e){
-    if(e.keyCode == 13) {
-        postMessage();
-    }
-});
-
-
 // Load more posts
 $(".load-prev").click(function(){
     getPosts();
@@ -221,27 +213,6 @@ $(window).load(function(){
 /**
  * Channel specific functions
  */
-
-
-/**
- * Send a message to the server and refresh on success
- */
-function postMessage(){
-    var m = $(".message").val().trim();
-    if (m !== ""){
-        $.post("/addPost", {channel: channel, name: name, time: Date.now(), message: m}).done(function(response){
-            if (response !== ""){
-                alert(response);
-            }
-            else {
-                // success
-                location.reload();
-            }
-        }).fail(function(jqXHR, textStatus, errorThrown){
-            alert([textStatus, errorThrown]);
-        });
-    }
-}
 
 
 function getPosts(){
