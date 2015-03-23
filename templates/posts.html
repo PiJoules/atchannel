@@ -9,7 +9,7 @@
             <p class="chat-row-header">
                 <strong class="part1"><span class="postNumber">{{ message.postNumber|int }}</span> &nbsp; Name: {{ message.name }} <span class="sage">[sage]</span></strong>
                 <span class="vn-time part2">&nbsp;:{{ prettifyTime(message.time) }}</span>
-                <strong class="part2">ID:{{ randID() }}</strong>
+                <strong class="part2">ID:{{ message._id }}</strong>
             </p>
             <p class="postMessage">{{ message.message }}</p>
             <p class="anime-time">

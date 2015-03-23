@@ -6,8 +6,10 @@ vendor.add('lib')
 
 import random
 import requests
+import json
 from datetime import datetime
 import pymongo
+from bson.objectid import ObjectId
 
 # Import the Flask Framework
 from flask import Flask, render_template, request, jsonify, Response
@@ -50,6 +52,32 @@ def index(channel="main"):
 		mainChannelCount=mainChannelCount
 	)
 
+@app.route('/<channel>/<postNumber>', methods=['GET'])
+def comments(channel=None, postNumber=None):
+	limit = request.args.get("limit")
+	style = request.args.get("style")
+
+	if limit is None:
+		limit = 50
+	if style is None:
+		style = "anime"
+
+	if not channelDoesExist(channel):
+		return "This channel does not exist", 404
+
+	channels = client.counter.find({"_id": {"$ne": "main"}}).sort("seq", pymongo.DESCENDING)
+	mainChannelCount = client.counter.find_one({"_id": "main"})["seq"]
+
+	messages = getPosts(channel, 0, limit)
+
+	return render_template("comments.html",
+		messages = messages,
+		style = style,
+		channel=channel,
+		channels=channels,
+		mainChannelCount=mainChannelCount
+	)
+
 @app.route('/submitpost.html', methods=['GET'])
 def submitpost():
 	channels = client.counter.find({"_id": {"$ne": "main"}}).sort("seq", pymongo.DESCENDING)
@@ -65,7 +93,7 @@ def submitpost():
 # Add a message to the database
 @app.route('/addPost', methods=['POST'])
 def addPost():
-	if "name" in request.form and "message" in request.form and "time" in request.form and "channel" in request.form:
+	if "name" in request.form and "message" in request.form and "time" in request.form and "channel" in request.form and "tags" in request.form:
 
 		if not "g-recaptcha-response" in request.form or request.form["g-recaptcha-response"] == "":
 			return "Please prove you are a human."
@@ -83,6 +111,7 @@ def addPost():
 		message = request.form["message"].strip()
 		time = request.form["time"].strip()
 		channel = request.form["channel"].strip()
+		tags = json.loads(request.form["tags"])
 
 		if name == "":
 			return "Invalid username"
@@ -108,7 +137,7 @@ def addPost():
 		# empty string means success :)
 		return ""
 	else:
-		return "Unsucessful insertion: the username, message, time posted, and channel name are required as parameters."
+		return "Unsucessful insertion: the username, message, time posted, associated tags, and channel name are required as parameters."
 
 
 # Add a Channel to the database
@@ -208,8 +237,16 @@ def utility_processor():
 # If the collection has 100 rows and we receive a starting index of 10 and length 25, messages with postNumbers
 # from 76 to 90. A staring index of 0 and length 90 will get postNumbers 11 to 100
 def getPosts(channel, start, length):
-	cursor = client.messages.find({"channel": channel}, skip=start, limit=length, sort=[("postNumber", -1)], fields={"_id": False})
-	messages = list( cursor )[::-1]
+	cursor = client.messages.find({"channel": channel}, skip=start, limit=length, sort=[("postNumber", -1)])
+
+	"""posts = list(cursor)
+	for i in range(len(posts)):
+		post = posts[i]["_id"]
+		if isinstance(post, ObjectId):
+			posts[i]["_id"] = str(post)
+
+	messages = posts[::-1]"""
+	messages = list(cursor)[::-1]
 	return messages
 
 def getPostsHTML(posts):
