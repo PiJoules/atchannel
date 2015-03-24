@@ -30,8 +30,11 @@ $("#post-markdown").markdown({
         else {
             // changed something in editor
             content = e.getContent();
-            translatedContent = translateTags(content);
-            $("#tags").val(JSON.stringify(getTags(content)));
+            translatedContent = atchannel.translateTags(content);
+
+            var tags = atchannel.uniq_fast( atchannel.getTags(content) );
+            $("#tags").val(JSON.stringify(tags));
+            $(".tags").text(tags.join(", ") || "None");
         }
 	},
 });
@@ -45,42 +48,28 @@ $("form.post").submit(function(event){
 		formObj[inputs[i].name] = inputs[i].value;
     formObj.message = content;
 
-    console.log(formObj);
-    //return;
-
-	/*if (formObj["g-recaptcha-response"] === ""){
+	if (formObj["g-recaptcha-response"] === ""){
 		alert("Please prove you are human.");
 		return;
-	}*/
+	}
 
-    //if (content !== "" && formObj["name"] !== "" && formObj["channel"] !== ""){
+    if (content !== "" && formObj["name"] !== "" && formObj["channel"] !== ""){
         $.post("/addPost", formObj, function(response){
-            console.log(JSON.stringify(response));
+            console.log(response);
             if (response !== ""){
-                //alert(response);
-                //location.reload();
+                alert(response);
+                location.reload();
             }
             else {
                 // success
-                //window.location.href = "/" + formObj.channel;
+                window.location.href = "/" + formObj.channel;
             }
         }).fail(function(jqXHR, textStatus, errorThrown){
             alert([textStatus, errorThrown]);
         });
-    //}
+    }
 });
 
-var regex = /<(\d+)@([A-Za-z0-9]+)>/g; // DON;T FORGET THIS G !!!!
 
-function getTags(content){
-    var tags = [];
-    var match;
-    while (match = regex.exec(content)){
-        tags.push({ "postNumber": match[1], "channel": match[2]});
-    }
-    return tags;
-}
 
-function translateTags(content){
-    return content.replace(regex, '[<$1@$2>](/$2/$1)');
-}
+

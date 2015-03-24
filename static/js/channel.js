@@ -523,7 +523,7 @@ function prepareVN(){
 
 function translateMarkdown(){
     $(".postMessage").not(".translated").each(function(){
-        $(this).html(markdown.toHTML( $(this).text() ));
+        $(this).html(markdown.toHTML( atchannel.translateTags($(this).text()) ));
 
         $(this).addClass("translated");
     });

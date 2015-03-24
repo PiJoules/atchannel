@@ -92,6 +92,9 @@ var atchannel = (function(){
 	}
 
 
+	var regex = /<([a-f0-9]{24})>/g; // match hex
+
+
 	/**
 	 * return the stuff that any page can access
 	 */
@@ -183,12 +186,38 @@ var atchannel = (function(){
 			}
 		},
 
+		getTags: function(content){
+		    var tags = [];
+		    var match;
+		    while (match = regex.exec(content)){
+		        tags.push(match[1]);
+		    }
+		    return tags;   
+		},
+		translateTags: function(content){
+			return content.replace(regex, '[<$1>](/comments/$1)');
+		},
+
 		// Some micellanious functions
 		isAlphaNumeric: isAlphaNumeric,
 		randElem: function(array){
 			return array[Math.floor(Math.random()*array.length)];
 		},
 		isMobile: isMobile,
+		uniq_fast: function(a){ // remove duplicates from array
+		    var seen = {};
+		    var out = [];
+		    var len = a.length;
+		    var j = 0;
+		    for(var i = 0; i < len; i++) {
+		         var item = a[i];
+		         if(seen[item] !== 1) {
+		               seen[item] = 1;
+		               out[j++] = item;
+		         }
+		    }
+		    return out;
+		},
 	}
 
 })();

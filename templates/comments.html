@@ -17,16 +17,10 @@
     </head>
 
     <body>
-        {% if messages|length > 0 %}
-        <div class="timeline-container">
-            <ul class="timeline"></ul>
-        </div>
-        {% endif %}
+        {% include "navbar.html" %}
 
-        <div class="chat">
-            {% include "navbar.html" %}
-
-            <div class="row" style="min-height: calc(50vh - 50px); text-align: center;">
+        <div class="container">
+            <!--<div class="row" style="min-height: calc(50vh - 50px); text-align: center;">
                 <h1>Welcome to</h1>
                 <h1 id="channel-name" class="fit-text">
                     {% if channel == "main" %}
@@ -35,28 +29,27 @@
                         {{ channel }}Channel
                     {% endif %}
                 </h1>
+            </div>-->
+
+            <div class="row" style="min-height: calc(50vh - 50px);">
+                <p>ID: {{ mainPost._id }}</p>
+                <p>Username: {{ mainPost.name }}</p>
+                <p>Post Number: {{ mainPost.postNumber }}</p>
+                <p>Time: {{ prettifyTime(mainPost.time) }}</p>
+                <p>Channel: {{ mainPost.channel }}</p>
             </div>
 
-            {% if messages|length >= 50 %}
-            <div class="row" style="margin-left: 15%; margin-right: 15%; margin-bottom: 30px; text-align: center;">
-                <button class="load-prev btn btn-default btn-block">Load 50 more</button>
+            {% for comment in comments %}
+            <div class="row">
+                <p>ID: {{ comment._id }}</p>
+                <p>Username: {{ comment.name }}</p>
+                <p>Post Number: {{ comment.postNumber }}</p>
+                <p>Time: {{ prettifyTime(comment.time) }}</p>
+                <p>Channel: {{ comment.channel }}</p>
             </div>
-            {% endif %}
-
-            <div id="marker" style="display: none;"></div>
-
-            {% include "posts.html" %}
+            {% endfor %}
 
             <div class="row filler-row" style="visibility: hidden;"></div>
-        </div>
-        <div class="chat-input">
-            <div class="input-group">
-                <input type="text" class="message form-control" placeholder="Post message as 'Anonymous'" />
-                <span class="input-group-btn">
-                    <button class="btn btn-default prevPost"><span class="fa fa-caret-left"></span></button>
-                    <button class="btn btn-default nextPost"><span class="fa fa-caret-right"></span></button>
-                </span>
-            </div>
         </div>
 
         <script type="text/javascript" src="/static/js/jquery.min.js"></script>
@@ -69,10 +62,7 @@
         <script type="text/javascript" src="/static/js/navbar.js"></script>
         <script type="text/javascript">
             // set any vars returned by flask here
-            var channel = "{{ channel }}";
-            var messagesCount = {{ messages|length }};
         </script>
-        <script type="text/javascript" src="/static/js/channel.js"></script>
     </body>
 
 </html>

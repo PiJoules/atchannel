@@ -6,6 +6,7 @@ vendor.add('lib')
 
 import random
 import requests
+import re
 import json
 from datetime import datetime
 import pymongo
@@ -22,6 +23,9 @@ client = MongoClientConnection().connection.atchannel
 # Get captcha secret
 from private.captchasecret import captcha
 secret = captcha().secret
+
+# hex regex
+reg = re.compile("[a-f0-9]{24}")
 
 
 # Testing parameter passing to url
@@ -52,28 +56,31 @@ def index(channel="main"):
 		mainChannelCount=mainChannelCount
 	)
 
-@app.route('/<channel>/<postNumber>', methods=['GET'])
-def comments(channel=None, postNumber=None):
+@app.route('/comments/<ID>', methods=['GET'])
+def comments(ID=None):
+	if ID is None:
+		return "This post does no exist", 404
+
 	limit = request.args.get("limit")
-	style = request.args.get("style")
+	start = request.args.get("start")
 
 	if limit is None:
 		limit = 50
-	if style is None:
-		style = "anime"
+	if start is None:
+		start = 0
 
-	if not channelDoesExist(channel):
-		return "This channel does not exist", 404
+	if client.messages.find({"_id": ObjectId(ID)}).count() <= 0:
+		return "The post with ID " + ID + " does not exist", 404
 
 	channels = client.counter.find({"_id": {"$ne": "main"}}).sort("seq", pymongo.DESCENDING)
 	mainChannelCount = client.counter.find_one({"_id": "main"})["seq"]
 
-	messages = getPosts(channel, 0, limit)
+	mainPost = getOnePost(ID)
+	comments = getComments(ID, start, limit)
 
 	return render_template("comments.html",
-		messages = messages,
-		style = style,
-		channel=channel,
+		mainPost=mainPost,
+		comments=comments,
 		channels=channels,
 		mainChannelCount=mainChannelCount
 	)
@@ -105,7 +112,7 @@ def addPost():
 		}
 		response = requests.post("https://www.google.com/recaptcha/api/siteverify", data)
 		if not response.json()["success"]:
-			return "Sorry, Google does not think you are a human, and I agree with Google."
+			return "Sorry, Google does not think you are a human."
 
 		name = request.form["name"].strip()		
 		message = request.form["message"].strip()
@@ -122,17 +129,36 @@ def addPost():
 		if channel == "":
 			return "Invalid channel name"
 
+		# Check if the tags exist
+		tagsToInsert = []
+		for tag in tags:
+			if reg.match(tag):
+				objId = ObjectId(tag)
+				if client.messages.find({"_id": objId}).count() <= 0:
+					return "Post with ID " + tag + " does not exist"
+				else:
+					tagsToInsert.append(objId)
+			else:
+				return tag + " is not a valid ID. All IDs are hexadecimal."
+
+		# Get post number for the current post
 		countUpdate = client.counter.find_and_modify({"_id": channel}, {"$inc": {"seq": 1}}, new=True)
 		if countUpdate is None:
 			return "This channel does not exist"
 
-		client.messages.insert({
+		# add post
+		ID = client.messages.insert({
 			"name": name,
 			"message": message,
 			"time": int(time),
 			"channel": channel,
 			"postNumber": int(countUpdate["seq"])
 		})
+
+		# add references to to other posts
+		tagsToInsert = list(set(tagsToInsert)) # remove duplicates
+		commentsToInsert = [{"basePost": ID, "refPost": refID} for refID in tagsToInsert]
+		client.comments.insert(commentsToInsert)
 
 		# empty string means success :)
 		return ""
@@ -238,16 +264,19 @@ def utility_processor():
 # from 76 to 90. A staring index of 0 and length 90 will get postNumbers 11 to 100
 def getPosts(channel, start, length):
 	cursor = client.messages.find({"channel": channel}, skip=start, limit=length, sort=[("postNumber", -1)])
-
-	"""posts = list(cursor)
-	for i in range(len(posts)):
-		post = posts[i]["_id"]
-		if isinstance(post, ObjectId):
-			posts[i]["_id"] = str(post)
-
-	messages = posts[::-1]"""
 	messages = list(cursor)[::-1]
 	return messages
+
+def getOnePost(ID):
+	return client.messages.find_one({"_id": ObjectId(ID)})
+
+# Get all the comments for a post
+def getComments(ID, start, length):
+	references = client.comments.find({"refPost": ObjectId(ID)})
+	basePostIDs = [reference["basePost"] for reference in references]
+	basePosts = client.messages.find({ "_id": { "$in": basePostIDs } }, skip=start, limit=length, sort=[("time", -1)])
+	comments = list(basePosts)[::-1]
+	return comments
 
 def getPostsHTML(posts):
 	return render_template("posts.html", messages=posts)
