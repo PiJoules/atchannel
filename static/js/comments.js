@@ -148,7 +148,6 @@ $(".load-prev").click(function(){
 // Resize title
 $(".fit-text").fitText(1.2);
 
-
 // Style change
 atchannel.setStyleCallback(function(){
     // stuff to do after changing the styles
@@ -267,12 +266,14 @@ function changeRow(that, nextProperties, percent){
         "margin-left": nextProperties["margin-left"],
         "margin-right": nextProperties["margin-right"]
     });
+
     if (!atchannel.canAnimate() && atchannel.isAnimeStyle() && atchannel.isMobile()){
         that.css("font-size", "8px");
     }
     else {
         that.css("font-size", nextProperties["font-size"]);
     }
+
     that.find(".bubble").css({
         "width": nextProperties["bubbleWidth"]
     });
@@ -295,15 +296,8 @@ function changeRow(that, nextProperties, percent){
  */
 function hideAndSeek(){
     if (atchannel.canAnimate() && atchannel.isAnimeStyle()){
-        // limit the rows to resize only to those onscreen
-        var rows = $(".chat-row").filter(function(index){
-            var top = $(this).position().top;
-            return top+$(this).outerHeight() > 0 && top < ph;
-        });
-        changeRow($(".chat-row").not(rows), defaultProperties, 0.1);
-        rows.each(function(index){
-            hidingFunction($(this));
-        });
+        changeRow($(".chat-row:not(.checked)"), maxProperties);
+        $(".chat-row").addClass("checked");
     }
 }
 
@@ -503,10 +497,12 @@ function removeAnimations(){
 function prepareAnime(){
     setBubbleColors();
 
-    if (atchannel.canAnimate())
+    if (atchannel.canAnimate()){
         hideAndSeek();
-    else
+    }
+    else{
         changeRow($(".chat-row"), maxProperties, 1);
+    }
 
     setTimeline();
 }

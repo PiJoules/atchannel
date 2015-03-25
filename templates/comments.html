@@ -17,39 +17,49 @@
     </head>
 
     <body>
-        {% include "navbar.html" %}
+        <div class="chat">
+            {% include "navbar.html" %}
 
-        <div class="container">
-            <!--<div class="row" style="min-height: calc(50vh - 50px); text-align: center;">
-                <h1>Welcome to</h1>
-                <h1 id="channel-name" class="fit-text">
-                    {% if channel == "main" %}
-                        @channel
-                    {% else %}
-                        {{ channel }}Channel
-                    {% endif %}
-                </h1>
-            </div>-->
-
-            <div class="row" style="min-height: calc(50vh - 50px);">
-                <p>ID: {{ mainPost._id }}</p>
-                <p>Username: {{ mainPost.name }}</p>
-                <p>Post Number: {{ mainPost.postNumber }}</p>
-                <p>Time: {{ prettifyTime(mainPost.time) }}</p>
-                <p>Channel: {{ mainPost.channel }}</p>
+            {% set color = randColor() %}
+            <div class="row chat-row">
+                <div class="avatar">
+                    <img src="/static/images/face{{ randFaceNum() }}.png" class="img-rounded" />
+                </div>
+                <div class="bubble-container">
+                    <div class="bubble" data-color="{{ color }}" style="background-color: {{ color }}; border-color: transparent {{ color }};">
+                        <p class="chat-row-header">
+                            <strong class="part1"><span class="postNumber">{{ mainPost.postNumber|int }}</span> &nbsp; Name: {{ mainPost.name }} <span class="sage">[sage]</span></strong>
+                            <span class="vn-time part2">&nbsp;:{{ prettifyTime(mainPost.time) }}</span>
+                            <strong class="part2">ID:{{ mainPost._id }}</strong>
+                        </p>
+                        <p class="postMessage">{{ mainPost.message }}</p>
+                        <p class="anime-time">
+                            <span>{{ prettifyTime(mainPost.time) }}</span>
+                        </p>
+                    </div>
+                </div>
             </div>
 
-            {% for comment in comments %}
-            <div class="row">
-                <p>ID: {{ comment._id }}</p>
-                <p>Username: {{ comment.name }}</p>
-                <p>Post Number: {{ comment.postNumber }}</p>
-                <p>Time: {{ prettifyTime(comment.time) }}</p>
-                <p>Channel: {{ comment.channel }}</p>
+            {% if messages|length >= 50 %}
+            <div class="row" style="margin-left: 15%; margin-right: 15%; margin-bottom: 30px; text-align: center;">
+                <button class="load-prev btn btn-default btn-block">Load 50 more</button>
             </div>
-            {% endfor %}
+            {% endif %}
+
+            <div id="marker" style="display: none;"></div>
+
+            {% include "posts.html" %}
 
             <div class="row filler-row" style="visibility: hidden;"></div>
+        </div>
+        <div class="chat-input">
+            <div class="input-group">
+                <input type="text" class="message form-control" placeholder="Post message as 'Anonymous'" />
+                <span class="input-group-btn">
+                    <button class="btn btn-default prevPost"><span class="fa fa-caret-left"></span></button>
+                    <button class="btn btn-default nextPost"><span class="fa fa-caret-right"></span></button>
+                </span>
+            </div>
         </div>
 
         <script type="text/javascript" src="/static/js/jquery.min.js"></script>
@@ -63,6 +73,7 @@
         <script type="text/javascript">
             // set any vars returned by flask here
         </script>
+        <script type="text/javascript" src="/static/js/comments.js"></script>
     </body>
 
 </html>

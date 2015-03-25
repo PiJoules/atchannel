@@ -80,7 +80,7 @@ def comments(ID=None):
 
 	return render_template("comments.html",
 		mainPost=mainPost,
-		comments=comments,
+		messages=comments,
 		channels=channels,
 		mainChannelCount=mainChannelCount
 	)
