@@ -31,8 +31,8 @@ reg = re.compile("[a-f0-9]{24}")
 # Testing parameter passing to url
 @app.route('/', methods=['GET'])
 def index():
-	channels = client.counter.find({"_id": {"$ne": "main"}}).sort("seq", pymongo.DESCENDING)
-	mainChannelCount = client.counter.find_one({"_id": "main"})["seq"]
+	channels = client.channels.find({"_id": {"$ne": "main"}}).sort("seq", pymongo.DESCENDING)
+	mainChannelCount = client.channels.find_one({"_id": "main"})["seq"]
 
 	return render_template("index.html",
 		channels=channels,
@@ -52,8 +52,8 @@ def channel(channel="main"):
 	if not channelDoesExist(channel):
 		return "This channel does not exist", 404
 
-	channels = client.counter.find({"_id": {"$ne": "main"}}).sort("seq", pymongo.DESCENDING)
-	mainChannelCount = client.counter.find_one({"_id": "main"})["seq"]
+	channels = client.channels.find({"_id": {"$ne": "main"}}).sort("seq", pymongo.DESCENDING)
+	mainChannelCount = client.channels.find_one({"_id": "main"})["seq"]
 
 	messages = getPosts(channel, 0, limit)
 
@@ -81,8 +81,8 @@ def comments(ID=None):
 	if client.messages.find({"_id": ObjectId(ID)}).count() <= 0:
 		return "The post with ID " + ID + " does not exist", 404
 
-	channels = client.counter.find({"_id": {"$ne": "main"}}).sort("seq", pymongo.DESCENDING)
-	mainChannelCount = client.counter.find_one({"_id": "main"})["seq"]
+	channels = client.channels.find({"_id": {"$ne": "main"}}).sort("seq", pymongo.DESCENDING)
+	mainChannelCount = client.channels.find_one({"_id": "main"})["seq"]
 
 	mainPost = getOnePost(ID)
 	comments = getComments(ID, start, limit)
@@ -96,8 +96,8 @@ def comments(ID=None):
 
 @app.route('/submitpost.html', methods=['GET'])
 def submitpost():
-	channels = client.counter.find({"_id": {"$ne": "main"}}).sort("seq", pymongo.DESCENDING)
-	mainChannelCount = client.counter.find_one({"_id": "main"})["seq"]
+	channels = client.channels.find({"_id": {"$ne": "main"}}).sort("seq", pymongo.DESCENDING)
+	mainChannelCount = client.channels.find_one({"_id": "main"})["seq"]
 
 	return render_template("submitpost.html",
 		channel=request.args.get("channel"),
@@ -107,8 +107,8 @@ def submitpost():
 
 @app.route('/channels.html', methods=['GET'])
 def channels():
-	channels = client.counter.find({"_id": {"$ne": "main"}}).sort("seq", pymongo.DESCENDING)
-	mainChannelCount = client.counter.find_one({"_id": "main"})["seq"]
+	channels = client.channels.find({"_id": {"$ne": "main"}}).sort("seq", pymongo.DESCENDING)
+	mainChannelCount = client.channels.find_one({"_id": "main"})["seq"]
 
 	return render_template("channels.html",
 		channel=request.args.get("channel"),
@@ -162,7 +162,7 @@ def addPost():
 				return tag + " is not a valid ID. All IDs are hexadecimal."
 
 		# Get post number for the current post
-		countUpdate = client.counter.find_and_modify({"_id": channel}, {"$inc": {"seq": 1}}, new=True)
+		countUpdate = client.channels.find_and_modify({"_id": channel}, {"$inc": {"seq": 1}}, new=True)
 		if countUpdate is None:
 			return "This channel does not exist"
 
@@ -178,7 +178,9 @@ def addPost():
 		# add references to to other posts
 		tagsToInsert = list(set(tagsToInsert)) # remove duplicates
 		commentsToInsert = [{"basePost": ID, "refPost": refID} for refID in tagsToInsert]
-		client.comments.insert(commentsToInsert)
+		print commentsToInsert
+		if len(commentsToInsert) > 0:
+			client.comments.insert(commentsToInsert)
 
 		# empty string means success :)
 		return ""
@@ -197,7 +199,7 @@ def addChannel():
 		if channelDoesExist(channel):
 			return "This channel already exists"
 
-		client.counter.insert({
+		client.channels.insert({
 			"_id": channel,
 			"seq": 0
 		})
@@ -307,7 +309,7 @@ def getPostsHTML(posts):
 	return render_template("posts.html", messages=posts)
 
 def channelDoesExist(channel):
-	return channel in client.counter.distinct("_id")
+	return channel in client.channels.distinct("_id")
 
 
 if __name__ == '__main__':
