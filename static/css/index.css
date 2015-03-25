@@ -1,9 +1,11 @@
 
 .main {
 	background-color: white;
-	color: white;
 	font-family: "helvetica";
 	padding-top: 20px;
+	padding-left: 80px;
+	padding-right: 80px;
+	padding-bottom: 40px;
 }
 
 .atchannel-title {
@@ -16,6 +18,9 @@
 	line-height: 50px;
 }
 
+.about .panel-body {
+	padding: 5px;
+}
 
 /**
  * Anime
@@ -27,6 +32,24 @@
 .anime .atchannel-title {
 	background-color: #82b0c3;
 	border: 5px solid #7496a3;
+	color: white;
+}
+
+.anime .about {
+	border: 10px solid #b1a5c2;
+	border-radius: 0;
+}
+.anime .about .panel-heading{
+	background-color: #537084;
+	color: white;
+	border-radius: 0;
+}
+.anime .about .pandel-body {
+	color: black;
+}
+
+.anime .stuff .panel-heading {
+	background-color: #537084;
 	color: white;
 }
 
