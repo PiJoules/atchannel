@@ -33,7 +33,7 @@ reg = re.compile("[a-f0-9]{24}")
 def index():
 	channels = client.counter.find({"_id": {"$ne": "main"}}).sort("seq", pymongo.DESCENDING)
 	mainChannelCount = client.counter.find_one({"_id": "main"})["seq"]
-	
+
 	return render_template("index.html",
 		channels=channels,
 		mainChannelCount=mainChannelCount
@@ -100,6 +100,17 @@ def submitpost():
 	mainChannelCount = client.counter.find_one({"_id": "main"})["seq"]
 
 	return render_template("submitpost.html",
+		channel=request.args.get("channel"),
+		channels=channels,
+		mainChannelCount=mainChannelCount
+	)
+
+@app.route('/channels.html', methods=['GET'])
+def channels():
+	channels = client.counter.find({"_id": {"$ne": "main"}}).sort("seq", pymongo.DESCENDING)
+	mainChannelCount = client.counter.find_one({"_id": "main"})["seq"]
+
+	return render_template("channels.html",
 		channel=request.args.get("channel"),
 		channels=channels,
 		mainChannelCount=mainChannelCount

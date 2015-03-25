@@ -1,0 +1,55 @@
+
+.main {
+	background-color: white;
+	color: white;
+	font-family: "helvetica";
+	padding-top: 20px;
+}
+
+.atchannel-title {
+	border-radius: 10px;
+}
+
+.atchannel-title h1 {
+	margin-top: 10px;
+	font-size: 50px;
+	line-height: 50px;
+}
+
+
+/**
+ * Anime
+ */
+.anime {
+	background-color: #6b6189;
+}
+
+.anime .atchannel-title {
+	background-color: #82b0c3;
+	border: 5px solid #7496a3;
+	color: white;
+}
+
+
+/**
+ * VN
+ */
+
+.vn .atchannel-title {
+	color: black;
+}
+
+.vn .about .panel-body {
+	color: black;
+}
+
+
+/* For screens at least 768px wide (large screens/desltops) */
+@media screen and (min-width: 768px){
+
+}
+
+/* For screens at most 767px wide (small screens/phones) */
+@media screen and (max-width: 767px){
+
+}

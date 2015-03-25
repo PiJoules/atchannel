@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>@channel</title>
+
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" />
+        <link rel="stylesheet" type="text/css" href="/static/css/bootstrap-switch.min.css" />
+        <link rel="stylesheet" type="text/css" href="/static/css/bootstrap-markdown.min.css" />
+        <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" />
+        <link rel="stylesheet" type="text/css" href="/static/css/navbar.css" />
+        <link rel="stylesheet" type="text/css" href="/static/css/channels.css" />
+    </head>
+
+    <body>
+        {% include "navbar.html" %}
+
+        <div class="main container">
+            <p>These are all the currently existing channels created by users on @channel</p>
+
+            <div class="channel row">
+                <div class="col-sm-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">
+                                <a href="/main">@channel</a>
+                                <span>
+                                    ({{ mainChannelCount|int }}
+                                    {% if mainChannelCount != 1 %}
+                                        Posts)
+                                    {% else %}
+                                        Post)
+                                    {% endif %}
+                                </span>
+                            </h3>
+                        </div>
+                        <div class="panel-body">
+                            Description: None
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {% for channel in channels %}
+            <div class="channel row">
+                <div class="col-sm-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">
+                                <a href="/{{channel._id}}">{{ channel._id }}Channel</a>
+                                <span>
+                                    ({{ channel.seq|int }}
+                                    {% if channel.seq != 1 %}
+                                        Posts)
+                                    {% else %}
+                                        Post)
+                                    {% endif %}
+                                </span>
+                            </h3>
+                        </div>
+                        <div class="panel-body">
+                            Description:
+                            {% if channel.description %}
+                                {{ channel.description }}
+                            {% else %}
+                                None
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <script type="text/javascript" src="/static/js/jquery.min.js"></script>
+        <script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="/static/js/bootstrap-switch.min.js"></script>
+        <script type="text/javascript" src="/static/js/markdown.js"></script>
+        <script type="text/javascript" src="/static/js/mobile-detect.min.js"></script>
+        <script type="text/javascript" src="/static/js/jquery.fittext.js"></script>
+        <script type="text/javascript" src="/static/js/module.js"></script>
+        <script type="text/javascript" src="/static/js/navbar.js"></script>
+        <script type="text/javascript">
+            // set any vars returned by flask here
+        </script>
+    </body>
+
+</html>

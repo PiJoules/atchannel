@@ -1,0 +1,10 @@
+
+
+html, body {
+	margin: 0;
+	padding: 0;
+}
+
+.channel .panel-title a {
+	color: #337ab7;
+}

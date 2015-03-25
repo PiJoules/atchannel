@@ -18,7 +18,7 @@
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li>
-                    <a class="btn" data-toggle="modal" data-target="#existing-channels"><span class="glyphicon glyphicon-search"></span></a>
+                    <a class="btn" href="/channels.html"><span class="glyphicon glyphicon-search"></span></a>
                 </li>
                 <li>
                     <a class="btn" data-toggle="modal" data-target="#creating-channel"><span class="glyphicon glyphicon-plus"></span></a>
@@ -32,45 +32,6 @@
         </div>
     </div>
 </nav>
-
-
-<!-- existing channels modal -->
-<div class="modal fade" id="existing-channels" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
-                </button>
-                <h4 class="modal-title" id="exampleModalLabel">Find a channel</h4>
-            </div>
-            <div class="modal-body">
-                <p>These are all the currently existing channels created by users on @channel</p>
-
-                <p>
-                    <a href="/main">@channel</a>
-                    ({{ mainChannelCount|int }}
-                    {% if mainChannelCount != 1 %}
-                        Posts)
-                    {% else %}
-                        Post)
-                    {% endif %}
-                </p>
-
-                {% for channel in channels %}
-                    <p>
-                        <a href="/{{channel._id}}">{{ channel._id }}Channel</a>
-                        ({{ channel.seq|int }}
-                        {% if channel.seq != 1 %}
-                            Posts)
-                        {% else %}
-                            Post)
-                        {% endif %}
-                    </p>
-                {% endfor %}
-            </div>
-        </div>
-    </div>
-</div>
 
 <!-- create a channel modal -->
 <div class="modal fade" id="creating-channel" tabindex="-1" role="dialog" aria-hidden="true">
