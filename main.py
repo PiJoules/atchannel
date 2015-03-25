@@ -30,8 +30,17 @@ reg = re.compile("[a-f0-9]{24}")
 
 # Testing parameter passing to url
 @app.route('/', methods=['GET'])
+def index():
+	channels = client.counter.find({"_id": {"$ne": "main"}}).sort("seq", pymongo.DESCENDING)
+	mainChannelCount = client.counter.find_one({"_id": "main"})["seq"]
+	
+	return render_template("index.html",
+		channels=channels,
+		mainChannelCount=mainChannelCount
+	)
+
 @app.route('/<channel>', methods=['GET'])
-def index(channel="main"):
+def channel(channel="main"):
 	limit = request.args.get("limit")
 	style = request.args.get("style")
 
