@@ -208,7 +208,12 @@ def getPosts():
 	length = int(length)
 
 	messages = getPosts(channel, start, length)
-	return jsonify(messages=messages, html=getPostsHTML(messages))
+	return jsonify(
+		html=getPostsHTML(messages),
+		messagesCount=len(messages),
+		largestPostNumber=messages[-1]["postNumber"],
+		smallestPostNumber=messages[0]["postNumber"]
+	)
 
 
 

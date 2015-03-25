@@ -223,16 +223,15 @@ $(window).load(function(){
 
 function getPosts(){
     $.get("/getPosts", {channel: channel, start: messagesCount, length: nextAmount}).done(function(response){
-        messagesCount += response.messages.length;
+        messagesCount += response.messagesCount;
 
-        if (response.messages.length < nextAmount){
+        if (response.messagesCount < nextAmount){
             $(".load-prev").parent().remove();
         }
         else {
             $("#marker").after(response.html);
 
-            largestPostNumber = parseInt($(".chat-row .postNumber").last().text());
-            smallestPostNumber = parseInt($(".chat-row .postNumber").first().text());
+            smallestPostNumber = parseInt(response.smallestPostNumber);
             setTimeline();
 
             if (atchannel.canAnimate())
@@ -294,7 +293,7 @@ function changeRow(that, nextProperties, percent){
  * Function for choosing the rows to resize
  */
 function hideAndSeek(){
-    if (atchannel.canAnimate() && atchannel.isAnimeStyle()){
+    if (atchannel.canAnimate() && atchannel.isAnimeStyle() && !inComments){
         // limit the rows to resize only to those onscreen
         var rows = $(".chat-row").filter(function(index){
             var top = $(this).position().top;
@@ -304,6 +303,9 @@ function hideAndSeek(){
         rows.each(function(index){
             hidingFunction($(this));
         });
+    }
+    else if (atchannel.canAnimate() && atchannel.isAnimeStyle() && inComments){
+        changeRow($(".chat-row"), maxProperties);
     }
 }
 
@@ -503,10 +505,12 @@ function removeAnimations(){
 function prepareAnime(){
     setBubbleColors();
 
-    if (atchannel.canAnimate())
+    if (atchannel.canAnimate()){
         hideAndSeek();
-    else
+    }
+    else{
         changeRow($(".chat-row"), maxProperties, 1);
+    }
 
     setTimeline();
 }
