@@ -20,4 +20,6 @@ The goal of this website is to replicate the @channel from the anime Steins;Gate
 - requests (python)
 
 ## Todo
-- Find new way for resizing markdown content in each post. `Zoom` does not work in Firefox or IE, but does work on Chrome and Safari
+<ul>
+	<li>Find new way for resizing markdown content in each post. `Zoom` does not work in Firefox or IE, but does work on Chrome and Safari.</li>
+</ul>
