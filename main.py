@@ -127,6 +127,17 @@ def about():
 	)
 
 
+@app.route('/rules.html', methods=['GET'])
+def rules():
+	channels = client.channels.find({"_id": {"$ne": "main"}}).sort("seq", pymongo.DESCENDING)
+	mainChannelCount = client.channels.find_one({"_id": "main"})["seq"]
+
+	return render_template("rules.html",
+		channels=channels,
+		mainChannelCount=mainChannelCount
+	)
+
+
 # Add a message to the database
 @app.route('/addPost', methods=['POST'])
 def addPost():
