@@ -2,7 +2,7 @@
 {% set color = randColor() %}
 <div class="row chat-row" id="post{{ message.postNumber|int }}" data-postnumber="{{ message.postNumber|int }}">
     <div class="avatar">
-        <img src="/static/images/face{{ randFaceNum() }}.png" class="img-rounded" />
+        <img src="/static/img/face{{ randFaceNum() }}.png" class="img-rounded" />
     </div>
     <div class="bubble-container">
         <div class="bubble" data-color="{{ color }}" style="background-color: {{ color }}; border-color: transparent {{ color }};">

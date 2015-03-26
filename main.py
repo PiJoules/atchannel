@@ -111,7 +111,17 @@ def channels():
 	mainChannelCount = client.channels.find_one({"_id": "main"})["seq"]
 
 	return render_template("channels.html",
-		channel=request.args.get("channel"),
+		channels=channels,
+		mainChannelCount=mainChannelCount
+	)
+
+
+@app.route('/about.html', methods=['GET'])
+def about():
+	channels = client.channels.find({"_id": {"$ne": "main"}}).sort("seq", pymongo.DESCENDING)
+	mainChannelCount = client.channels.find_one({"_id": "main"})["seq"]
+
+	return render_template("about.html",
 		channels=channels,
 		mainChannelCount=mainChannelCount
 	)

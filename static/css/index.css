@@ -74,5 +74,8 @@
 
 /* For screens at most 767px wide (small screens/phones) */
 @media screen and (max-width: 767px){
-
+	.main {
+		padding-left: 20px;
+		padding-right: 20px;
+	}
 }
