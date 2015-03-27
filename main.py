@@ -112,11 +112,22 @@ def comments(ID=None):
 	)
 
 @app.route('/submitpost.html', methods=['GET'])
-def submitpost():
+def submitchannel():
 	channels = client.channels.find({"_id": {"$ne": "main"}}).sort("seq", pymongo.DESCENDING)
 	mainChannelCount = client.channels.find_one({"_id": "main"})["seq"]
 
 	return render_template("submitpost.html",
+		channel=request.args.get("channel"),
+		channels=channels,
+		mainChannelCount=mainChannelCount
+	)
+
+@app.route('/submitchannel.html', methods=['GET'])
+def submitpost():
+	channels = client.channels.find({"_id": {"$ne": "main"}}).sort("seq", pymongo.DESCENDING)
+	mainChannelCount = client.channels.find_one({"_id": "main"})["seq"]
+
+	return render_template("submitchannel.html",
 		channel=request.args.get("channel"),
 		channels=channels,
 		mainChannelCount=mainChannelCount

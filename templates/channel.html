@@ -26,7 +26,7 @@
         <div class="chat">
             {% include "navbar.html" %}
 
-            <div class="row" style="min-height: calc(50vh - 50px); text-align: center;">
+            <div class="container" style="min-height: calc(50vh - 50px); text-align: center;">
                 <h1>Welcome to</h1>
                 <h1 id="channel-name" class="fit-text">
                     {% if channel == "main" %}
@@ -35,6 +35,12 @@
                         {{ channel }}Channel
                     {% endif %}
                 </h1>
+
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        Smaple text
+                    </div>
+                </div>
             </div>
 
             {% if messages|length >= 50 %}
