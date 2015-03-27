@@ -125,7 +125,7 @@ def submitpost():
 # Need to get rid of this l8er
 @app.route('/channels.html', methods=['GET'])
 def channelsRedirect():
-	return redirect("/channels/popular/0")
+	return redirect("/channels")
 
 
 @app.route('/channels/', methods=['GET'])

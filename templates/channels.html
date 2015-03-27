@@ -82,7 +82,7 @@
                             {% else %}
                                 /channels/{{ sort }}/{{ page-1 }}
                             {% endif %}
-                            "><span aria-hidden="true">&larr;</span></a>
+                            "><span aria-hidden="true">&larr; Prev</span></a>
                     </li>
                     <li class="next {% if channels|length < limit %}disabled{% endif %}">
                         <a href="
@@ -91,7 +91,7 @@
                             {% else %}
                                 /channels/{{ sort }}/{{ page+1 }}
                             {% endif %}
-                        "><span aria-hidden="true">&rarr;</span></a>
+                        ">Next <span aria-hidden="true">&rarr;</span></a>
                     </li>
                 </ul>
             </nav>
