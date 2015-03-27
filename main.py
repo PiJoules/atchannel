@@ -16,7 +16,7 @@ from bson.objectid import ObjectId
 
 
 # Import the Flask Framework
-from flask import Flask, render_template, request, jsonify, Response
+from flask import Flask, render_template, request, jsonify, Response, redirect
 app = Flask(__name__)
 
 # Create mongoconnection
@@ -122,14 +122,33 @@ def submitpost():
 		mainChannelCount=mainChannelCount
 	)
 
+# Need to get rid of this l8er
 @app.route('/channels.html', methods=['GET'])
-def channels():
-	channels = client.channels.find({"_id": {"$ne": "main"}}).sort("seq", pymongo.DESCENDING)
+def channelsRedirect():
+	return redirect("/channels/popular/0")
+
+
+@app.route('/channels/', methods=['GET'])
+@app.route('/channels/<sort>/', methods=['GET'])
+@app.route('/channels/<sort>/<int:page>', methods=['GET'])
+def channels(sort="popular",page=0):
+	limit = 20
+	start = page*limit
+	print start
+
+	if sort == "latest":
+		channels = client.channels.find(sort=[("time", -1)], skip=start, limit=limit)
+	else:
+		channels = client.channels.find(sort=[("seq", -1)], skip=start, limit=limit)
+
 	mainChannelCount = client.channels.find_one({"_id": "main"})["seq"]
 
 	return render_template("channels.html",
-		channels=channels,
-		mainChannelCount=mainChannelCount
+		channels=list(channels) or [],
+		mainChannelCount=mainChannelCount,
+		page=page,
+		limit=limit,
+		sort=sort
 	)
 
 
@@ -331,7 +350,7 @@ def utility_processor():
 # If the collection has 100 rows and we receive a starting index of 10 and length 25, messages with postNumbers
 # from 76 to 90. A staring index of 0 and length 90 will get postNumbers 11 to 100
 def getPosts(channel, start, length):
-	cursor = client.messages.find({"channel": channel}, skip=start, limit=length, sort=[("postNumber", -1)])
+	cursor = client.messages.find({"channel": channel}, skip=int(start), limit=int(length), sort=[("postNumber", -1)])
 	messages = list(cursor)[::-1]
 	return messages
 
@@ -342,7 +361,7 @@ def getOnePost(ID):
 def getComments(ID, start, length):
 	references = client.comments.find({"refPost": ObjectId(ID)})
 	basePostIDs = [reference["basePost"] for reference in references]
-	basePosts = client.messages.find({ "_id": { "$in": basePostIDs } }, skip=start, limit=length, sort=[("time", -1)])
+	basePosts = client.messages.find({ "_id": { "$in": basePostIDs } }, skip=int(start), limit=int(length), sort=[("time", -1)])
 	comments = list(basePosts)[::-1]
 	return comments
 

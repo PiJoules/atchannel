@@ -21,28 +21,19 @@
         {% include "navbar.html" %}
 
         <div class="main container">
-            <p>These are all the currently existing channels created by users on @channel</p>
-
-            <div class="channel row">
+            <div class="row">
                 <div class="col-sm-12">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <h3 class="panel-title">
-                                <a href="/main">@channel</a>
-                                <span>
-                                    ({{ mainChannelCount|int }}
-                                    {% if mainChannelCount != 1 %}
-                                        Posts)
-                                    {% else %}
-                                        Post)
-                                    {% endif %}
-                                </span>
-                            </h3>
+                    <p>
+                        <div class="btn-group" role="group" aria-label="...">
+                            {% if sort == "latest" %}
+                                <a href="/channels/popular" class="btn btn-default">Popular</a>
+                                <a href="/channels/latest" class="btn btn-default active">Latest</a>
+                            {% else %}
+                                <a href="/channels/popular" class="btn btn-default active">Popular</a>
+                                <a href="/channels/latest" class="btn btn-default">Latest</a>
+                            {% endif %}
                         </div>
-                        <div class="panel-body">
-                            Description: None
-                        </div>
-                    </div>
+                    </p>
                 </div>
             </div>
 
@@ -52,7 +43,13 @@
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <h3 class="panel-title">
-                                <a href="/{{channel._id}}">{{ channel._id }}Channel</a>
+                                <a href="/{{channel._id}}">
+                                    {% if channel._id == "main" %}
+                                        @channel
+                                    {% else %}
+                                        {{ channel._id }}Channel
+                                    {% endif %}
+                                </a>
                                 <span>
                                     ({{ channel.seq|int }}
                                     {% if channel.seq != 1 %}
@@ -75,6 +72,29 @@
                 </div>
             </div>
             {% endfor %}
+
+            <nav>
+                <ul class="pager">
+                    <li class="previous {% if page <= 0 %}disabled{% endif %}">
+                        <a href="
+                            {% if page <= 0 %}
+                                #
+                            {% else %}
+                                /channels/{{ sort }}/{{ page-1 }}
+                            {% endif %}
+                            "><span aria-hidden="true">&larr;</span></a>
+                    </li>
+                    <li class="next {% if channels|length < limit %}disabled{% endif %}">
+                        <a href="
+                            {% if channels|length < limit %}
+                                #
+                            {% else %}
+                                /channels/{{ sort }}/{{ page+1 }}
+                            {% endif %}
+                        "><span aria-hidden="true">&rarr;</span></a>
+                    </li>
+                </ul>
+            </nav>
         </div>
 
         {% include "footer.html" %}
