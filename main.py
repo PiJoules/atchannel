@@ -39,9 +39,12 @@ def index():
 	channelCount = client.channels.count()
 	postCount = client.messages.count()
 
+	postLimit = 20
 	latestPosts = list( client.messages.find(sort=[("time", -1)], limit=5) )
 	for i in range(len(latestPosts)):
-		latestPosts[i]["message"] = latestPosts[i]["message"][:20]
+		post = latestPosts[i]["message"]
+		if len(post) > postLimit:
+			latestPosts[i]["message"] = latestPosts[i]["message"][:postLimit] + "..."
 
 	newestChannels = client.channels.find(limit=5, sort=[("time", -1)])
 	popularChannels = client.channels.find(limit=5, sort=[("seq", -1)])
