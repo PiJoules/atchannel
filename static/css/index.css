@@ -34,6 +34,9 @@
 	border: 5px solid #7496a3;
 	color: white;
 }
+.anime .atchannel-title a {
+	color: white;
+}
 
 .anime .about {
 	border: 10px solid #b1a5c2;

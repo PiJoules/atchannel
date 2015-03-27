@@ -168,7 +168,7 @@ var atchannel = (function(){
 		submitChannel: function(channel, successCallback){
 			channel = channel.trim();
 			if (channel !== "" && isAlphaNumeric(channel)){
-			    $.post("/addChannel", {channel: channel}).done(function(response){
+			    $.post("/addChannel", { channel: channel, time: Date.now() }).done(function(response){
 			        if (response !== ""){
 			            alert(response);
 			        }

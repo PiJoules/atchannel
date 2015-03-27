@@ -12,6 +12,9 @@ from datetime import datetime
 import pymongo
 from bson.objectid import ObjectId
 
+# http://flask.pocoo.org/snippets/71/
+
+
 # Import the Flask Framework
 from flask import Flask, render_template, request, jsonify, Response
 app = Flask(__name__)
@@ -33,10 +36,24 @@ reg = re.compile("[a-f0-9]{24}")
 def index():
 	channels = client.channels.find({"_id": {"$ne": "main"}}).sort("seq", pymongo.DESCENDING)
 	mainChannelCount = client.channels.find_one({"_id": "main"})["seq"]
+	channelCount = client.channels.count()
+	postCount = client.messages.count()
+
+	latestPosts = list( client.messages.find(sort=[("time", -1)], limit=5) )
+	for i in range(len(latestPosts)):
+		latestPosts[i]["message"] = latestPosts[i]["message"][:20]
+
+	newestChannels = client.channels.find(limit=5, sort=[("time", -1)])
+	popularChannels = client.channels.find(limit=5, sort=[("seq", -1)])
 
 	return render_template("index.html",
 		channels=channels,
-		mainChannelCount=mainChannelCount
+		mainChannelCount=mainChannelCount,
+		channelCount=channelCount,
+		postCount=postCount,
+		latestPosts=latestPosts,
+		newestChannels=newestChannels,
+		popularChannels=popularChannels
 	)
 
 @app.route('/<channel>', methods=['GET'])
@@ -212,8 +229,10 @@ def addPost():
 # Add a Channel to the database
 @app.route('/addChannel', methods=['POST'])
 def addChannel():
-	if "channel" in request.form:
+	if "channel" in request.form and "time" in request.form:
 		channel = request.form["channel"].strip()
+		time = int(request.form["time"].strip())
+
 		if not channel.isalnum():
 			return "The channel name must contain only aphanumeric characters"
 
@@ -222,12 +241,13 @@ def addChannel():
 
 		client.channels.insert({
 			"_id": channel,
-			"seq": 0
+			"seq": 0,
+			"time": time
 		})
 
 		return ""
 	else:
-		return "Unsucessful creation: the channel name is not provided"
+		return "Unsucessful creation: the channel name or current date is not provided"
 
 
 @app.route('/getPosts', methods=['GET'])

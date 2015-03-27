@@ -24,7 +24,7 @@
             <div class="row">
                 <div class="col-sm-6 col-sm-offset-3 text-center">
                     <div class="atchannel-title well">
-                        <h1>@channel</h1>
+                        <h1><a href="/">@channel</a></h1>
                     </div>
                 </div>
             </div>
@@ -44,6 +44,54 @@
                     </div>
                 </div>
             </div>
+
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="stuff panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title"><a href="/channels.html">Newest Channels</a></h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="stuff panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title"><a href="/channels.html">Popular Channels</a></h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <p>
+                        {% for channel in newestChannels %}
+                            <strong><a href="{{ channel._id }}">
+                                {% if channel._id == "main" %}
+                                    @channel
+                                {% else %}
+                                    {{ channel._id }}Channel
+                                {% endif %}
+                            </a></strong>: {{ prettifyTime(channel.time) }} <br>
+                        {% endfor %}
+                    </p>
+                    <p><a href="/channels.html">more ...</a></p>
+                </div>
+                <div class="col-sm-6">
+                    <p>
+                        {% for channel in popularChannels %}
+                            <strong><a href="{{ channel._id }}">
+                                {% if channel._id == "main" %}
+                                    @channel
+                                {% else %}
+                                    {{ channel._id }}Channel
+                                {% endif %}
+                            </a></strong>: {{ channel.seq|int }} posts <br>
+                        {% endfor %}
+                    </p>
+                    <p><a href="/channels.html">more ...</a></p>
+                </div>
+            </div>
+
             <div class="row">
                 <div class="col-sm-12">
                     <div class="stuff panel panel-default">
@@ -85,6 +133,45 @@
                 <div class="col-sm-6">
                     <h4>Site re-relaunch <small>(Insert date here l8er)</small></h4>
                     <p>Horray</p>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="stuff panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Latest posts</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="stuff panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Stats</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <p>
+                        {% for post in latestPosts %}
+                            <strong><a href="{{ post.channel }}">
+                                {% if post.channel == "main" %}
+                                    @channel
+                                {% else %}
+                                    {{ post.channel }}Channel
+                                {% endif %}
+                            </a></strong>: {{ post.message }} <br>
+                        {% endfor %}
+                    </p>
+                </div>
+                <div class="col-sm-6">
+                    <p>
+                        <strong>Total posts: </strong>{{ postCount }}
+                        <br>
+                        <strong>Total channels: </strong>{{ channelCount }}
+                    </p>
                 </div>
             </div>
         </div>
