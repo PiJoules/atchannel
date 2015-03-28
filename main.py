@@ -38,17 +38,17 @@ channelLimit = 20
 # Testing parameter passing to url
 @app.route('/', methods=['GET'])
 def index():
-	channelCount = client.channelsEmpty.count()
-	postCount = client.messagesEmpty.count()
+	channelCount = client.channels.count()
+	postCount = client.messages.count()
 
-	latestPosts = list( client.messagesEmpty.find(sort=[("time", -1)], limit=5) )
+	latestPosts = list( client.messages.find(sort=[("time", -1)], limit=5) )
 	for i in range(len(latestPosts)):
 		post = latestPosts[i]["message"]
 		if len(post) > charLimit:
 			latestPosts[i]["message"] = latestPosts[i]["message"][:charLimit] + "..."
 
-	newestChannels = list( client.channelsEmpty.find(limit=5, sort=[("time", -1)]) )
-	popularChannels = list( client.channelsEmpty.find(limit=5, sort=[("seq", -1)]) )
+	newestChannels = list( client.channels.find(limit=5, sort=[("time", -1)]) )
+	popularChannels = list( client.channels.find(limit=5, sort=[("seq", -1)]) )
 
 	return render_template("index.html",
 		channelCount=channelCount,
@@ -65,7 +65,7 @@ def channel(channel="main"):
 	if not channelDoesExist(channel):
 		return "This channel does not exist", 404
 
-	description = client.channelsEmpty.find_one({"_id": channel})["description"]
+	description = client.channels.find_one({"_id": channel})["description"]
 
 	messages = getPosts(channel, 0, limit)
 
@@ -89,7 +89,7 @@ def comments(ID=None):
 	if start is None:
 		start = 0
 
-	if client.messagesEmpty.find({"_id": ObjectId(ID)}).count() <= 0:
+	if client.messages.find({"_id": ObjectId(ID)}).count() <= 0:
 		return "The post with ID " + ID + " does not exist", 404
 
 	mainPost = getOnePost(ID)
@@ -124,9 +124,9 @@ def channels(sort="popular",page=0):
 	start = page*channelLimit
 
 	if sort == "latest":
-		channels = client.channelsEmpty.find(sort=[("time", -1)], skip=start, limit=channelLimit)
+		channels = client.channels.find(sort=[("time", -1)], skip=start, limit=channelLimit)
 	else:
-		channels = client.channelsEmpty.find(sort=[("seq", -1)], skip=start, limit=channelLimit)
+		channels = client.channels.find(sort=[("seq", -1)], skip=start, limit=channelLimit)
 
 	return render_template("channels.html",
 		channels=list(channels) or [],
@@ -183,7 +183,7 @@ def addPost():
 		for tag in tags:
 			if reg.match(tag):
 				objId = ObjectId(tag)
-				if client.messagesEmpty.find({"_id": objId}).count() <= 0:
+				if client.messages.find({"_id": objId}).count() <= 0:
 					return "Post with ID " + tag + " does not exist"
 				else:
 					tagsToInsert.append(objId)
@@ -191,12 +191,12 @@ def addPost():
 				return tag + " is not a valid ID. All IDs are hexadecimal."
 
 		# Get post number for the current post
-		countUpdate = client.channelsEmpty.find_and_modify({"_id": channel}, {"$inc": {"seq": 1}}, new=True)
+		countUpdate = client.channels.find_and_modify({"_id": channel}, {"$inc": {"seq": 1}}, new=True)
 		if countUpdate is None:
 			return "This channel does not exist"
 
 		# add post
-		ID = client.messagesEmpty.insert({
+		ID = client.messages.insert({
 			"name": name,
 			"message": message,
 			"time": int(time),
@@ -209,7 +209,7 @@ def addPost():
 		commentsToInsert = [{"basePost": ID, "refPost": refID} for refID in tagsToInsert]
 		print commentsToInsert
 		if len(commentsToInsert) > 0:
-			client.commentsEmpty.insert(commentsToInsert)
+			client.comments.insert(commentsToInsert)
 
 		# empty string means success :)
 		return ""
@@ -234,7 +234,7 @@ def addChannel():
 		if channelDoesExist(channel):
 			return "This channel already exists"
 
-		client.channelsEmpty.insert({
+		client.channels.insert({
 			"_id": channel,
 			"seq": 0,
 			"time": time,
@@ -327,18 +327,18 @@ def utility_processor():
 # If the collection has 100 rows and we receive a starting index of 10 and length 25, messages with postNumbers
 # from 76 to 90. A staring index of 0 and length 90 will get postNumbers 11 to 100
 def getPosts(channel, start, length):
-	cursor = client.messagesEmpty.find({"channel": channel}, skip=int(start), limit=int(length), sort=[("postNumber", -1)])
+	cursor = client.messages.find({"channel": channel}, skip=int(start), limit=int(length), sort=[("postNumber", -1)])
 	messages = list(cursor)[::-1]
 	return messages
 
 def getOnePost(ID):
-	return client.messagesEmpty.find_one({"_id": ObjectId(ID)})
+	return client.messages.find_one({"_id": ObjectId(ID)})
 
 # Get all the comments for a post
 def getComments(ID, start, length):
-	references = client.commentsEmpty.find({"refPost": ObjectId(ID)})
+	references = client.comments.find({"refPost": ObjectId(ID)})
 	basePostIDs = [reference["basePost"] for reference in references]
-	basePosts = client.messagesEmpty.find({ "_id": { "$in": basePostIDs } }, skip=int(start), limit=int(length), sort=[("time", -1)])
+	basePosts = client.messages.find({ "_id": { "$in": basePostIDs } }, skip=int(start), limit=int(length), sort=[("time", -1)])
 	comments = list(basePosts)[::-1]
 	return comments
 
@@ -346,7 +346,7 @@ def getPostsHTML(posts):
 	return render_template("posts.html", messages=posts)
 
 def channelDoesExist(channel):
-	return channel in client.channelsEmpty.distinct("_id")
+	return channel in client.channels.distinct("_id")
 
 
 if __name__ == '__main__':
