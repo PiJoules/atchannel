@@ -1,5 +1,8 @@
 # [@channel](http://atchannel.space/)
-The goal of this website is to replicate the @channel from the anime Steins;Gate as much as possible. On the website, you are able to switch between the designs portrayed in both the anime and visual novel.
+The goal of this website is to replicate the @channel from the anime Steins;Gate as much as possible (making this basically a parody of 4chan). Here you will find various channels dedicated to a variety of topics created by users. Users do not need to register an account before participating in a channel.
+
+## Installation
+Before cloning this repo, make sure you have `pip` and `python 2.7.x` installed. The 
 
 **@channel as portrayed in the anime**
 !["@channel as portrayed in anime"](static/img/@channel.gif "@channel as portrayed in the anime")
@@ -8,6 +11,7 @@ The goal of this website is to replicate the @channel from the anime Steins;Gate
 !["@channel as portrayed in the VN"](static/img/VN/vn3.png "@channel as portrayed in the VN")
 
 ## Dependencies
+**Installed via pip**
 - Flask
 - pymongo
 - jQuery

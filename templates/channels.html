@@ -61,12 +61,14 @@
                             </h3>
                         </div>
                         <div class="panel-body">
-                            Description:
-                            {% if channel.description %}
-                                {{ channel.description }}
-                            {% else %}
-                                None
-                            {% endif %}
+                            <strong>Description</strong>:
+                            <p class="description">
+                                {% if channel.description %}
+                                    {{ channel.description }}
+                                {% else %}
+                                    None
+                                {% endif %}
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -109,6 +111,7 @@
         <script type="text/javascript">
             // set any vars returned by flask here
         </script>
+        <script type="text/javascript" src="/static/js/channels.js"></script>
     </body>
 
 </html>
