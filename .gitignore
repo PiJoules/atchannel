@@ -6,4 +6,4 @@ notes.md
 
 !lib/README.md
 !private/README.md
-!private/__info__.py
+!private/__init__.py

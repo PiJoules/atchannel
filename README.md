@@ -8,11 +8,26 @@ The goal of this website is to replicate the @channel from the anime Steins;Gate
 !["@channel as portrayed in the VN"](static/img/VN/vn3.png "@channel as portrayed in the VN")
 
 ## Setup for development
-Before cloning this repo, make sure you have `pip`, `python 2.7.x`, `mongo`, and `mongod` installed. (I used `python 2.7.9`.) @channel stores everything on a MongoDB database. On mongo, you will need to make create a database called `atchannel` and in that, make sure these 3 collections exist: `messages`, `channels`, and `comments`. In the `channels` collection, insert the object `{_id: "main", seq: 0, time: Date.now(), description: "This is the main channel in @channel. Feel free to post anything about anything."}` and `{_id: "Suggestions", seq: 0, time: Date.now(), description: "Post any suggestions you feel could improve @channel or features you would like to see on @channel."}`.
-
-Before starting the server, make sure you have the python dependencies installed by running `pip install -r requirements.txt -t lib`. This will install the dependencies in the `lib` directory, and each one will eventually be added onto the python classpath. You will also need to create the python files in the `private` directory.
-
-To start the server, just enter `sudo mongod` to start the mongo server, and `python main.py` to start the flask server.
+1) Before cloning this repo, make sure you have pip, `python 2.7.x`, `mongo`, and `mongod` installed.
+2) @channel stores everything on a MongoDB database. On mongo, you will need to make create a database called `atchannel` and in that, make sure these 3 collections exist: `messages`, `channels`, and `comments`. Enter the mongo shell and enter the commands:
+```mongo
+> use atchannel
+> db.createCollection("messages")
+> db.createCollection("channels")
+> db.createCollection("comments")
+```
+3) @channel just requires 2 channels to exist before launching the server: the `main` channel, and a `Suggestions` channel. On the mongo shell, enter:
+```mongo
+> db.channels.insert({_id: "Suggestions", seq: 0, time: Date.now(), description: "Post any suggestions you feel could improve @channel or features you would like to see on @channel."})
+> db.channels.insert({_id: "Suggestions", seq: 0, time: Date.now(), description: "Post any suggestions you feel could improve @channel or features you would like to see on @channel."})
+```
+4) You can now exit the shell. Before starting the server, make sure you have the python dependencies installed by running:
+```sh
+$ pip install -r requirements.txt -t lib
+```
+This will install the dependencies in the `lib` directory, and each one will eventually be added onto the python classpath.
+5) Create the python files missing from the `private` directory. The file names and their contents are listed in `private/README.md`.
+6) Start the mongo server with `sudo mongod` and `python main.py` to start the flask server.
 
 ## Contributing
 Feel free to fork this repo and develop on it as much as you like. I would love nothing more than having people help develop @channel, especially since I am a total noob at flask and mongodb. If you think you can improve the code, feel free to submit a pull request. If multiple people want to consitently develop and contribute to @channel. I will make this repo into an organization so it will be easier to invite people.
