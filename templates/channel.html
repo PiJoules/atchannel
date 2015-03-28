@@ -27,16 +27,18 @@
             {% include "navbar.html" %}
 
             <div class="container">
-                <div class="jumbotron" style="min-height: 50vh;">
-                    <h1>
-                        Welcome to                     
-                        {% if channel == "main" %}
-                            @channel
-                        {% else %}
-                            {{ channel }}Channel
-                        {% endif %}
-                    </h1>
-                    <p class="description">{% if description %}{{ description }}{% endif %}</p>
+                <div class="jumbotron" style="min-height: 50%; min-height: 50vh; display: flex; align-items: center;">
+                    <div class="container">
+                        <h1>
+                            Welcome to                     
+                            {% if channel == "main" %}
+                                @channel
+                            {% else %}
+                                {{ channel }}Channel
+                            {% endif %}
+                        </h1>
+                        <p class="description">{% if description %}{{ description }}{% endif %}</p>
+                    </div>
                 </div>
 
                 {% if messages|length >= limit %}
