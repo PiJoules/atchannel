@@ -9,6 +9,7 @@ The goal of this website is to replicate the @channel from the anime Steins;Gate
 
 ## Setup for development
 1) Before cloning this repo, make sure you have pip, `python 2.7.x`, `mongo`, and `mongod` installed.
+
 2) @channel stores everything on a MongoDB database. On mongo, you will need to make create a database called `atchannel` and in that, make sure these 3 collections exist: `messages`, `channels`, and `comments`. Enter the mongo shell and enter the commands:
 ```mongo
 > use atchannel
@@ -16,11 +17,13 @@ The goal of this website is to replicate the @channel from the anime Steins;Gate
 > db.createCollection("channels")
 > db.createCollection("comments")
 ```
+
 3) @channel just requires 2 channels to exist before launching the server: the `main` channel, and a `Suggestions` channel. On the mongo shell, enter:
 ```mongo
 > db.channels.insert({_id: "Suggestions", seq: 0, time: Date.now(), description: "Post any suggestions you feel could improve @channel or features you would like to see on @channel."})
 > db.channels.insert({_id: "Suggestions", seq: 0, time: Date.now(), description: "Post any suggestions you feel could improve @channel or features you would like to see on @channel."})
 ```
+
 4) You can now exit the shell. Before starting the server, make sure you have the python dependencies installed by running:
 ```sh
 $ pip install -r requirements.txt -t lib
@@ -28,6 +31,7 @@ $ pip install -r requirements.txt -t lib
 This will install the dependencies in the `lib` directory, and each one will eventually be added onto the python classpath.
 
 5) Create the python files missing from the `private` directory. The file names and their contents are listed in `private/README.md`.
+
 6) Start the mongo server with `sudo mongod` and `python main.py` to start the flask server.
 
 ## Contributing
