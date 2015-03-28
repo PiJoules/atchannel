@@ -25,8 +25,7 @@ Feel free to fork this repo and develop on it as much as you like. I would love 
 
 **Javascript dependencies (included)**
 - jQuery
-- FitText
-- TextFill (should get rid of either this or prev. one l8er)
+- TextFill
 - Mobile Detect
 - Bootstrap
 - Bootstrap Switch
