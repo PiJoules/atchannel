@@ -40,5 +40,6 @@ Feel free to fork this repo and develop on it as much as you like. I would love 
 	<li>Add reply and report buttons to each post.</li>
 	<li>Add channel search.</li>
 	<li>Add post search.</li>
+	<li>Add pagination to each channel.</li>
 	<li>Add ability to choose user icon.</li>
 </ul>
