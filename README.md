@@ -26,6 +26,7 @@ The goal of this website is to replicate the @channel from the anime Steins;Gate
 $ pip install -r requirements.txt -t lib
 ```
 This will install the dependencies in the `lib` directory, and each one will eventually be added onto the python classpath.
+
 5) Create the python files missing from the `private` directory. The file names and their contents are listed in `private/README.md`.
 6) Start the mongo server with `sudo mongod` and `python main.py` to start the flask server.
 
