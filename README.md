@@ -12,6 +12,7 @@ The goal of this website is to replicate the @channel from the anime Steins;Gate
 - pymongo
 - jQuery
 - FitText
+- TextFill (should get rid of either this or prev. one l8er)
 - Mobile Detect
 - Bootstrap
 - Bootstrap Switch

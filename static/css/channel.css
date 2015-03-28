@@ -43,6 +43,11 @@ html, body {
  * Anime designs
  */
 
+.anime .jumbotron {
+	background-color: white;
+	border: 1px solid lightgrey;
+}
+
 .anime .chat-row {
 	padding-top: 15px;
 	padding-bottom: 15px;

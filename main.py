@@ -61,16 +61,39 @@ def index():
 
 @app.route('/<channel>', methods=['GET'])
 def channel(channel="main"):
-	limit = request.args.get("limit")
-	style = request.args.get("style")
-
-	if limit is None:
-		limit = 50
-	if style is None:
-		style = "anime"
+	limit = 50
 
 	if not channelDoesExist(channel):
 		return "This channel does not exist", 404
+
+	channels = client.channels.find({"_id": {"$ne": "main"}}).sort("seq", pymongo.DESCENDING)
+	mainChannelCount = client.channels.find_one({"_id": "main"})["seq"]
+	description = client.channels.find_one({"_id": channel})["description"]
+
+	messages = getPosts(channel, 0, limit)
+
+	return render_template("channel.html",
+		messages = messages,
+		channel=channel,
+		description=description,
+		channels=channels,
+		mainChannelCount=mainChannelCount,
+		limit=limit
+	)
+
+@app.route('/channelpreview.php', methods=['POST'])
+def channelpreview():
+	limit = 50
+	return "test"
+
+	channel = request.args.get("channel")
+	description = request.args.get("description")
+	if channel is None or description is None:
+		return "not all informarion is provided"
+	"""if not "channel" in request.form or "description" not in request.form:
+		return "not all informarion is provided"
+	channel = request.form["channel"]
+	description = request.form["description"]"""
 
 	channels = client.channels.find({"_id": {"$ne": "main"}}).sort("seq", pymongo.DESCENDING)
 	mainChannelCount = client.channels.find_one({"_id": "main"})["seq"]
@@ -78,11 +101,11 @@ def channel(channel="main"):
 	messages = getPosts(channel, 0, limit)
 
 	return render_template("channel.html",
-		messages = messages,
-		style = style,
+		messages=[],
 		channel=channel,
-		channels=channels,
-		mainChannelCount=mainChannelCount
+		description=description,
+		limit=limit,
+		preview=True
 	)
 
 @app.route('/comments/<ID>', methods=['GET'])
@@ -115,7 +138,7 @@ def comments(ID=None):
 	)
 
 @app.route('/submitpost.html', methods=['GET'])
-def submitchannel():
+def submitpost():
 	channels = client.channels.find({"_id": {"$ne": "main"}}).sort("seq", pymongo.DESCENDING)
 	mainChannelCount = client.channels.find_one({"_id": "main"})["seq"]
 
@@ -126,7 +149,7 @@ def submitchannel():
 	)
 
 @app.route('/submitchannel.html', methods=['GET'])
-def submitpost():
+def submitchannel():
 	channels = client.channels.find({"_id": {"$ne": "main"}}).sort("seq", pymongo.DESCENDING)
 	mainChannelCount = client.channels.find_one({"_id": "main"})["seq"]
 
@@ -262,12 +285,16 @@ def addPost():
 # Add a Channel to the database
 @app.route('/addChannel', methods=['POST'])
 def addChannel():
-	if "channel" in request.form and "time" in request.form:
+	if "channel" in request.form and "time" in request.form and "description" in request.form:
 		channel = request.form["channel"].strip()
 		time = int(request.form["time"].strip())
+		description = request.form["description"].strip()
 
 		if not channel.isalnum():
 			return "The channel name must contain only aphanumeric characters"
+
+		if description == "":
+			return "Please enter a channel description"
 
 		if channelDoesExist(channel):
 			return "This channel already exists"
@@ -275,7 +302,8 @@ def addChannel():
 		client.channels.insert({
 			"_id": channel,
 			"seq": 0,
-			"time": time
+			"time": time,
+			"description": description
 		})
 
 		return ""

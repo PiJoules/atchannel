@@ -145,10 +145,6 @@ $(".load-prev").click(function(){
 });
 
 
-// Resize title
-$(".fit-text").fitText(1.2);
-
-
 // Style change
 atchannel.setStyleCallback(function(){
     // stuff to do after changing the styles

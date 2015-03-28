@@ -2,7 +2,7 @@
 
 <html>
     <head>
-        <title>Submit a post to @channel</title>
+        <title>Create a new channel</title>
 
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -14,7 +14,7 @@
         <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" />
         <link rel="stylesheet" type="text/css" href="/static/css/navbar.css" />
         <link rel="stylesheet" type="text/css" href="/static/css/footer.css" />
-        <link rel="stylesheet" type="text/css" href="/static/css/submitpost.css" />
+        <link rel="stylesheet" type="text/css" href="/static/css/submitchannel.css" />
 
         <script src='https://www.google.com/recaptcha/api.js'></script>
     </head>
@@ -27,62 +27,54 @@
             <div class="row">
                 <div class="col-sm-12">
                     <p>
-                    <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-                        Tips for creating a new channel
-                    </a>
+                        <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                            Tips for creating a new channel
+                        </a>
+                        <a href="#preview" data-toggle="collapse" class="btn btn-default">Preview Channel Title</a>
                     </p>
                     <div class="collapse" id="collapseExample">
                         <div class="panel panel-default">
                             <div class="panel-body">
                                 <ul>
-                                    <li>Please familiarize yourself with the <a href="/rules.html">rules</a> before posting. Posts that go against the rules will be removed.</li>
-                                    <li>Markdown is enabled for posts, so feel free to be as creative as you like with your post. (<a target="_blank" href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet">Markdown cheatsheet</a>)</li>
-                                    <li>You can tag other posts by including the ID of that post between <mark><</mark> and <mark>></mark>. For example, if you want to reply to or tag the post with the ID "5510d204485f6c135f8f664a", just include <mark><5510d204485f6c135f8f664a></mark> anywhere in the post and it will be added to the list of tags. You can do this for multiple posts in the same message.</li>
-                                    <li>Posting HTML will not work. For example, posting <mark>&lt;strong&gt;Bold text&lt;/strong&gt;</mark> will not result in <strong>Bold text</strong>. Instead use <mark>**Bold text**</mark>.</li>
+                                    <li>Please familiarize yourself with the <a href="/rules.html">rules</a> before creating a channel. Channels that go against the rules will be removed.</li>
+                                    <li>Markdown is enabled for channel descriptions, so feel free to be as creative as you like with. You cannot, however, tag posts. (<a target="_blank" href="https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet">Markdown cheatsheet</a>)</li>
                                 </ul>
                             </div>
+                        </div>
+                    </div>
+                    <div class="collapse" id="preview">
+                        <div class="jumbotron" style="min-height: 50vh;">
+                            <h1 class="welcome-message">Welcome to <span class="new-channel-name">NewChannel</span></h1>
+                            <p class="channel-description">Channel description</p>
                         </div>
                     </div>
                 </div>
             </div>
 
             <h3>Create a new channel</h3>
-            <form class="form-horizontal post">
+            <form class="form-horizontal channel">
                 <div class="form-group">
-                    <label class="control-label col-sm-1">Channel:</label>
+                    <label class="control-label col-sm-1">Channel</label>
                     <div class="col-sm-11">
-                        <input class="form-control" name="channel" type="text" placeholder="Channel" value="{%if channel %}{{ channel }}{% endif %}" />
+                        <input id="new-channel-name" class="form-control" name="channel" type="text" placeholder="Channel name" />
+                        Will appear as: <strong class="new-channel-name">NewChannel</strong>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="control-label col-sm-1">Username:</label>
+                    <label class="control-label col-sm-1">Description</label>
                     <div class="col-sm-11">
-                        <input class="form-control username" name="name" type="text" placeholder="Username" />
+                        <textarea id="channel-markdown" name="description" data-provide="markdown" rows="15"></textarea>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="control-label col-sm-1">Tags:</label>
-                    <div class="col-sm-11">
-                        <p class="form-control-static"><strong class="tags">None</strong></p>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="control-label col-sm-1">Post:</label>
-                    <div class="col-sm-11">
-                        <textarea id="post-markdown" name="message" data-provide="markdown" rows="15"></textarea>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="control-label col-sm-1">Verification:</label>
+                    <label class="control-label col-sm-1">Verification</label>
                     <div class="col-sm-11">
                         <div class="g-recaptcha" data-sitekey="6LdJ2wMTAAAAAJMyOwZQm6k-4NE4PsaodFgq7TmQ"></div>
                     </div>
                 </div>
                 <input id="date" style="display: none;" type="text" name="time" />
-                <input id="tags" style="display: none;" type="text" name="tags" value="[]" />
-                <hr>
-                <button id="submit-post" type="submit" class="btn btn-default">Submit</button>
-            </form> 
+                <button id="submit-channel" type="submit" class="btn btn-primary">Submit</button>
+            </form>
         </div>
 
         {% include "footer.html" %}
@@ -95,12 +87,13 @@
         <script type="text/javascript" src="/static/js/to-markdown.js"></script>
         <script type="text/javascript" src="/static/js/bootstrap-markdown.js"></script>
         <script type="text/javascript" src="/static/js/mobile-detect.min.js"></script>
+        <script type="text/javascript" src="/static/js/jquery.textfill.min.js"></script>
         <script type="text/javascript" src="/static/js/module.js"></script>
         <script type="text/javascript" src="/static/js/navbar.js"></script>
         <script type="text/javascript">
             // set any vars returned by flask here
         </script>
-        <script type="text/javascript" src="/static/js/submitpost.js"></script>
+        <script type="text/javascript" src="/static/js/submitchannel.js"></script>
     </body>
 
 </html>

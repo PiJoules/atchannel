@@ -1,23 +1,3 @@
-/**
- * Channel submission
- */
-$("#new-channel-name").keyup(function(e){
-    if(e.keyCode == 13) {
-        submitChannel();
-    }
-    else {
-        $(".new-channel-name").text($("#new-channel-name").val().trim() + "Channel");
-    }
-});
-$("#submit-channel").click(function(){
-    submitChannel();
-});
-function submitChannel(){
-    var channelName = $("#new-channel-name").val().trim()
-    atchannel.submitChannel(channelName, function(){
-        window.location.replace("/" + channelName);
-    });
-}
 
 
 // Design toggle

@@ -26,28 +26,25 @@
         <div class="chat">
             {% include "navbar.html" %}
 
-            <div class="container" style="min-height: calc(50vh - 50px); text-align: center;">
-                <h1>Welcome to</h1>
-                <h1 id="channel-name" class="fit-text">
-                    {% if channel == "main" %}
-                        @channel
-                    {% else %}
-                        {{ channel }}Channel
-                    {% endif %}
-                </h1>
-
-                <div class="panel panel-default">
-                    <div class="panel-body">
-                        Smaple text
-                    </div>
+            <div class="container">
+                <div class="jumbotron" style="min-height: 50vh;">
+                    <h1>
+                        Welcome to                     
+                        {% if channel == "main" %}
+                            @channel
+                        {% else %}
+                            {{ channel }}Channel
+                        {% endif %}
+                    </h1>
+                    <p>{% if description %}{{ description }}{% endif %}</p>
                 </div>
-            </div>
 
-            {% if messages|length >= 50 %}
-            <div class="row" style="margin-left: 15%; margin-right: 15%; margin-bottom: 30px; text-align: center;">
-                <button class="load-prev btn btn-default btn-block">Load 50 more</button>
+                {% if messages|length >= limit %}
+                    <div class="row" style="margin-left: 15%; margin-right: 15%; margin-bottom: 30px; text-align: center;">
+                        <button class="load-prev btn btn-default btn-block">Load {{ limit }} more</button>
+                    </div>
+                {% endif %}
             </div>
-            {% endif %}
 
             <div id="marker" style="display: none;"></div>
 
@@ -55,22 +52,23 @@
 
             <div class="row filler-row" style="visibility: hidden;"></div>
         </div>
-        <div class="chat-input">
-            <div class="input-group">
-                <input type="text" class="message form-control" placeholder="Post message as 'Anonymous'" />
-                <span class="input-group-btn">
-                    <button class="btn btn-default prevPost"><span class="fa fa-caret-left"></span></button>
-                    <button class="btn btn-default nextPost"><span class="fa fa-caret-right"></span></button>
-                </span>
+        {% if not preview %}
+            <div class="chat-input">
+                <div class="input-group">
+                    <input type="text" class="message form-control" placeholder="Post message as 'Anonymous'" />
+                    <span class="input-group-btn">
+                        <button class="btn btn-default prevPost"><span class="fa fa-caret-left"></span></button>
+                        <button class="btn btn-default nextPost"><span class="fa fa-caret-right"></span></button>
+                    </span>
+                </div>
             </div>
-        </div>
+        {% endif %}
 
         <script type="text/javascript" src="/static/js/jquery.min.js"></script>
         <script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
         <script type="text/javascript" src="/static/js/bootstrap-switch.min.js"></script>
         <script type="text/javascript" src="/static/js/markdown.js"></script>
         <script type="text/javascript" src="/static/js/mobile-detect.min.js"></script>
-        <script type="text/javascript" src="/static/js/jquery.fittext.js"></script>
         <script type="text/javascript" src="/static/js/module.js"></script>
         <script type="text/javascript" src="/static/js/navbar.js"></script>
         <script type="text/javascript">
