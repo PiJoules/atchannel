@@ -30,28 +30,27 @@ secret = captcha().secret
 # hex regex
 reg = re.compile("[a-f0-9]{24}")
 
+# limits
+charLimit = 20
+channelLimit = 20
+
 
 # Testing parameter passing to url
 @app.route('/', methods=['GET'])
 def index():
-	channels = client.channels.find({"_id": {"$ne": "main"}}).sort("seq", pymongo.DESCENDING)
-	mainChannelCount = client.channels.find_one({"_id": "main"})["seq"]
-	channelCount = client.channels.count()
-	postCount = client.messages.count()
+	channelCount = client.channelsEmpty.count()
+	postCount = client.messagesEmpty.count()
 
-	postLimit = 20
-	latestPosts = list( client.messages.find(sort=[("time", -1)], limit=5) )
+	latestPosts = list( client.messagesEmpty.find(sort=[("time", -1)], limit=5) )
 	for i in range(len(latestPosts)):
 		post = latestPosts[i]["message"]
-		if len(post) > postLimit:
-			latestPosts[i]["message"] = latestPosts[i]["message"][:postLimit] + "..."
+		if len(post) > charLimit:
+			latestPosts[i]["message"] = latestPosts[i]["message"][:charLimit] + "..."
 
-	newestChannels = client.channels.find(limit=5, sort=[("time", -1)])
-	popularChannels = client.channels.find(limit=5, sort=[("seq", -1)])
+	newestChannels = list( client.channelsEmpty.find(limit=5, sort=[("time", -1)]) )
+	popularChannels = list( client.channelsEmpty.find(limit=5, sort=[("seq", -1)]) )
 
 	return render_template("index.html",
-		channels=channels,
-		mainChannelCount=mainChannelCount,
 		channelCount=channelCount,
 		postCount=postCount,
 		latestPosts=latestPosts,
@@ -66,9 +65,7 @@ def channel(channel="main"):
 	if not channelDoesExist(channel):
 		return "This channel does not exist", 404
 
-	channels = client.channels.find({"_id": {"$ne": "main"}}).sort("seq", pymongo.DESCENDING)
-	mainChannelCount = client.channels.find_one({"_id": "main"})["seq"]
-	description = client.channels.find_one({"_id": channel})["description"]
+	description = client.channelsEmpty.find_one({"_id": channel})["description"]
 
 	messages = getPosts(channel, 0, limit)
 
@@ -76,36 +73,7 @@ def channel(channel="main"):
 		messages = messages,
 		channel=channel,
 		description=description,
-		channels=channels,
-		mainChannelCount=mainChannelCount,
 		limit=limit
-	)
-
-@app.route('/channelpreview.php', methods=['POST'])
-def channelpreview():
-	limit = 50
-	return "test"
-
-	channel = request.args.get("channel")
-	description = request.args.get("description")
-	if channel is None or description is None:
-		return "not all informarion is provided"
-	"""if not "channel" in request.form or "description" not in request.form:
-		return "not all informarion is provided"
-	channel = request.form["channel"]
-	description = request.form["description"]"""
-
-	channels = client.channels.find({"_id": {"$ne": "main"}}).sort("seq", pymongo.DESCENDING)
-	mainChannelCount = client.channels.find_one({"_id": "main"})["seq"]
-
-	messages = getPosts(channel, 0, limit)
-
-	return render_template("channel.html",
-		messages=[],
-		channel=channel,
-		description=description,
-		limit=limit,
-		preview=True
 	)
 
 @app.route('/comments/<ID>', methods=['GET'])
@@ -121,11 +89,8 @@ def comments(ID=None):
 	if start is None:
 		start = 0
 
-	if client.messages.find({"_id": ObjectId(ID)}).count() <= 0:
+	if client.messagesEmpty.find({"_id": ObjectId(ID)}).count() <= 0:
 		return "The post with ID " + ID + " does not exist", 404
-
-	channels = client.channels.find({"_id": {"$ne": "main"}}).sort("seq", pymongo.DESCENDING)
-	mainChannelCount = client.channels.find_one({"_id": "main"})["seq"]
 
 	mainPost = getOnePost(ID)
 	comments = getComments(ID, start, limit)
@@ -133,31 +98,18 @@ def comments(ID=None):
 	return render_template("comments.html",
 		mainPost=mainPost,
 		messages=comments,
-		channels=channels,
-		mainChannelCount=mainChannelCount
+		inComments=True
 	)
 
 @app.route('/submitpost.html', methods=['GET'])
 def submitpost():
-	channels = client.channels.find({"_id": {"$ne": "main"}}).sort("seq", pymongo.DESCENDING)
-	mainChannelCount = client.channels.find_one({"_id": "main"})["seq"]
-
 	return render_template("submitpost.html",
-		channel=request.args.get("channel"),
-		channels=channels,
-		mainChannelCount=mainChannelCount
+		channel=request.args.get("channel")
 	)
 
 @app.route('/submitchannel.html', methods=['GET'])
 def submitchannel():
-	channels = client.channels.find({"_id": {"$ne": "main"}}).sort("seq", pymongo.DESCENDING)
-	mainChannelCount = client.channels.find_one({"_id": "main"})["seq"]
-
-	return render_template("submitchannel.html",
-		channel=request.args.get("channel"),
-		channels=channels,
-		mainChannelCount=mainChannelCount
-	)
+	return render_template("submitchannel.html")
 
 # Need to get rid of this l8er
 @app.route('/channels.html', methods=['GET'])
@@ -169,46 +121,29 @@ def channelsRedirect():
 @app.route('/channels/<sort>/', methods=['GET'])
 @app.route('/channels/<sort>/<int:page>', methods=['GET'])
 def channels(sort="popular",page=0):
-	limit = 20
-	start = page*limit
-	print start
+	start = page*channelLimit
 
 	if sort == "latest":
-		channels = client.channels.find(sort=[("time", -1)], skip=start, limit=limit)
+		channels = client.channelsEmpty.find(sort=[("time", -1)], skip=start, limit=channelLimit)
 	else:
-		channels = client.channels.find(sort=[("seq", -1)], skip=start, limit=limit)
-
-	mainChannelCount = client.channels.find_one({"_id": "main"})["seq"]
+		channels = client.channelsEmpty.find(sort=[("seq", -1)], skip=start, limit=channelLimit)
 
 	return render_template("channels.html",
 		channels=list(channels) or [],
-		mainChannelCount=mainChannelCount,
 		page=page,
-		limit=limit,
+		limit=channelLimit,
 		sort=sort
 	)
 
 
 @app.route('/about.html', methods=['GET'])
 def about():
-	channels = client.channels.find({"_id": {"$ne": "main"}}).sort("seq", pymongo.DESCENDING)
-	mainChannelCount = client.channels.find_one({"_id": "main"})["seq"]
-
-	return render_template("about.html",
-		channels=channels,
-		mainChannelCount=mainChannelCount
-	)
+	return render_template("about.html")
 
 
 @app.route('/rules.html', methods=['GET'])
 def rules():
-	channels = client.channels.find({"_id": {"$ne": "main"}}).sort("seq", pymongo.DESCENDING)
-	mainChannelCount = client.channels.find_one({"_id": "main"})["seq"]
-
-	return render_template("rules.html",
-		channels=channels,
-		mainChannelCount=mainChannelCount
-	)
+	return render_template("rules.html")
 
 
 # Add a message to the database
@@ -248,7 +183,7 @@ def addPost():
 		for tag in tags:
 			if reg.match(tag):
 				objId = ObjectId(tag)
-				if client.messages.find({"_id": objId}).count() <= 0:
+				if client.messagesEmpty.find({"_id": objId}).count() <= 0:
 					return "Post with ID " + tag + " does not exist"
 				else:
 					tagsToInsert.append(objId)
@@ -256,12 +191,12 @@ def addPost():
 				return tag + " is not a valid ID. All IDs are hexadecimal."
 
 		# Get post number for the current post
-		countUpdate = client.channels.find_and_modify({"_id": channel}, {"$inc": {"seq": 1}}, new=True)
+		countUpdate = client.channelsEmpty.find_and_modify({"_id": channel}, {"$inc": {"seq": 1}}, new=True)
 		if countUpdate is None:
 			return "This channel does not exist"
 
 		# add post
-		ID = client.messages.insert({
+		ID = client.messagesEmpty.insert({
 			"name": name,
 			"message": message,
 			"time": int(time),
@@ -274,7 +209,7 @@ def addPost():
 		commentsToInsert = [{"basePost": ID, "refPost": refID} for refID in tagsToInsert]
 		print commentsToInsert
 		if len(commentsToInsert) > 0:
-			client.comments.insert(commentsToInsert)
+			client.commentsEmpty.insert(commentsToInsert)
 
 		# empty string means success :)
 		return ""
@@ -299,7 +234,7 @@ def addChannel():
 		if channelDoesExist(channel):
 			return "This channel already exists"
 
-		client.channels.insert({
+		client.channelsEmpty.insert({
 			"_id": channel,
 			"seq": 0,
 			"time": time,
@@ -392,18 +327,18 @@ def utility_processor():
 # If the collection has 100 rows and we receive a starting index of 10 and length 25, messages with postNumbers
 # from 76 to 90. A staring index of 0 and length 90 will get postNumbers 11 to 100
 def getPosts(channel, start, length):
-	cursor = client.messages.find({"channel": channel}, skip=int(start), limit=int(length), sort=[("postNumber", -1)])
+	cursor = client.messagesEmpty.find({"channel": channel}, skip=int(start), limit=int(length), sort=[("postNumber", -1)])
 	messages = list(cursor)[::-1]
 	return messages
 
 def getOnePost(ID):
-	return client.messages.find_one({"_id": ObjectId(ID)})
+	return client.messagesEmpty.find_one({"_id": ObjectId(ID)})
 
 # Get all the comments for a post
 def getComments(ID, start, length):
-	references = client.comments.find({"refPost": ObjectId(ID)})
+	references = client.commentsEmpty.find({"refPost": ObjectId(ID)})
 	basePostIDs = [reference["basePost"] for reference in references]
-	basePosts = client.messages.find({ "_id": { "$in": basePostIDs } }, skip=int(start), limit=int(length), sort=[("time", -1)])
+	basePosts = client.messagesEmpty.find({ "_id": { "$in": basePostIDs } }, skip=int(start), limit=int(length), sort=[("time", -1)])
 	comments = list(basePosts)[::-1]
 	return comments
 
@@ -411,7 +346,7 @@ def getPostsHTML(posts):
 	return render_template("posts.html", messages=posts)
 
 def channelDoesExist(channel):
-	return channel in client.channels.distinct("_id")
+	return channel in client.channelsEmpty.distinct("_id")
 
 
 if __name__ == '__main__':

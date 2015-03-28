@@ -46,33 +46,36 @@
             </div>
 
             <div class="row">
-                <div class="col-sm-6">
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <div class="stuff panel panel-default">
-                                <div class="panel-heading">
-                                    <h3 class="panel-title"><a href="/channels/latest">Newest Channels</a></h3>
+                {% if newestChannels|length > 0 %}
+                    <div class="col-sm-6">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="stuff panel panel-default">
+                                    <div class="panel-heading">
+                                        <h3 class="panel-title"><a href="/channels/latest">Newest Channels</a></h3>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <p>
-                                {% for channel in newestChannels %}
-                                    <strong><a href="{{ channel._id }}">
-                                        {% if channel._id == "main" %}
-                                            @channel
-                                        {% else %}
-                                            {{ channel._id }}Channel
-                                        {% endif %}
-                                    </a></strong>: {{ prettifyTime(channel.time) }} <br>
-                                {% endfor %}
-                            </p>
-                            <p><a href="/channels/latest">more ...</a></p>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <p>
+                                    {% for channel in newestChannels %}
+                                        <strong><a href="{{ channel._id }}">
+                                            {% if channel._id == "main" %}
+                                                @channel
+                                            {% else %}
+                                                {{ channel._id }}Channel
+                                            {% endif %}
+                                        </a></strong>: {{ prettifyTime(channel.time) }} <br>
+                                    {% endfor %}
+                                </p>
+                                <p><a href="/channels/latest">more ...</a></p>
+                            </div>
                         </div>
                     </div>
-                </div>
+                {% endif %}
+                {% if popularChannels|length > 0 %}
                 <div class="col-sm-6">
                     <div class="row">
                         <div class="col-sm-12">
@@ -100,6 +103,7 @@
                         </div>
                     </div>
                 </div>
+                {% endif %}
             </div>
 
             <div class="row">
@@ -147,32 +151,34 @@
             </div>
 
             <div class="row">
-                <div class="col-sm-6">
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <div class="stuff panel panel-default">
-                                <div class="panel-heading">
-                                    <h3 class="panel-title">Latest posts</h3>
+                {% if latestPosts|length > 0 %}
+                    <div class="col-sm-6">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="stuff panel panel-default">
+                                    <div class="panel-heading">
+                                        <h3 class="panel-title">Latest posts</h3>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <p>
-                                {% for post in latestPosts %}
-                                    <strong><a href="{{ post.channel }}">
-                                        {% if post.channel == "main" %}
-                                            @channel
-                                        {% else %}
-                                            {{ post.channel }}Channel
-                                        {% endif %}
-                                    </a></strong>: {{ post.message }} <br>
-                                {% endfor %}
-                            </p>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <p>
+                                    {% for post in latestPosts %}
+                                        <strong><a href="{{ post.channel }}">
+                                            {% if post.channel == "main" %}
+                                                @channel
+                                            {% else %}
+                                                {{ post.channel }}Channel
+                                            {% endif %}
+                                        </a></strong>: {{ post.message }} <br>
+                                    {% endfor %}
+                                </p>
+                            </div>
                         </div>
                     </div>
-                </div>
+                {% endif %}
                 <div class="col-sm-6">
                     <div class="row">
                         <div class="col-sm-12">

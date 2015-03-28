@@ -28,7 +28,7 @@
                 <div class="bubble-container">
                     <div class="bubble" data-color="{{ color }}" style="background-color: {{ color }}; border-color: transparent {{ color }};">
                         <p class="chat-row-header">
-                            <strong class="part1"><span class="postNumber">{{ mainPost.postNumber|int }}</span> &nbsp; Name: {{ mainPost.name }} <span class="sage">[sage]</span></strong>
+                            <strong class="part1">{% if not inComments %}<span class="postNumber">{{ mainPost.postNumber|int }}</span> &nbsp; {% endif %}Name: {{ mainPost.name }}{% if inComments %}@<a href="/{{ mainPost.channel }}">{{ mainPost.channel }}Channel</a>{% endif %} <span class="sage">[sage]</span></strong>
                             <span class="vn-time part2">&nbsp;:{{ prettifyTime(mainPost.time) }}</span>
                             <strong class="part2">ID:{{ mainPost._id }}</strong>
                         </p>

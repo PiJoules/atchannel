@@ -182,7 +182,8 @@ $(".chat-input .message").click(function(){
 // Stuff to do after the window loads
 // Only need to include stuff that requires elements in the window
 $(window).load(function(){
-    $(".description").html( markdown.toHTML( $(".description").html() ) );
+    if (!inComments)
+        $(".description").html( markdown.toHTML( $(".description").html() ) );
 
     resetParentDimensions();
 
