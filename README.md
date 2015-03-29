@@ -20,7 +20,7 @@ The goal of this website is to replicate the @channel from the anime Steins;Gate
 
 3) @channel just requires 2 channels to exist before launching the server: the `main` channel, and a `Suggestions` channel. On the mongo shell, enter:
 ```mongo
-> db.channels.insert({_id: "Suggestions", seq: 0, time: Date.now(), description: "Post any suggestions you feel could improve @channel or features you would like to see on @channel."})
+> db.channels.insert({_id: "main", seq: 0, time: Date.now(), description: "This is the main channel in @channel. Feel free to post anything about anything."})
 > db.channels.insert({_id: "Suggestions", seq: 0, time: Date.now(), description: "Post any suggestions you feel could improve @channel or features you would like to see on @channel."})
 ```
 
@@ -30,7 +30,7 @@ $ pip install -r requirements.txt -t lib
 ```
 This will install the dependencies in the `lib` directory, and each one will eventually be added onto the python classpath.
 
-5) Create the python files missing from the `private` directory. The file names and their contents are listed in `private/README.md`.
+5) Create the python files missing from the `private` directory. The file names and their contents are listed in [private/README.md](/private/README.md).
 
 6) Start the mongo server with `sudo mongod` and `python main.py` to start the flask server.
 
