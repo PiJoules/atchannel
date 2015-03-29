@@ -3,12 +3,13 @@ To run @channel on port 80, you will need to proxy HTTP traffic through apache2 
 
 The following information was taken from https://www.digitalocean.com/community/tutorials/how-to-deploy-a-flask-application-on-an-ubuntu-vps.
 
-1. You will need to make sure `mod_wsgi` is installed and enabled. Mod_wsgi is an Apache HTTP server mod that enables Apache to serve Flask applications. On linux, this will install and enable `mod_wsgi`.
+1) You will need to make sure `mod_wsgi` is installed and enabled. Mod_wsgi is an Apache HTTP server mod that enables Apache to serve Flask applications. On linux, this will install and enable `mod_wsgi`.
 ```sh
 $ sudo apt-get install libapache2-mod-wsgi # install
 $ sudo a2enmod wsgi # enable
 ```
-2. Create a directory called `atchannel` anywhere you want. Just remember the path to this directory. It will be reused later. Inside `atchannel`, place the previous `atchannel` directory cloned in development int this directory. If you have not already cloned the repo you can do so inside here. So now your file structure should look like this:
+
+2) Create a directory called `atchannel` anywhere you want. Just remember the path to this directory. It will be reused later. Inside `atchannel`, place the previous `atchannel` directory cloned in development int this directory. If you have not already cloned the repo you can do so inside here. So now your file structure should look like this:
 ```
 |-- atchannel/
 |   |-- atchannel/
@@ -23,7 +24,7 @@ $ sudo a2enmod wsgi # enable
 |   |   |-- requirements.txt
 ```
 
-3. In the nested `atchannel` directory, create a file called `atchannel.wsgi` and include the following in it:
+3) In the nested `atchannel` directory, create a file called `atchannel.wsgi` and include the following in it:
 ```py
 #!/usr/bin/python
 import sys
@@ -49,7 +50,7 @@ So your structure should look like this now:
 |   |-- atchannel.wsgi
 ```
 
-4. Create a file in `/etc/apache2/sites-available` called `atchannel`. If running on Ubuntu (13.10+), the file will end in a `.conf` and be `atchannel.conf`.
+4) Create a file in `/etc/apache2/sites-available` called `atchannel`. If running on Ubuntu (13.10+), the file will end in a `.conf` and be `atchannel.conf`.
 ```sh
 $ sudo vim /etc/apache2/sites-available/atchannel
 or
@@ -74,7 +75,8 @@ Inside this file, place
 		CustomLog ${APACHE_LOG_DIR}/access.log combined
 </VirtualHost>
 ```
-5. Enable the virtualhost and restart apache with the following commands:
+
+5) Enable the virtualhost and restart apache with the following commands:
 ```sh
 $ sudo a2ensite atchannel
 $ sudo service apache2 restart 
