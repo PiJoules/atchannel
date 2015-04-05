@@ -34,6 +34,9 @@ This will install the dependencies in the `lib` directory, and each one will eve
 
 6) Start the mongo server with `sudo mongod` and `python __init__.py` to start the flask server on localhost. Post 5000 is the default.
 
+## Setup for Production
+In [this README](PRODUCTION.md).
+
 ## Contributing
 Feel free to fork this repo and develop on it as much as you like. I would love nothing more than having people help develop @channel, especially since I am a total noob at flask and mongodb. If you think you can improve the code, feel free to submit a pull request. If multiple people want to consitently develop and contribute to @channel. I will make this repo into an organization so it will be easier to invite people.
 
