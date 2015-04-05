@@ -281,7 +281,12 @@ function changeRow(that, nextProperties, percent){
         "font-size": nextProperties["time-font-size"]
     });
     if (typeof percent !== "undefined"){
-        that.find(".postMessage").css("zoom", percent);
+        that.find(".postMessage").css({
+            "zoom": percent,
+        });
+        that.find(".postMessage img").css({
+            "max-width": "100%"
+        });
     }
 }
 
