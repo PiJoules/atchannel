@@ -3,6 +3,7 @@ dump
 lib/*
 private/*
 notes.md
+.IMPORTANT-STUFF
 
 !lib/README.md
 !private/README.md
