@@ -227,28 +227,28 @@ function getPosts(){
         if (response.messagesCount < nextAmount){
             $(".load-prev").parent().remove();
         }
-        else {
-            $("#marker").after(response.html);
+        
+        $("#marker").after(response.html);
 
-            smallestPostNumber = parseInt(response.smallestPostNumber);
-            setTimeline();
+        smallestPostNumber = parseInt(response.smallestPostNumber);
+        setTimeline();
 
-            if (atchannel.canAnimate())
-                hideAndSeek();
-            else if (atchannel.isMobile() && atchannel.isVNStyle())
-                changeRow($(".chat-row"), vnMobileProperties, 1);
-            else
-                changeRow($(".chat-row"), maxProperties, 1);
+        if (atchannel.canAnimate())
+            hideAndSeek();
+        else if (atchannel.isMobile() && atchannel.isVNStyle())
+            changeRow($(".chat-row"), vnMobileProperties, 1);
+        else
+            changeRow($(".chat-row"), maxProperties, 1);
 
-            if (atchannel.isAnimeStyle()){
-                prepareAnime();
-            }
-            else {
-                prepareVN();
-            }
-
-            translateMarkdown();
+        if (atchannel.isAnimeStyle()){
+            prepareAnime();
         }
+        else {
+            prepareVN();
+        }
+
+        translateMarkdown();
+
     }).fail(function(jqXHR, textStatus, errorThrown){
         alert([textStatus, errorThrown]);
     });

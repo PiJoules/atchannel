@@ -1,5 +1,0 @@
-
-
-
-
-$(".background-image").remove();
