@@ -56,6 +56,9 @@ Feel free to fork this repo and develop on it as much as you like. I would love 
 - Bootstrap Image Gallery
 - reCaptcha
 
+## Updates
+In [this README](UPDATES.md).
+
 ## Todo
 <ul>
 	<li>Find new way for resizing markdown content in each post. `Zoom` does not work in Firefox or IE, but does work on Chrome and Safari.</li>
