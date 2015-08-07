@@ -83,7 +83,12 @@ var currentRow = 1;
 // On scroll events
 $(".chat").scroll(function(){
     hideAndSeek();
-    markTimeline();
+
+    // Color the tick that is the closest to the current row.
+    if ($(".timeline [data-index='" + currentRow + "']").length > 0){
+        $(".timeline li").css("background-color", "initial");
+        $(".timeline [data-index='" + currentRow + "']").parent().css("background-color", "#abdfde");
+    }
 
     if ($(this).scrollTop() > 50 && !$(".timeline-container").is(":visible") && window.innerWidth > 880) {
         $(".timeline-container").show("fast");
@@ -224,22 +229,31 @@ function getPosts(){
     $.get("/getPosts", {channel: channel, start: messagesCount, length: nextAmount}).done(function(response){
         messagesCount += response.messagesCount;
 
+        // There are no more messsages to load if the amount received back is 
+        // less than the amount requested.
         if (response.messagesCount < nextAmount){
             $(".load-prev").parent().remove();
         }
-        
+
+        // Set the new marker for the halfway point
         $("#marker").after(response.html);
 
+        // Set the next smallest post number and readjust the timeline
         smallestPostNumber = parseInt(response.smallestPostNumber);
         setTimeline();
 
-        if (atchannel.canAnimate())
+        // Initial resdesigning of the new rows
+        if (atchannel.canAnimate()){
             hideAndSeek();
-        else if (atchannel.isMobile() && atchannel.isVNStyle())
+        }
+        else if (atchannel.isMobile() && atchannel.isVNStyle()){
             changeRow($(".chat-row"), vnMobileProperties, 1);
-        else
+        }
+        else{
             changeRow($(".chat-row"), maxProperties, 1);
+        }
 
+        // Reset the styles
         if (atchannel.isAnimeStyle()){
             prepareAnime();
         }
@@ -247,6 +261,7 @@ function getPosts(){
             prepareVN();
         }
 
+        // Translate any new markdown coming in
         translateMarkdown();
 
     }).fail(function(jqXHR, textStatus, errorThrown){
@@ -359,24 +374,6 @@ function hidingFunction(that){
 
 
 /**
- * Color the tick that is the closest to the current row
- * If an index is provided, that will be marked
- */
-function markTimeline(index){
-    if (typeof index === "undefined"){
-        if ($(".timeline a[data-index='" + currentRow + "']").length > 0){
-            $(".timeline li").css("background-color", "initial");
-            $(".timeline a[data-index='" + currentRow + "']").parent().css("background-color", "#abdfde");
-        }
-    }
-    else {
-        $(".timeline li").css("background-color", "initial");
-        $(".timeline li:eq(" + index + ")").css("background-color", "#abdfde");
-    }
-}
-
-
-/**
  * Set parent top, parent height, and the screen's fixed midpoint (vertically)
  */
 function resetParentDimensions(){
@@ -386,22 +383,6 @@ function resetParentDimensions(){
 }
 
 
-
-/**
- * Scroll to a row until it's equal to the current row
- */
-function scrollToPost(dest,callback){
-    if (currentRow !== dest){
-        $(".chat").animate({
-            scrollTop: $(".chat").scrollTop() + $(".chat-row:eq(" + dest + ")").position().top - ph/2
-        }, "fast", function(){
-            scrollToPost(dest, callback);
-        });
-    }
-    else if (typeof callback !== "undefined") {
-        callback();
-    }
-}
 function scrollToPrevPost(){
     $(".chat").animate({
         scrollTop: $(".chat").scrollTop() - $(".chat-row:eq(" + (currentRow-1) + ")").outerHeight()
@@ -453,20 +434,6 @@ function setTimeline(){
 
             lastNumber = index;
         }
-
-        // Mark the tick of the current row
-        markTimeline();
-
-        $(".timeline a").click(function(){
-            var index = parseInt($(this).data("index"));
-            if (atchannel.canAnimate()){
-                scrollToPost(index, markTimeline);
-            }
-            else {
-                currentRow = index;
-                window.location.href = "#post" + (index+smallestPostNumber);
-            }
-        });
     }
 }
 
