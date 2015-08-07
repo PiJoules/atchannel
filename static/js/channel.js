@@ -178,11 +178,6 @@ atchannel.setUsernameCallback(function(username){
 $(".message").attr("placeholder", "Post message as '" + atchannel.getUsername() + "'");
 
 
-// Go to submit message
-// $(".chat-input .message").click(function(){
-//     window.location.href = '/submitpost.html?channel=' + channel;
-// });
-
 /**
  * Form submission for adding new posts.
  */

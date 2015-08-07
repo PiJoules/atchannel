@@ -102,12 +102,6 @@ def comments(ID=None):
 		inComments=True
 	)
 
-@app.route('/submitpost.html', methods=['GET'])
-def submit_post():
-	return render_template("submitpost.html",
-		channel=request.args.get("channel")
-	)
-
 @app.route('/submitchannel.html', methods=['GET'])
 def submitchannel():
 	return render_template("submitchannel.html")
@@ -187,90 +181,32 @@ def add_post():
 		return ""
 	else:
 		return "Unsucessful insertion: Did not receive either the username, channel, message, or time of post."
-# @app.route('/addPost', methods=['POST'])
-# def addPost():
-# 	if "name" in request.form and "message" in request.form and "time" in request.form and "channel" in request.form and "tags" in request.form:
-
-# 		if not "g-recaptcha-response" in request.form or request.form["g-recaptcha-response"] == "":
-# 			return "Please prove you are a human."
-
-# 		data = {
-# 			"response": request.form["g-recaptcha-response"],
-# 			"secret": secret,
-# 			"remoteip": request.remote_addr
-# 		}
-# 		response = requests.post("https://www.google.com/recaptcha/api/siteverify", data)
-# 		if not response.json()["success"]:
-# 			return "Sorry, Google does not think you are a human."
-
-# 		name = request.form["name"].strip()		
-# 		message = request.form["message"].strip()
-# 		time = request.form["time"].strip()
-# 		channel = request.form["channel"].strip()
-# 		tags = json.loads(request.form["tags"])
-
-# 		if name == "":
-# 			return "Invalid username"
-# 		if message == "":
-# 			return "Invalid message"
-# 		if not time.isdigit():
-# 			return "Invalid time"
-# 		if channel == "":
-# 			return "Invalid channel name"
-
-# 		# Check if the tags exist
-# 		tagsToInsert = []
-# 		for tag in tags:
-# 			if reg.match(tag):
-# 				objId = ObjectId(tag)
-# 				if client.messages.find({"_id": objId}).count() <= 0:
-# 					return "Post with ID " + tag + " does not exist"
-# 				else:
-# 					tagsToInsert.append(objId)
-# 			else:
-# 				return tag + " is not a valid ID. All IDs are hexadecimal."
-
-# 		# Get post number for the current post
-# 		countUpdate = client.channels.find_and_modify({"_id": channel}, {"$inc": {"seq": 1}}, new=True)
-# 		if countUpdate is None:
-# 			return "This channel does not exist"
-
-# 		# add post
-# 		ID = client.messages.insert({
-# 			"name": name,
-# 			"message": message,
-# 			"time": int(time),
-# 			"channel": channel,
-# 			"postNumber": int(countUpdate["seq"])
-# 		})
-
-# 		# add references to to other posts
-# 		tagsToInsert = list(set(tagsToInsert)) # remove duplicates
-# 		commentsToInsert = [{"basePost": ID, "refPost": refID} for refID in tagsToInsert]
-# 		print commentsToInsert
-# 		if len(commentsToInsert) > 0:
-# 			client.comments.insert(commentsToInsert)
-
-# 		# empty string means success :)
-# 		return ""
-# 	else:
-# 		return "Unsucessful insertion: the username, message, time posted, associated tags, and channel name are required as parameters."
 
 
 # Add a Channel to the database
 @app.route('/addChannel', methods=['POST'])
-def addChannel():
+def add_channel():
 	if "channel" in request.form and "time" in request.form and "description" in request.form:
+		# Do google captcha magic first
+		if not "g-recaptcha-response" in request.form or request.form["g-recaptcha-response"] == "":
+			return "Please prove you are a human."
+		data = {
+			"response": request.form["g-recaptcha-response"],
+			"secret": secret,
+			"remoteip": request.remote_addr
+		}
+		response = requests.post("https://www.google.com/recaptcha/api/siteverify", data)
+		if not response.json()["success"]:
+			return "Sorry, Google does not think you are a human."
+
 		channel = request.form["channel"].strip()
 		time = int(request.form["time"].strip())
 		description = request.form["description"].strip()
 
 		if not channel.isalnum():
 			return "The channel name must contain only aphanumeric characters"
-
 		if description == "":
 			return "Please enter a channel description"
-
 		if channelDoesExist(client, channel):
 			return "This channel already exists"
 
