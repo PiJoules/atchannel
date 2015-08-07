@@ -56,13 +56,13 @@
         </div>
         {% if not preview %}
             <div class="chat-input">
-                <div class="input-group">
-                    <input type="text" class="message form-control" placeholder="Post message as 'Anonymous'" />
+                <form class="message-form input-group">
+                    <input type="text" class="message form-control" name="message" placeholder="Post message as 'Anonymous'" />
                     <span class="input-group-btn">
                         <button class="btn btn-default prevPost"><span class="fa fa-caret-left"></span></button>
                         <button class="btn btn-default nextPost"><span class="fa fa-caret-right"></span></button>
                     </span>
-                </div>
+                </form>
             </div>
         {% endif %}
 

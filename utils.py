@@ -4,14 +4,12 @@ all the helper functions here and the app handlers
 in the main script.
 """
 
-"""
-Get posts from the database.
+from flask import render_template
 
-The starting index starts from the beginning of the collection sorted by postNumber in reverse (the latest posts).
-If the collection has 100 rows and we receive a starting index of 10 and length 25, messages with postNumbers
-from 76 to 90. A staring index of 0 and length 90 will get postNumbers 11 to 100
 """
-def getPosts(channel, start, length):
+Get posts from the database in reverse order.
+"""
+def get_posts(client, channel, start, length):
 	cursor = client.messages.find({"channel": channel}, skip=int(start), limit=int(length), sort=[("postNumber", -1)])
 	messages = list(cursor)[::-1]
 	return messages
@@ -31,5 +29,5 @@ def getComments(ID, start, length):
 def getPostsHTML(posts):
 	return render_template("posts.html", messages=posts)
 
-def channelDoesExist(channel):
+def channelDoesExist(client, channel):
 	return channel in client.channels.distinct("_id")

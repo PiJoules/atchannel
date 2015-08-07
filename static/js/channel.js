@@ -179,8 +179,37 @@ $(".message").attr("placeholder", "Post message as '" + atchannel.getUsername() 
 
 
 // Go to submit message
-$(".chat-input .message").click(function(){
-    window.location.href = '/submitpost.html?channel=' + channel;
+// $(".chat-input .message").click(function(){
+//     window.location.href = '/submitpost.html?channel=' + channel;
+// });
+
+/**
+ * Form submission for adding new posts.
+ */
+$("form.message-form").submit(function(event){
+    event.preventDefault(); // don't refresh page
+
+    var inputs = $(this).serializeArray(); // for some reason, returns an array of objects
+    var formObj = {};
+    for (var i = 0; i < inputs.length; i++)
+        formObj[inputs[i].name] = inputs[i].value;
+
+    formObj["channel"] = channel;
+    formObj["name"] = atchannel.getUsername();
+    formObj["time"] = Date.now();
+
+    // formObj will contain: message, channel, name, time
+    $.post("/addPost", formObj, function(response){
+        console.log(response);
+        if (response == ""){ // Success
+            location.reload(); // Reload the page to see the updated channel w/ post
+        }
+        else {
+            alert(response);
+        }
+    }).fail(function(jqXHR, textStatus, errorThrown){
+        alert([textStatus, errorThrown]);
+    });
 });
 
 
