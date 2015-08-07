@@ -93,8 +93,8 @@ def comments(ID=None):
 	if client.messages.find({"_id": ObjectId(ID)}).count() <= 0:
 		return "The post with ID " + ID + " does not exist", 404
 
-	mainPost = getOnePost(ID)
-	comments = getComments(ID, start, limit)
+	mainPost = get_one_post(client, ID)
+	comments = get_comments(client, ID, start, limit)
 
 	return render_template("comments.html",
 		mainPost=mainPost,

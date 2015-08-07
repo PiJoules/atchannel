@@ -4,6 +4,7 @@ all the helper functions here and the app handlers
 in the main script.
 """
 
+from bson.objectid import ObjectId
 from flask import render_template
 
 """
@@ -15,11 +16,11 @@ def get_posts(client, channel, start, length):
 	return messages
 
 
-def getOnePost(ID):
+def get_one_post(client, ID):
 	return client.messages.find_one({"_id": ObjectId(ID)})
 
 # Get all the comments for a post
-def getComments(ID, start, length):
+def get_comments(client, ID, start, length):
 	references = client.comments.find({"refPost": ObjectId(ID)})
 	basePostIDs = [reference["basePost"] for reference in references]
 	basePosts = client.messages.find({ "_id": { "$in": basePostIDs } }, skip=int(start), limit=int(length), sort=[("time", -1)])
