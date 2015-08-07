@@ -1,6 +1,8 @@
 # [@channel](http://atchannel.space/)
 The goal of this website is to replicate the @channel from the anime Steins;Gate as much as possible (making this basically a parody of 4chan). Here you will find various channels dedicated to a variety of topics created by users. Users do not need to register an account before participating in a channel.
 
+It should be noted that I am a scrub who has not played the VN, nor do I plan to play it any time in the near future. The website was entirely inspire by the Steins;Gate anime, so any design portrayed in the VN will be put second to the design in the anime.
+
 **@channel as portrayed in the anime**
 !["@channel as portrayed in anime"](static/img/@channel.gif "@channel as portrayed in the anime")
 
