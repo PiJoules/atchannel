@@ -79,6 +79,7 @@ var currentRow = 1;
 /**
  * Main script
  */
+var urlPattern = /(http|ftp|https):\/\/[\w-]+(\.[\w-]+)+([\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+#-])?/;
 
 // On scroll events
 $(".chat").scroll(function(){
@@ -239,7 +240,6 @@ $(window).load(function(){
         removeAnimations();
     }
 
-    translateMarkdown();
 });
 
 
@@ -285,15 +285,22 @@ function getPosts(){
             prepareVN();
         }
 
-        // Translate any new markdown coming in
-        translateMarkdown();
-
     }).fail(function(jqXHR, textStatus, errorThrown){
         alert([textStatus, errorThrown]);
     });
 }
 
 
+/**
+ * Function for adding links to all URLs in a message
+ */
+function addLinks(){
+    $(".postMessage:not(.linked)").each(function(){
+        var html = $(this).html();
+        
+        $(this).addClass("linked");
+    });
+}
 
 
 /**
@@ -522,13 +529,4 @@ function prepareVN(){
     if (atchannel.isMobile()){
         changeRow($(".chat-row"), vnMobileProperties, 1);
     }
-}
-
-
-function translateMarkdown(){
-    $(".postMessage").not(".translated").each(function(){
-        $(this).html(markdown.toHTML( atchannel.translateTags($(this).text()) ));
-
-        $(this).addClass("translated");
-    });
 }
