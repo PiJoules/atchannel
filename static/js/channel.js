@@ -413,7 +413,17 @@ function resetParentDimensions(){
     mid = pt + ph/2 - bottomBuffer;
 }
 
+/*
+Use this eventually to scroll up to a post
+while ($("#post16").position().top < ($(window).height()/2-100)){
+    $(".chat").scrollTop($(".chat").scrollTop()-1);
+}
 
+And this to scroll down to a post
+while ($("#post16").position().top > ($(window).height()/2-100)){
+    $(".chat").scrollTop($(".chat").scrollTop()+1);
+}
+*/
 function scrollToPrevPost(){
     $(".chat").animate({
         scrollTop: $(".chat").scrollTop() - $(".chat-row:eq(" + (currentRow-1) + ")").outerHeight()
