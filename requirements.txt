@@ -8,4 +8,4 @@
 # Note: The `lib` directory is added to `sys.path` by `appengine_config.py`.
 Flask==0.10
 pymongo==2.8
-requests==2.6.0
+requests==2.31.0
